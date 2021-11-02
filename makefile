@@ -2,7 +2,7 @@ TARGET = tripe
 
 CC = g++
 #CFLAGS =  -Os -s -Wfatal-errors  -fno-stack-protector  -fno-unwind-tables -fno-asynchronous-unwind-tables  -fno-math-errno  -fno-unroll-loops
-CFLAGS =  -g -s# -Wfatal-errors  -fno-stack-protector  -fno-unwind-tables -fno-asynchronous-unwind-tables  -fno-math-errno  -fno-unroll-loops
+CFLAGS =  -std=c++20 -g -s# -Wfatal-errors  -fno-stack-protector  -fno-unwind-tables -fno-asynchronous-unwind-tables  -fno-math-errno  -fno-unroll-loops
 
 OUTDIR = bin
 DATADIR = data

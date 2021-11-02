@@ -2,6 +2,7 @@
 
 .set start "run"
 
+; Comment
 
 .code 0x801 run
 
