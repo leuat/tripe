@@ -1,0 +1,26 @@
+.tripe 0.1
+
+.set start "run"
+
+
+.code 0x801 run
+
+.uint8 0b, 08,0a,00,9e,20,32, 30, 36, 34, 00, 00, 00, ff
+
+
+.code 0x810 block1
+   a = 10
+   c = @unit8 add a, b
+   c = @unit8 mul c, 2
+   d = @uint16 0x0400
+   d[0] = c
+   return
+
+.data
+
+  decl a uint8 5
+  decl b uint8 2
+  decl c uint8 2
+  decl d *uint8 0
+
+
