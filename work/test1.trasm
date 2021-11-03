@@ -1,0 +1,29 @@
+.tripe uint8:1
+
+#.set start "run"
+
+; Comment
+
+.code uint16:0x801 run
+
+;.uint8 0b, 08,0a,00,9e,20,32, 30, 36, 34, 00, 00, 00, ff
+
+.code uint16:0x810 block1
+   mov  halla  uint8:10
+   add  c halla  b  
+;   mul c uint8:2 c
+   mov d uint16:0x4000
+   movp d uint8:0 c
+   return uint8:10
+
+;.data
+
+.data uint16:0x00
+  decl halla uint8:5
+  decl b uint8:2
+  decl c uint8:2
+
+.data uint16:0x010
+	declptr d uint8:0x0
+
+

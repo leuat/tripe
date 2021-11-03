@@ -1,0 +1,19 @@
+
+.tripe uint8:0x1
+
+.code uint16:0x801 run
+
+.code uint16:0x810 block1
+	mov halla uint8:0xa
+	add c halla b
+	mov d uint16:0x4000
+	movp d uint8:0x0 c
+	return
+
+.data uint16:0x0
+	decl halla uint8:0x5
+	decl b uint8:0x2
+	decl c uint8:0x2
+
+.data uint16:0x10
+	declptr d uint8:0x0
