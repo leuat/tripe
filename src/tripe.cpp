@@ -44,10 +44,11 @@ void Tripe::Execute() {
 
     Parser p;
 
-    if (arch=="trasm2tripe") 
+    if (arch=="trasm2tripe") {
         Util::save_binary(outFile, p.ParseText(inFile));
-    if (arch=="tripe2trasm") 
-        Util::save_text(outFile, p.ParseBinary(inFile));
+    }
+    else
+        Util::save_text(outFile, p.ParseBinary(inFile,arch));
         
 
 

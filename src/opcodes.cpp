@@ -3,29 +3,6 @@
 #include <sstream>
 #include "error.h"
 
-void Opcodes::Init() {
-    auto d = Util::read_text_code_file("opcodes.txt");
-    for (auto s: d) {
-        s = Util::trim(s);
-        vector<string> v;
-        Util::split(s,',',v);
-        int val;
-        stringstream (v[1]) >>hex>>val;
-        string str = Util::toLower(Util::trim(v[0]));
-        m_asmToOpcode[str] = val;
-        m_opcodeToAsm[val] = str;
-        vector<string> params;
-        Util::split(v[2],':',params);
-//        cout << "PARAMS "<<str<< " ";
-        for (auto& sp:params) {
-            sp = Util::toLower(Util::trim(sp));
-  //          cout << sp << " " ;
-        }
-    //    cout << endl;
-
-        m_opcodeToParams[val] = params;
-    }
-}
 
 void Opcodes::ParseToBinary(vector<string>& line,vector<uint8_t>& data) {
     uint8_t opcode = m_asmToOpcode[line[0]];
@@ -34,12 +11,11 @@ void Opcodes::ParseToBinary(vector<string>& line,vector<uint8_t>& data) {
     }
     data.push_back(opcode);
     vector<string>& p = m_opcodeToParams[opcode];
-    cout <<"AAAAAAA "<< to_string(p.size())<<line[0]<<"?" <<endl;
 
     int i=0;
     for (auto s:p) {
         if (s=="0") break;
-        cout << s<< ":";
+//        cout << s<< ":";
         vector<uint8_t> d;            
         i++;
         while (line[i]=="")
@@ -50,7 +26,7 @@ void Opcodes::ParseToBinary(vector<string>& line,vector<uint8_t>& data) {
             
         if (s=="ival" || s=="p")  {
             vector<string> v;
-  //          cout << line[i]<<endl;
+
             if (s=="p" && line[i].find(":",0)==std::string::npos) {
                 // Is a variable: Print out the full name
                 Util::append_string(Util::trim(line[i]),d);
@@ -64,8 +40,8 @@ void Opcodes::ParseToBinary(vector<string>& line,vector<uint8_t>& data) {
                     Error::RaiseError("ival type must be of format uint8:[number]");
     
                 auto a = v[0];
-//                a = a.replace('*','');
-                replace( a.begin(), a.end(), '*', ' ');
+
+  //              replace( a.begin(), a.end(), '*', ' ');
                 a=Util::trim(a); 
                 if (!m_asmToOpcode.contains(a))
                     Error::RaiseError("Unknown type: " +a);
@@ -79,7 +55,7 @@ void Opcodes::ParseToBinary(vector<string>& line,vector<uint8_t>& data) {
         }
   //      cout << s<< ", ";
     }
-    cout <<endl;
+//    cout <<endl;
 }
 string Opcodes::ParseFromBinary(vector<uint8_t>& data, int& pos) {
     string s = "";
@@ -95,7 +71,6 @@ string Opcodes::ParseFromBinary(vector<uint8_t>& data, int& pos) {
         if (m_opcodeToAsm.contains(v) && v>0xF0) {
             // We have a const type int64 etc
             pos+=1;
-     //       cout << "WHOO "<<m_opcodeToAsm[v]<<endl;
             s+=" " + m_opcodeToAsm[v]+":0x"+Util::ival2string(data,pos,m_opcodeToAsm[v]);
             pos+=Util::getIntLen(m_opcodeToAsm[v]);
         } 
@@ -109,7 +84,7 @@ string Opcodes::ParseFromBinary(vector<uint8_t>& data, int& pos) {
         }
      
     }
-    if (!s.find(".",0)==0)
+    if (s.find(".",0)!=0)
         s = "\t"+s;
     return s;
 }
