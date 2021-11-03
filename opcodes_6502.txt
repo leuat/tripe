@@ -9,6 +9,7 @@ uint64,0xFB,
 .tripe,0x01,ival
 .code,0x02,ival:p
 .uint8,0xF0,bytestream
+.uint16,0xF1,bytestream
 .end,0xF,0
 .data,0x3,ival
 

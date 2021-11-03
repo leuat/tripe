@@ -1,4 +1,5 @@
 #include "abstractcpu.h"
+#include "error.h"
 
 void AbstractCPU::Init(string opcodes) {
     auto d = Util::read_text_code_file(opcodes);
@@ -9,6 +10,9 @@ void AbstractCPU::Init(string opcodes) {
         int val;
         stringstream (v[1]) >>hex>>val;
         string str = Util::toLower(Util::trim(v[0]));
+        if (m_opcodeToAsm.contains(val)) 
+            Error::RaiseError("Error when reading the opcodes list: opcode $"+Util::toHex(val)+" is taken.");
+        
         m_asmToOpcode[str] = val;
         m_opcodeToAsm[val] = str;
         vector<string> params;
@@ -16,7 +20,6 @@ void AbstractCPU::Init(string opcodes) {
         for (auto& sp:params) {
             sp = Util::toLower(Util::trim(sp));
         }
-
         m_opcodeToParams[val] = params;
     }
 }
@@ -41,4 +44,13 @@ Param AbstractCPU::getNextParam(vector<uint8_t>& data, int& pos) {
         type = Param::VAR;
     }
     return Param(s,type);
+}
+
+bool AbstractCPU::isBinaryOpOpcode(int code) {
+    for (string s:m_similarBinops) {
+        if (m_asmToOpcode[s]==code)
+        return true;
+    }
+
+    return false;
 }

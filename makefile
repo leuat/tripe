@@ -2,13 +2,15 @@ TARGET = tripe
 
 CC = g++
 #CFLAGS =  -Os -s -Wfatal-errors  -fno-stack-protector  -fno-unwind-tables -fno-asynchronous-unwind-tables  -fno-math-errno  -fno-unroll-loops
-CFLAGS =  -std=c++20 -g -s# -Wfatal-errors  -fno-stack-protector  -fno-unwind-tables -fno-asynchronous-unwind-tables  -fno-math-errno  -fno-unroll-loops
+CFLAGS =  -std=c++20 -g -s -Qunused-arguments # -Wfatal-errors  -fno-stack-protector  -fno-unwind-tables -fno-asynchronous-unwind-tables  -fno-math-errno  -fno-unroll-loops
 
 OUTDIR = bin
 DATADIR = data
 SUBDIR = src
 DIR_OBJ = obj
 
+
+MAKEFLAGS+="-j 8"
 INCS = $(wildcard *.h $(foreach fd, $(SUBDIR), $(fd)/*.h))
 SRCS = $(wildcard *.cpp $(foreach fd, $(SUBDIR), $(fd)/*.cpp))
 NODIR_SRC = $(notdir $(SRCS))

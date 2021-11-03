@@ -23,7 +23,13 @@ public:
     Param(string s, int t) {
         str = s;
         type = t;
-        std::istringstream ( str ) >> ival;
+        std::istringstream ( str ) >> hex >>ival;
+    }
+    string lo() { 
+         return "$"+Util::toHex(ival&255);       
+    }
+    string hi() { 
+         return "$"+Util::toHex((ival>>8)&255);       
     }
 
     string prefix() {
@@ -60,12 +66,16 @@ public:
         s += t+":\t" + v+"\n";
     }
 
+    Param getNextParam(vector<uint8_t>& data, int& pos);
+    bool isBinaryOpOpcode(int code);
+
 
     map<string, uint8_t> m_asmToOpcode;
     map<uint8_t, string> m_opcodeToAsm;
     map<uint8_t, vector<string>> m_opcodeToParams;
     map<string,string> m_typeTripeToNative;
-    Param getNextParam(vector<uint8_t>& data, int& pos);
+    vector<string> m_similarBinops;
+
 };
 
 #endif

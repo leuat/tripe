@@ -8,13 +8,15 @@ uint64,0xFB,
 
 .tripe,0x01,ival
 .code,0x02,ival:p
-.uint8,0xF0,bytestream
-.end,0xF,0
+.uint8,0xF0,datastream
+.uint16,0xF1,datastream
+.end,0x0F,0
 .data,0x3,ival
 
 decl,0x4,p:ival
 declptr,0x5,p:ival
 
+.label,06,p
 
 return,0x10,0
 mov,0x11,p:p
@@ -22,3 +24,5 @@ store_p,0x12,p:p:p
 load_p,0x13,p:p:p 
 
 add,0x20,p:p:p
+
+jmp,0x30,p

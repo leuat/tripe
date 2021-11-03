@@ -106,26 +106,29 @@ string Util::ival2string(vector<uint8_t>& data, int pos, string type)
         val+=data[pos+1];        
    }
    if (len==4) {
-        val+=data[pos]<<24;        
-        val+=data[pos+1]<<16;        
-        val+=data[pos+2]<<8;        
+        val+=(data[pos])<<24;        
+        val+=(data[pos+1])<<16;        
+        val+=(data[pos+2])<<8;        
         val+=data[pos+3];        
    }
    if (len==8) {
-        val+=data[pos]<<56;        
-        val+=data[pos+1]<<48;        
-        val+=data[pos+2]<<40;        
-        val+=data[pos+3]<<32;        
+        val+=(uint64_t)(data[pos])<<56;        
+        val+=(uint64_t)(data[pos+1])<<48;        
+        val+=(uint64_t)(data[pos+2])<<40;        
+        val+=(uint64_t)(data[pos+3])<<32;        
         val+=data[pos+4]<<24;        
         val+=data[pos+5]<<16;        
         val+=data[pos+6]<<8;        
         val+=data[pos+7];        
    }
-    std::stringstream stream;
-    stream << std::hex << val;
-   return stream.str();
+   return toHex(val);
 }
 
+string Util::toHex(uint64_t val) {
+    std::stringstream stream;
+    stream << std::hex << val;
+    return stream.str();
+}
 
 void Util::append_string(string s, vector<uint8_t>& data) {
     int n= s.length();

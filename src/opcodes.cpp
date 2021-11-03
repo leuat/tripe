@@ -23,7 +23,35 @@ void Opcodes::ParseToBinary(vector<string>& line,vector<uint8_t>& data) {
         
         if (i>=line.size())
             Error::RaiseError("Incorrect number of parameters");
-            
+
+        if (s=="datastream") {
+//            cout  << line[0]<<"DATASTREAM!"<<line[i]<<endl;
+//            string type = line[0];
+  //          type.erase(type.begin(),type.begin()+1);
+            int cnt = 0;
+            vector<uint8_t> d;
+            while (i<line.size()) {
+                auto val = Util::trim(line[i]);
+                if (val!="") {
+                    int ival = 0;
+                    stringstream (val) >>hex>>ival;
+                    d.push_back(ival);
+                    cnt++;
+                }
+                i++;
+            }
+            if (cnt>=256)
+                Error::RaiseError("Error: cannot have more than 255 elements per line");
+
+            d.insert(d.begin() ,(uint8_t)cnt);
+
+            for (auto b:d) {
+                data.push_back(b);
+            }
+
+        }
+
+
         if (s=="ival" || s=="p")  {
             vector<string> v;
 
@@ -67,7 +95,16 @@ string Opcodes::ParseFromBinary(vector<uint8_t>& data, int& pos) {
     for (auto str:p) {
         if (str=="0") break;
         uint8_t v = data[pos];
-       // cout << "Current : "<<to_string((int)v)<<" " <<v<<" " <<s<<endl;
+   
+        if (str=="datastream") {
+            pos++;
+            int cnt = data[pos++];
+//            cout << "Recreate: "<<s <<to_string(cnt);
+            for (int i=0;i<cnt;i++) {
+                s+=m_hexprefix+Util::toHex(data[pos++]) + " ";
+            }          
+        }
+
         if (m_opcodeToAsm.contains(v) && v>0xF0) {
             // We have a const type int64 etc
             pos+=1;
