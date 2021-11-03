@@ -9,6 +9,8 @@ using namespace std;
 
 class Error {
 public:
+    static int s_lineNumber;
+    static string s_curLine;
     static void RaiseError(string s);
 };
 

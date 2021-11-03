@@ -17,7 +17,7 @@ Tripe::Tripe(int argc, char *argv[]) {
                 val = argv[i+1];
                 i++;
             }
-            m_args[arg1] = val;
+            m_args[Util::toLower(arg1)] = Util::toLower(val);
         }
     }
 }
@@ -35,14 +35,22 @@ void Tripe::Execute() {
     RequireParameter("arch","architecture required (-arch)");
     string inFile = m_args["i"];    
     string outFile = m_args["o"];    
-    string arch = m_args["arch"];
+    string arch = Util::toLower(m_args["arch"]);
     if (!std::filesystem::exists(inFile)) 
         Error::RaiseError("Could not find input file: "+inFile);
     if (!contains(m_supportedArchitectures,arch))
         Error::RaiseError("Architecture '"+arch+"' not supported. ");
+
+
     Parser p;
-    vector<uint8_t> data = p.Parse(inFile);
+
+    if (arch=="trasm2tripe") 
+        Util::save_binary(outFile, p.ParseText(inFile));
+    if (arch=="tripe2trasm") 
+        Util::save_text(outFile, p.ParseBinary(inFile));
+        
 
 
+    cout << "ok."<<endl;
 
 }

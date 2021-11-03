@@ -12,7 +12,7 @@ class Tripe {
 public:
 
     vector<string> m_requireNextParam = {"i","o","arch"};
-    vector<string> m_supportedArchitectures = {"mos6502"};
+    vector<string> m_supportedArchitectures = {"mos6502","tripe2trasm","trasm2tripe"};
 
     Tripe(int argc, char *argv[]);
 
