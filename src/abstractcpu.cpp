@@ -28,13 +28,12 @@ Param AbstractCPU::getNextParam(vector<uint8_t>& data, int& pos) {
     if (m_opcodeToAsm.contains(v) && v>0xF0) {
         // We have a const type int64 etc
         pos+=1;
-        s+=m_hexprefix + Util::ival2string(data,pos,m_opcodeToAsm[v]);
+        s+=Util::ival2string(data,pos,m_opcodeToAsm[v]);
         pos+=Util::getIntLen(m_opcodeToAsm[v]);
-        type = Param::CONST;
+        type = v;
     } 
     else // Some text 
     {   
-        s+=" ";
         while (data[pos]!=0) {
             s+=data[pos++];
         }

@@ -11,11 +11,7 @@ using namespace std;
 
 class CPU6502 : public AbstractCPU {
 public:
-    CPU6502() {
-        
-        Init("opcodes.txt");
-        m_hexprefix = "$";
-    }
+    CPU6502();
     string ParseFromBinary(vector<uint8_t>& m_data, int& pos) override;
 
 };
