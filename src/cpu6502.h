@@ -12,6 +12,7 @@ using namespace std;
 class CPU6502 : public AbstractCPU {
 public:
     CPU6502();
+    int m_curZp=10;
     string ParseFromBinary(vector<uint8_t>& m_data, int& pos) override;
 
 };

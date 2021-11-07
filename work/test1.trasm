@@ -10,21 +10,21 @@
 
 .code uint16:0x810 block1
 
-   mov  halla  uint8:10
-   add  c halla  b  
+   mov  uhm  uint8:10
+   add  c uhm  b  
 ;   mul c uint8:2 c
    mov zp uint16:0x0400
    store_p zp uint8:0 c
 
 .label labben1
-   jmp labben1
-   
+   jump labben1
+
    return
 
 ;.data
 
 .data uint16:0x00
-  decl halla uint8:5
+  decl uhm uint8:5
   decl b uint8:2
   decl c uint8:2
 

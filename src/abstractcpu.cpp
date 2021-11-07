@@ -2,11 +2,20 @@
 #include "error.h"
 
 void AbstractCPU::Init(string opcodes) {
-    auto d = Util::read_text_code_file(opcodes);
+//    auto d = Util::read_text_code_file(opcodes);
+    vector<string> d;
+//    auto d = Util::read_text_code_file("opcodes.txt");
+    d = Util::split(opcodes,'\n',d);
+//    cout << opcodes;
     for (auto s: d) {
         s = Util::trim(s);
         vector<string> v;
+        s = Util::ReplaceString(s," ","");
+//        s = Util::ReplaceString(s,"\n","");
         Util::split(s,',',v);
+        if (v.size()<=1)
+            continue;
+  //      cout << s<<endl;
         int val;
         stringstream (v[1]) >>hex>>val;
         string str = Util::toLower(Util::trim(v[0]));
@@ -48,6 +57,14 @@ Param AbstractCPU::getNextParam(vector<uint8_t>& data, int& pos) {
 
 bool AbstractCPU::isBinaryOpOpcode(int code) {
     for (string s:m_similarBinops) {
+        if (m_asmToOpcode[s]==code)
+        return true;
+    }
+
+    return false;
+}
+bool AbstractCPU::isBranchOpcode(int code) {
+    for (string s:m_branchOps) {
         if (m_asmToOpcode[s]==code)
         return true;
     }

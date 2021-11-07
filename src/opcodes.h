@@ -6,6 +6,7 @@
 #include <vector>
 #include <map>
 #include "abstractcpu.h"
+#include "data.h"
 using namespace std;
 
 class Opcodes : public AbstractCPU {
@@ -14,7 +15,7 @@ public:
     string ParseFromBinary(vector<uint8_t>& m_data, int& pos) override;
     
     Opcodes() {
-        Init("opcodes.txt");
+        Init(Data::s_opcodes);
     }
 
 

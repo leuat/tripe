@@ -6,7 +6,6 @@
 #include "error.h"
 
 vector<uint8_t> Parser::ParseText(string inFile) {
-
     m_data.clear();
     m_src = Util::read_text_code_file(inFile);
 
@@ -52,15 +51,23 @@ vector<string> Parser::ParseBinary(string inFile, string arch) {
 
 
 void Parser::ParseTextToBinary() {
+
     Opcodes op;
     m_data.push_back(m_id[0]);
     m_data.push_back(m_id[1]);
     m_data.push_back(m_id[2]);
     int ln=0;
     for (auto s : m_src) {
+        s = Util::ReplaceString(s, "$", "0x"); // replace all 'x' to 'y'
+        s = Util::ReplaceString(s, "\t", " "); // replace all 'x' to 'y'
+        s = Util::ReplaceString(s, "  ", " "); // replace all 'x' to 'y'
+        vector<string> str;
+        Util::split(s,';',str);
+        s = str[0];
         Error::s_curLine = s;
         Error::s_lineNumber = ln++;
         vector<string> v;
+//        cout << s << endl;
         Util::split(s,' ',v);
         op.ParseToBinary(v,m_data);
     }

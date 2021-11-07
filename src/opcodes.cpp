@@ -11,7 +11,6 @@ void Opcodes::ParseToBinary(vector<string>& line,vector<uint8_t>& data) {
     }
     data.push_back(opcode);
     vector<string>& p = m_opcodeToParams[opcode];
-
     int i=0;
     for (auto s:p) {
         if (s=="0") break;
@@ -55,7 +54,7 @@ void Opcodes::ParseToBinary(vector<string>& line,vector<uint8_t>& data) {
         if (s=="ival" || s=="p")  {
             vector<string> v;
 
-            if (s=="p" && line[i].find(":",0)==std::string::npos) {
+            if (s=="p" && line[i].find(":",0)==std::string::npos && line[i].find(":",0)) {
                 // Is a variable: Print out the full name
                 Util::append_string(Util::trim(line[i]),d);
             }
