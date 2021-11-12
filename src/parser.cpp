@@ -85,4 +85,5 @@ void Parser::ParseBinary(AbstractCPU* op) {
             m_src.insert(m_src.end()-1,"");
         }
     }
+    op->InsertTempValues(m_src);
 }

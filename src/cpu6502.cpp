@@ -17,12 +17,24 @@ CPU6502::CPU6502() {
     m_typeTripeToNative["bne"] = "bne";
     m_typeTripeToNative["beq"] = "beq";
 
+    m_typeTripeToNative["jump"] = "jmp";
+    m_typeTripeToNative["call"] = "jsr";
+
 
 
     m_similarBinops ={ "add","sub","or","and","xor"};
-    m_branchOps ={ "bne","beq","bgts","blts","bgs","bls","bgtu","bltu","bgu","blu"};
+    m_singleParamOpcodes ={ "bne","beq","bgts","blts","bgs","bls","bgtu","bltu","bgu","blu",
+        "call","jump"};
 
 }
+
+void CPU6502::InsertTempValues(vector<string>& lst) {
+    for (auto s: m_registersUsed) {
+        lst.push_back(s + " = $" + Util::toHex(m_tmpZp));
+        m_tmpZp+=2;
+    }        
+}
+
 
 string CPU6502::ParseFromBinary(vector<uint8_t>& data, int& pos) {
     string s = "";
@@ -51,16 +63,16 @@ string CPU6502::ParseFromBinary(vector<uint8_t>& data, int& pos) {
         auto name = getNextParam(data,pos);
         Label(s,name.str);
     }
+/*
     if (opcode==m_asmToOpcode[".processor"]){
         auto name = getNextParam(data,pos);
         Asm(s,"processor "+name.str);
     }
     if (opcode==m_asmToOpcode["jump"]){
         auto name = getNextParam(data,pos);
-//        cout << "JUMP to next " << name.str<<endl;
-
         Asm(s,"jmp "+name.str);
     }
+*/
     if (opcode==m_asmToOpcode["cmp"]){
         auto a = getNextParam(data,pos);
         auto b = getNextParam(data,pos);
@@ -86,7 +98,7 @@ string CPU6502::ParseFromBinary(vector<uint8_t>& data, int& pos) {
         }
 
     }
-   if (isBranchOpcode(opcode)) {
+   if (isSingleParamOpcode(opcode)) {
        auto lbl = getNextParam(data,pos);
         Asm(s,m_typeTripeToNative[m_opcodeToAsm[opcode]]+"\t"+lbl.str);       
  
@@ -137,6 +149,17 @@ string CPU6502::ParseFromBinary(vector<uint8_t>& data, int& pos) {
         Asm(s,"lda "+val.prefix());
         Asm(s,"sta ("+res.str+"),y");
     }
+    if (opcode==m_asmToOpcode["load_p"]) {
+        auto res = getNextParam(data,pos);
+        auto val = getNextParam(data,pos);
+        auto idx = getNextParam(data,pos);
+
+        Asm(s,"lda "+idx.prefix());
+        Asm(s,"tay");
+        Asm(s,"lda ("+val.str+"),y");
+        Asm(s,"sta "+res.prefix());
+    }
+
     if (opcode==m_asmToOpcode["return"]) 
         Asm(s,"rts");
     if (opcode==m_asmToOpcode["decl"]) { 

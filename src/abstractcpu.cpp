@@ -52,6 +52,15 @@ Param AbstractCPU::getNextParam(vector<uint8_t>& data, int& pos) {
         pos++;
         type = Param::VAR;
     }
+    if (s.starts_with("_r")) {
+        bool ok = true;
+        for (auto v: m_registersUsed)
+            if (s==v)
+                ok = false;
+        if (ok)
+            m_registersUsed.push_back(s);
+
+    }
     return Param(s,type);
 }
 
@@ -63,8 +72,8 @@ bool AbstractCPU::isBinaryOpOpcode(int code) {
 
     return false;
 }
-bool AbstractCPU::isBranchOpcode(int code) {
-    for (string s:m_branchOps) {
+bool AbstractCPU::isSingleParamOpcode(int code) {
+    for (string s:m_singleParamOpcodes) {
         if (m_asmToOpcode[s]==code)
         return true;
     }

@@ -49,6 +49,7 @@ public:
     AbstractCPU() {
     }
     void Init(string opcodes);
+    virtual void InsertTempValues(vector<string>& lst) {}
 
     virtual string ParseFromBinary(vector<uint8_t>& data, int& pos) = 0;
 
@@ -66,9 +67,11 @@ public:
         s += t+":\t" + v+"\n";
     }
 
+
     Param getNextParam(vector<uint8_t>& data, int& pos);
     bool isBinaryOpOpcode(int code);
     bool isBranchOpcode(int code);
+    bool isSingleParamOpcode(int code);
 
 
     map<string, uint8_t> m_asmToOpcode;
@@ -76,7 +79,8 @@ public:
     map<uint8_t, vector<string>> m_opcodeToParams;
     map<string,string> m_typeTripeToNative;
     vector<string> m_similarBinops;
-    vector<string> m_branchOps;
+    vector<string> m_singleParamOpcodes;
+    vector<string> m_registersUsed;
 
 };
 
