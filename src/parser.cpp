@@ -41,7 +41,11 @@ vector<string> Parser::ParseBinary(string inFile, string arch) {
     if (cpu == NULL)
         Error::RaiseError("ParseBinary error: unrecognized architecture "+arch);
 
-
+    // Pass 0
+    ParseBinary(cpu);
+    // pass 1
+    m_src.clear();
+    
     ParseBinary(cpu);
 
     return m_src;

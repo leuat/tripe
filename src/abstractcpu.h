@@ -26,10 +26,14 @@ public:
         std::istringstream ( str ) >> hex >>ival;
     }
     string lo() { 
-         return "$"+Util::toHex(ival&255);       
+        if (type==1)
+            return str;
+         return "#$"+Util::toHex(ival&255);       
     }
     string hi() { 
-         return "$"+Util::toHex((ival>>8)&255);       
+        if (type==1)
+            return str+"+1";
+         return "#$"+Util::toHex((ival>>8)&255);       
     }
 
     string prefix() {
@@ -47,6 +51,7 @@ public:
 
     int m_curPos = 0;
     AbstractCPU() {
+
     }
     void Init(string opcodes);
     virtual void InsertTempValues(vector<string>& lst) {}
@@ -81,6 +86,7 @@ public:
     vector<string> m_similarBinops;
     vector<string> m_singleParamOpcodes;
     vector<string> m_registersUsed;
+    map<string, string> m_symtab;
 
 };
 

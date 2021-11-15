@@ -2,8 +2,9 @@
 #include "error.h"
 #include "data.h"
 
-CPU6502::CPU6502() {
+CPU6502::CPU6502() : AbstractCPU() {
     Init(Data::s_opcodes);
+    m_symtab.clear();
     m_hexprefix = "$";
     m_typeTripeToNative["uint8"] = "dc.b";
     m_typeTripeToNative["uint16"] = "dc.w";
@@ -16,6 +17,8 @@ CPU6502::CPU6502() {
 
     m_typeTripeToNative["bne"] = "bne";
     m_typeTripeToNative["beq"] = "beq";
+    m_typeTripeToNative["bgtu"] = "bcc";
+    m_typeTripeToNative["bltu"] = "bcs";
 
     m_typeTripeToNative["jump"] = "jmp";
     m_typeTripeToNative["call"] = "jsr";
@@ -63,6 +66,7 @@ string CPU6502::ParseFromBinary(vector<uint8_t>& data, int& pos) {
         auto name = getNextParam(data,pos);
         Label(s,name.str);
     }
+
 /*
     if (opcode==m_asmToOpcode[".processor"]){
         auto name = getNextParam(data,pos);
@@ -107,9 +111,7 @@ string CPU6502::ParseFromBinary(vector<uint8_t>& data, int& pos) {
         auto res = getNextParam(data,pos);
         auto a = getNextParam(data,pos);
         auto b = getNextParam(data,pos);
-        if (res.type==m_asmToOpcode["uint16"]) {
-            Error::RaiseError("Add / sub doesn't work with 16 bit yet");
-        }
+//        cout <<res.type<<endl; 
         Asm(s,"lda "+a.prefix());
         string op = m_typeTripeToNative [m_opcodeToAsm[opcode] ];
         if (op=="adc") 
@@ -118,6 +120,16 @@ string CPU6502::ParseFromBinary(vector<uint8_t>& data, int& pos) {
             Asm(s,"sec");
         Asm(s,op+ " "+b.prefix());
         Asm(s,"sta "+res.prefix());
+        if (a.type==m_asmToOpcode["uint16"] || b.type==m_asmToOpcode["uint16"]) {
+  //          Error::RaiseError("Add / sub doesn't work with 16 bit yet");
+            Asm(s,"lda "+a.prefix()+"+1");
+            if (b.type==1)
+            Asm(s,op+ " "+b.prefix()+"+1");
+            else 
+                Asm(s,op+ " "+b.hi());
+            Asm(s,"sta "+res.prefix()+"+1");
+            
+        }
 
    }
     
@@ -125,15 +137,16 @@ string CPU6502::ParseFromBinary(vector<uint8_t>& data, int& pos) {
         auto res = getNextParam(data,pos);
         auto val = getNextParam(data,pos);
 
-        if (val.type==m_asmToOpcode["uint16"]) { 
-            Asm(s,"ldx #"+val.hi());
+        if (m_symtab.contains(res.str) && m_symtab[res.str]=="uint16") { 
+            Asm(s,"ldx "+val.hi());
             Asm(s,"stx "+res.str + "+1");
 
-            Asm(s,"lda #"+val.lo());
+            Asm(s,"lda "+val.lo());
             Asm(s,"sta "+res.str);
 
         } 
         else {
+
 
             Asm(s,"lda "+val.prefix());
             Asm(s,"sta "+res.str);
@@ -171,8 +184,9 @@ string CPU6502::ParseFromBinary(vector<uint8_t>& data, int& pos) {
         auto name = getNextParam(data,pos);
         auto value = getNextParam(data,pos);
         s = name.str + "\t=\t"+ to_string(m_curZp);
+        m_symtab[name.str] = "uint16";
         m_curZp+=2;
     }
-
+    
     return s;
 }

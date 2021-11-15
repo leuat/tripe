@@ -5,10 +5,14 @@ void AbstractCPU::Init(string opcodes) {
 //    auto d = Util::read_text_code_file(opcodes);
     vector<string> d;
 //    auto d = Util::read_text_code_file("opcodes.txt");
+//    cout << "F  "<< endl;
     d = Util::split(opcodes,'\n',d);
 //    cout << opcodes;
     for (auto s: d) {
+        
         s = Util::trim(s);
+        if (s=="")
+            continue;
         vector<string> v;
         s = Util::ReplaceString(s," ","");
 //        s = Util::ReplaceString(s,"\n","");
@@ -25,9 +29,11 @@ void AbstractCPU::Init(string opcodes) {
         m_asmToOpcode[str] = val;
         m_opcodeToAsm[val] = str;
         vector<string> params;
-        Util::split(v[2],':',params);
-        for (auto& sp:params) {
-            sp = Util::toLower(Util::trim(sp));
+        if (v.size()>=3) {
+            params = Util::split(v[2],':',params);
+            for (auto& sp:params) {
+                sp = Util::toLower(Util::trim(sp));
+            }
         }
         m_opcodeToParams[val] = params;
     }
