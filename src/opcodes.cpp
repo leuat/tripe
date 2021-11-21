@@ -11,6 +11,13 @@ void Opcodes::ParseToBinary(vector<string>& line,vector<uint8_t>& data) {
     }
     data.push_back(opcode);
     vector<string>& p = m_opcodeToParams[opcode];
+
+    if (line[0]==".asm") {
+        m_inRawAsm = true;
+        return;
+    }
+
+
     int i=0;
     for (auto s:p) {
         if (s=="0") break;
@@ -70,10 +77,12 @@ void Opcodes::ParseToBinary(vector<string>& line,vector<uint8_t>& data) {
 
   //              replace( a.begin(), a.end(), '*', ' ');
                 a=Util::trim(a); 
+                cout << a <<" " << v[0] <<" "<< v[1]<<endl;
                 if (!m_asmToOpcode.contains(a))
                     Error::RaiseError("Unknown type: " +a);
                 
                 d = Util::ival2int8(v[1],v[0]);
+                cout << "length : "<<d.size() << endl;
                 d.insert(d.begin() ,m_asmToOpcode[a]);
             }
             for (auto b:d) {
@@ -89,6 +98,18 @@ string Opcodes::ParseFromBinary(vector<uint8_t>& data, int& pos) {
     uint8_t opcode = data[pos];
     s = m_opcodeToAsm[opcode];
     pos+=1;
+
+    if (s==".asm") {
+        s+="\n";
+        while (data[pos]!=m_asmToOpcode[".endasm"]) {
+            s+=data[pos++];
+        }
+        s+="\n.endasm\n";
+        pos++;
+        return s;
+    }
+
+
     vector<string>& p = m_opcodeToParams[opcode];
   //  cout << "*** CUR "<<s << endl;
     for (auto str:p) {

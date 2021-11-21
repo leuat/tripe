@@ -3,6 +3,7 @@
 #include "util.h"
 #include "opcodes.h"
 #include "cpu6502.h"
+#include "cpu_amd64.h"
 #include "error.h"
 
 vector<uint8_t> Parser::ParseText(string inFile) {
@@ -37,6 +38,8 @@ vector<string> Parser::ParseBinary(string inFile, string arch) {
         cpu = new Opcodes();        
     if (arch=="mos6502")
         cpu = new CPU6502();        
+    if (arch=="amd64")
+        cpu = new CPUAMD64();        
 
     if (cpu == NULL)
         Error::RaiseError("ParseBinary error: unrecognized architecture "+arch);
@@ -62,6 +65,19 @@ void Parser::ParseTextToBinary() {
     m_data.push_back(m_id[2]);
     int ln=0;
     for (auto s : m_src) {
+        if (op.m_inRawAsm) {
+            if (s.find(".endasm")!=std::string::npos) {
+                m_data.push_back(op.m_asmToOpcode[".endasm"]);
+                op.m_inRawAsm = false;
+                continue;
+            }
+            for (auto c:s)
+                m_data.push_back(c);
+            m_data.push_back(10); // newline    
+            continue;
+        }
+
+
         s = Util::ReplaceString(s, "$", "0x"); // replace all 'x' to 'y'
         s = Util::ReplaceString(s, "\t", " "); // replace all 'x' to 'y'
         s = Util::ReplaceString(s, "  ", " "); // replace all 'x' to 'y'

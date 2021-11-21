@@ -6,6 +6,8 @@
 #include <string>
 #include "util.h"
 #include <sstream>
+#include "error.h"
+
 using namespace std;
 
 
@@ -58,7 +60,11 @@ public:
 
     virtual string ParseFromBinary(vector<uint8_t>& data, int& pos) = 0;
 
-    protected:
+    map<string, uint8_t> m_asmToOpcode;
+    map<uint8_t, string> m_opcodeToAsm;
+
+
+protected:
     string m_opcodeFile = "";
     string m_hexprefix = "0x";
 
@@ -78,15 +84,26 @@ public:
     bool isBranchOpcode(int code);
     bool isSingleParamOpcode(int code);
 
+    int m_currentRegister;
 
-    map<string, uint8_t> m_asmToOpcode;
-    map<uint8_t, string> m_opcodeToAsm;
     map<uint8_t, vector<string>> m_opcodeToParams;
     map<string,string> m_typeTripeToNative;
     vector<string> m_similarBinops;
     vector<string> m_singleParamOpcodes;
     vector<string> m_registersUsed;
+    vector<string> m_registers;
     map<string, string> m_symtab;
+
+
+    string pushReg() {
+        return m_registers[m_currentRegister++];
+    }
+    void popReg() {
+        m_currentRegister--;
+        if (m_currentRegister<0)
+            Error::RaiseError("Cannot pop register from 0");
+
+    }
 
 };
 

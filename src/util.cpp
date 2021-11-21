@@ -69,19 +69,19 @@ void Util::save_text(string file, vector<string> data) {
 
     vector<uint8_t> data;
     if (len==1) 
-    data.push_back(val&0xFF);
+        data.push_back(val&0xFF);
     if (len==2) {
         data.push_back((val>>8)&0xFF);
         data.push_back(val&0xFF);
     }
-    if (len==3) {
+    if (len==4) {
         data.push_back((val>>24)&0xFF);
         data.push_back((val>>16)&0xFF);
         data.push_back((val>>8)&0xFF);
         data.push_back(val&0xFF);
 
     }
-    if (len==4)  {
+    if (len==8)  {
         data.push_back((val>>56)&0xFF);
         data.push_back((val>>48)&0xFF);
         data.push_back((val>>40)&0xFF);

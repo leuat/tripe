@@ -13,7 +13,7 @@ class Opcodes : public AbstractCPU {
 public: 
     void ParseToBinary(vector<string>& line,vector<uint8_t>& m_data);
     string ParseFromBinary(vector<uint8_t>& m_data, int& pos) override;
-    
+    bool m_inRawAsm = false;
     Opcodes() {
         Init(Data::s_opcodes);
     }
