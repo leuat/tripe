@@ -61,6 +61,8 @@ public:
 
     virtual string ParseFromBinary(vector<uint8_t>& data, int& pos) = 0;
 
+    std::string ParseInlineAsm(vector<uint8_t>& data, int& pos);
+
     map<string, uint8_t> m_asmToOpcode;
     map<uint8_t, string> m_opcodeToAsm;
 

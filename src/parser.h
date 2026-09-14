@@ -21,7 +21,7 @@ private:
 
     void LoadBinary(string inFile);
 
-    vector<string> m_src;
+    vector<string> m_src, m_src_org;
     vector<uint8_t> m_data;
 };
 

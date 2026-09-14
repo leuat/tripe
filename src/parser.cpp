@@ -8,9 +8,16 @@
 
 vector<uint8_t> Parser::ParseText(string inFile) {
     m_data.clear();
-    m_src = Util::read_text_code_file(inFile);
+    m_src = Util::read_text_code_file(inFile,true);
+    m_src_org = Util::read_text_code_file(inFile,false);
 
+/*    for (auto s:m_src)
+        std::cout << s << endl;
+    for (auto s:m_src_org)
+        std::cout << s << endl;*/
     ParseTextToBinary();
+
+
 
     return m_data;
 
@@ -64,19 +71,23 @@ void Parser::ParseTextToBinary() {
     m_data.push_back(m_id[1]);
     m_data.push_back(m_id[2]);
     int ln=0;
+    int cnt = 0;
     for (auto s : m_src) {
         if (op.m_inRawAsm) {
+                std::cout << m_src_org[cnt] << endl;
             if (s.find(".endasm")!=std::string::npos) {
                 m_data.push_back(op.m_asmToOpcode[".endasm"]);
                 op.m_inRawAsm = false;
+                cnt++;
                 continue;
             }
-            for (auto c:s)
+            for (auto c:m_src_org[cnt])
                 m_data.push_back(c);
+
             m_data.push_back(10); // newline    
+            cnt++;
             continue;
         }
-
 
         s = Util::ReplaceString(s, "$", "0x"); // replace all 'x' to 'y'
         s = Util::ReplaceString(s, "\t", " "); // replace all 'x' to 'y'
@@ -90,6 +101,7 @@ void Parser::ParseTextToBinary() {
 //        cout << s << endl;
         Util::split(s,' ',v);
         op.ParseToBinary(v,m_data);
+        cnt++;
     }
 }
 

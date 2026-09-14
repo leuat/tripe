@@ -12,6 +12,7 @@ void Opcodes::ParseToBinary(vector<string>& line,vector<uint8_t>& data) {
     vector<string>& p = m_opcodeToParams[opcode];
     bool isMulU = opcode == m_asmToOpcode["mulu"];
 
+    data.push_back(opcode);
 
     if (line[0]==".asm") {
         m_inRawAsm = true;
@@ -19,7 +20,6 @@ void Opcodes::ParseToBinary(vector<string>& line,vector<uint8_t>& data) {
     }
 
 
-    data.push_back(opcode);
     int opCodePos = data.size()-1;
     int i=0;
     for (auto s:p) {
@@ -101,7 +101,7 @@ void Opcodes::ParseToBinary(vector<string>& line,vector<uint8_t>& data) {
                         std::cout << (int)data[opCodePos] << " " <<(int)opcode << std::endl;
                         d[0] = val;
                         data[opCodePos] = (uint8_t)m_asmToOpcode["shl"];
-                        std::cout << "REPLACE MUL WITH SHL " << (int)m_asmToOpcode["shl"] << "  a:" <<a<< std::endl;
+//                        std::cout << "REPLACE MUL WITH SHL " << (int)m_asmToOpcode["shl"] << "  a:" <<a<< std::endl;
 
                     }
                 }
@@ -122,7 +122,9 @@ string Opcodes::ParseFromBinary(vector<uint8_t>& data, int& pos) {
     uint8_t opcode = data[pos];
     s = m_opcodeToAsm[opcode];
     pos+=1;
-
+    cout << " CRASH" << endl;
+    exit(1);
+    std::cout << "ORG opcode : " << s <<  " " << (int)opcode <<std::endl;
     if (s==".asm") {
         s+="\n";
         while (data[pos]!=m_asmToOpcode[".endasm"]) {
@@ -130,6 +132,7 @@ string Opcodes::ParseFromBinary(vector<uint8_t>& data, int& pos) {
         }
         s+="\n.endasm\n";
         pos++;
+        std::cout << "Found ASM : "<<s << std::endl;
         return s;
     }
 

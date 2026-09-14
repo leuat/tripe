@@ -27,7 +27,7 @@ public:
     static string trim(const std::string &s);
     static std::vector<std::string> &split(const std::string &s, char delim, std::vector<std::string> &elems);
 
-    static vector<string> read_text_code_file(string f);
+    static vector<string> read_text_code_file(string f, bool trim);
     static string load_text_file(string f);
 
     static string toLower(string str) {

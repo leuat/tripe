@@ -47,9 +47,14 @@ string CPU6502::ParseFromBinary(vector<uint8_t>& data, int& pos) {
         std::cout << "error : illegal opcode 0" << std::endl;
         exit(1);
     }
-    pos++;
+
     int type=0;
 //    cout << "HERE "<<m_opcodeToAsm[opcode]<<" " <<Util::toHex(opcode)<<endl; 
+    auto as = ParseInlineAsm(data,pos);
+    if (as!="") {
+        return as;
+    }
+    pos++;
 
     if (opcode==m_asmToOpcode[".uint8"] || opcode==m_asmToOpcode[".uint16"]) {
         string stype = m_opcodeToAsm[opcode];
@@ -123,9 +128,9 @@ string CPU6502::ParseFromBinary(vector<uint8_t>& data, int& pos) {
         string op = m_typeTripeToNative [m_opcodeToAsm[opcode] ];
         Asm(s,"lda "+a.prefix());
 
-        std::cout << " tst " << (int)opcode  <<  " " <<op<< " "  <<m_opcodeToAsm[opcode] << " " << (int)a.ival << " " << b.prefix() <<std::endl;
+//        std::cout << " tst " << (int)opcode  <<  " " <<op<< " "  <<m_opcodeToAsm[opcode] << " " << (int)a.ival << " " << b.prefix() <<std::endl;
         if (op=="asl") {
-            std::cout << "shlll  " << b.ival<<std::endl;
+  //          std::cout << "shlll  " << b.ival<<std::endl;
             for (int i=0;i<b.ival;i++)
                 Asm(s,"asl");
             Asm(s,"sta "+res.prefix());
@@ -174,6 +179,7 @@ string CPU6502::ParseFromBinary(vector<uint8_t>& data, int& pos) {
         }
     }
     if (opcode==m_asmToOpcode["store_p"]) {
+        // store_p ptr idx val
         auto res = getNextParam(data,pos);
         auto idx = getNextParam(data,pos);
         auto val = getNextParam(data,pos);
@@ -184,14 +190,15 @@ string CPU6502::ParseFromBinary(vector<uint8_t>& data, int& pos) {
         Asm(s,"sta ("+res.str+"),y");
     }
     if (opcode==m_asmToOpcode["load_p"]) {
+        // load_p ptr idx val
         auto res = getNextParam(data,pos);
-        auto val = getNextParam(data,pos);
         auto idx = getNextParam(data,pos);
+        auto val = getNextParam(data,pos);
 
         Asm(s,"lda "+idx.prefix());
         Asm(s,"tay");
-        Asm(s,"lda ("+val.str+"),y");
-        Asm(s,"sta "+res.prefix());
+        Asm(s,"lda ("+res.str+"),y");
+        Asm(s,"sta "+val.prefix());
     }
 
     if (opcode==m_asmToOpcode["return"]) 

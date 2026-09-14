@@ -20,14 +20,16 @@ std::vector<std::string> &Util::split(const std::string &s, char delim, std::vec
     return elems;
 }
 
-vector<string> Util::read_text_code_file(string f) {
+vector<string> Util::read_text_code_file(string f,bool trim) {
     vector<string> m_src;
     ifstream inp(f); 
-    string s;
-    while (getline(inp, s)) {
-        s = Util::trim(s);
+    string s,o;
+    while (getline(inp, o)) {
+        s = Util::trim(o);
+        if (trim)
+            o = s;
         if (s!="" && (s.find(";", 0)!=0) && (s.find("#", 0) != 0)) 
-            m_src.push_back(s);
+            m_src.push_back(o);
     } 
 
     return m_src;
