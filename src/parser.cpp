@@ -3,7 +3,7 @@
 #include "util.h"
 #include "opcodes.h"
 #include "cpu6502.h"
-#include "cpu_amd64.h"
+//#include "cpu_amd64.h"
 #include "error.h"
 
 vector<uint8_t> Parser::ParseText(string inFile) {
@@ -38,8 +38,8 @@ vector<string> Parser::ParseBinary(string inFile, string arch) {
         cpu = new Opcodes();        
     if (arch=="mos6502")
         cpu = new CPU6502();        
-    if (arch=="amd64")
-        cpu = new CPUAMD64();        
+    //    if (arch=="amd64")
+    //    cpu = new CPUAMD64();        
 
     if (cpu == NULL)
         Error::RaiseError("ParseBinary error: unrecognized architecture "+arch);

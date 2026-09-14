@@ -7,6 +7,7 @@
 #include "util.h"
 #include <sstream>
 #include "error.h"
+#include <cstdint>
 
 using namespace std;
 

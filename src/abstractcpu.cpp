@@ -4,9 +4,9 @@
 void AbstractCPU::Init(string opcodes) {
 //    auto d = Util::read_text_code_file(opcodes);
     vector<string> d;
-//    auto d = Util::read_text_code_file("opcodes.txt");
+    auto oc = Util::load_text_file("/home/leuat/code/tripe/opcodes.txt");
 //    cout << "F  "<< endl;
-    d = Util::split(opcodes,'\n',d);
+    d = Util::split(oc,'\n',d);
 //    cout << opcodes;
     for (auto s: d) {
         

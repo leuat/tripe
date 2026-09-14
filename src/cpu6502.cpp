@@ -1,6 +1,7 @@
 #include "cpu6502.h"
 #include "error.h"
 #include "data.h"
+#include <algorithm>
 
 CPU6502::CPU6502() : AbstractCPU() {
     Init(Data::s_opcodes);
@@ -19,13 +20,13 @@ CPU6502::CPU6502() : AbstractCPU() {
     m_typeTripeToNative["beq"] = "beq";
     m_typeTripeToNative["bgtu"] = "bcc";
     m_typeTripeToNative["bltu"] = "bcs";
+    m_typeTripeToNative["shr"] = "shr";
+    m_typeTripeToNative["shl"] = "asl";
 
     m_typeTripeToNative["jump"] = "jmp";
     m_typeTripeToNative["call"] = "jsr";
 
-
-
-    m_similarBinops ={ "add","sub","or","and","xor"};
+    m_similarBinops ={ "add","sub","or","and","xor", "mulu", "shl", "shr" };
     m_singleParamOpcodes ={ "bne","beq","bgts","blts","bgs","bls","bgtu","bltu","bgu","blu",
         "call","jump"};
 
@@ -42,6 +43,10 @@ void CPU6502::InsertTempValues(vector<string>& lst) {
 string CPU6502::ParseFromBinary(vector<uint8_t>& data, int& pos) {
     string s = "";
     uint8_t opcode = data[pos];
+    if (opcode==0) {
+        std::cout << "error : illegal opcode 0" << std::endl;
+        exit(1);
+    }
     pos++;
     int type=0;
 //    cout << "HERE "<<m_opcodeToAsm[opcode]<<" " <<Util::toHex(opcode)<<endl; 
@@ -111,13 +116,28 @@ string CPU6502::ParseFromBinary(vector<uint8_t>& data, int& pos) {
         auto res = getNextParam(data,pos);
         auto a = getNextParam(data,pos);
         auto b = getNextParam(data,pos);
+
+
+
 //        cout <<res.type<<endl; 
-        Asm(s,"lda "+a.prefix());
         string op = m_typeTripeToNative [m_opcodeToAsm[opcode] ];
+        Asm(s,"lda "+a.prefix());
+
+        std::cout << " tst " << (int)opcode  <<  " " <<op<< " "  <<m_opcodeToAsm[opcode] << " " << (int)a.ival << " " << b.prefix() <<std::endl;
+        if (op=="asl") {
+            std::cout << "shlll  " << b.ival<<std::endl;
+            for (int i=0;i<b.ival;i++)
+                Asm(s,"asl");
+            Asm(s,"sta "+res.prefix());
+            return s; 
+        } 
+
+
         if (op=="adc") 
             Asm(s,"clc");
         if (op=="sbc") 
             Asm(s,"sec");
+
         Asm(s,op+ " "+b.prefix());
         Asm(s,"sta "+res.prefix());
         if (a.type==m_asmToOpcode["uint16"] || b.type==m_asmToOpcode["uint16"]) {
@@ -130,6 +150,7 @@ string CPU6502::ParseFromBinary(vector<uint8_t>& data, int& pos) {
             Asm(s,"sta "+res.prefix()+"+1");
             
         }
+
 
    }
     

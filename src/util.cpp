@@ -32,6 +32,18 @@ vector<string> Util::read_text_code_file(string f) {
 
     return m_src;
 } 
+
+string Util::load_text_file(string f) {
+    vector<string> m_src;
+    ifstream inp(f); 
+    string s;
+    string ret;
+    while (getline(inp, s)) {
+        ret +=s + "\n";
+    } 
+
+    return ret;
+} 
 int Util::getIntLen(string type) {
     int len =1;
     if (type=="uint64") len=8;

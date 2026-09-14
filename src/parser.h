@@ -4,6 +4,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <cstdint>
 #include "abstractcpu.h"
 
 using namespace std;

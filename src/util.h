@@ -3,6 +3,11 @@
 
 #include <string>
 #include <fstream>
+#include <cstdint>
+#include <algorithm>
+#include <vector>
+#include <iostream>
+#include <cstring>
 using namespace std;
 
 template <typename T>
@@ -23,6 +28,7 @@ public:
     static std::vector<std::string> &split(const std::string &s, char delim, std::vector<std::string> &elems);
 
     static vector<string> read_text_code_file(string f);
+    static string load_text_file(string f);
 
     static string toLower(string str) {
         transform(str.begin(), str.end(),str.begin(), ::tolower);

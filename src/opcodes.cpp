@@ -9,8 +9,9 @@ void Opcodes::ParseToBinary(vector<string>& line,vector<uint8_t>& data) {
     if (opcode==0) {
         Error::RaiseError("Incorrect opcode on line : "+line[0]);
     }
-    data.push_back(opcode);
     vector<string>& p = m_opcodeToParams[opcode];
+    bool isMulU = opcode == m_asmToOpcode["mulu"];
+
 
     if (line[0]==".asm") {
         m_inRawAsm = true;
@@ -18,6 +19,8 @@ void Opcodes::ParseToBinary(vector<string>& line,vector<uint8_t>& data) {
     }
 
 
+    data.push_back(opcode);
+    int opCodePos = data.size()-1;
     int i=0;
     for (auto s:p) {
         if (s=="0") break;
@@ -54,7 +57,6 @@ void Opcodes::ParseToBinary(vector<string>& line,vector<uint8_t>& data) {
             for (auto b:d) {
                 data.push_back(b);
             }
-
         }
 
 
@@ -82,7 +84,29 @@ void Opcodes::ParseToBinary(vector<string>& line,vector<uint8_t>& data) {
                     Error::RaiseError("Unknown type: " +a);
                 
                 d = Util::ival2int8(v[1],v[0]);
-                cout << "length : "<<d.size() << endl;
+
+                // replace mulu power of 2 with shl
+                if (isMulU) {
+                    int i = d[0];
+                    int val = -1;
+                    if (i==1) val = 0;
+                    if (i==2) val = 1;
+                    if (i==3) val = 2;
+                    if (i==4) val = 3;
+                    if (i==5) val = 4;
+                    if (i==6) val = 5;
+                    if (i==7) val = 6;
+                    if (i==8) val = 7;
+                    if (val!=-1) {
+                        std::cout << (int)data[opCodePos] << " " <<(int)opcode << std::endl;
+                        d[0] = val;
+                        data[opCodePos] = (uint8_t)m_asmToOpcode["shl"];
+                        std::cout << "REPLACE MUL WITH SHL " << (int)m_asmToOpcode["shl"] << "  a:" <<a<< std::endl;
+
+                    }
+                }
+                //cout << "length : "<<a << "   " <<d.size() << " " <<std::to_string(d[0]) << " " <<d[1]<< endl;
+                
                 d.insert(d.begin() ,m_asmToOpcode[a]);
             }
             for (auto b:d) {
