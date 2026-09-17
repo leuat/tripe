@@ -34,25 +34,33 @@ void Opcodes::ParseToBinary(vector<string>& line,vector<uint8_t>& data) {
             Error::RaiseError("Incorrect number of parameters");
 
         if (s=="datastream") {
-//            cout  << line[0]<<"DATASTREAM!"<<line[i]<<endl;
-//            string type = line[0];
+//            cout  << endl<<line[0]<<" DATASTREAM !"<<line[i]<< " :" <<endl;
+            string type = line[0];
   //          type.erase(type.begin(),type.begin()+1);
-            int cnt = 0;
+            uint16_t cnt = 0;
             vector<uint8_t> d;
+            bool is16bit = (type == ".uint16");
+  //          if (is16bit)
+    //            cout << "HOORAH 16 bit **** "<<endl;
             while (i<line.size()) {
                 auto val = Util::trim(line[i]);
+//                cout << val << " ";
                 if (val!="") {
                     int ival = 0;
                     stringstream (val) >>hex>>ival;
-                    d.push_back(ival);
+                    d.push_back(ival&0xFF);
+                    if (is16bit) 
+                        d.push_back((ival>>8)&0xFF);
                     cnt++;
                 }
                 i++;
             }
+//            cout <<"Number of elements : "<< cnt<<endl;;
             if (cnt>=256)
                 Error::RaiseError("Error: cannot have more than 255 elements per line");
 
-            d.insert(d.begin() ,(uint8_t)cnt);
+            d.insert(d.begin() ,(uint16_t)(cnt>>8)&0xff);
+            d.insert(d.begin() ,(uint16_t)(cnt&0xff));
 
             for (auto b:d) {
                 data.push_back(b);
@@ -79,7 +87,7 @@ void Opcodes::ParseToBinary(vector<string>& line,vector<uint8_t>& data) {
 
   //              replace( a.begin(), a.end(), '*', ' ');
                 a=Util::trim(a); 
-                cout << a <<" " << v[0] <<" "<< v[1]<<endl;
+//                cout << a <<" " << v[0] <<" "<< v[1]<<endl;
                 if (!m_asmToOpcode.contains(a))
                     Error::RaiseError("Unknown type: " +a);
                 
@@ -118,6 +126,7 @@ void Opcodes::ParseToBinary(vector<string>& line,vector<uint8_t>& data) {
 //    cout <<endl;
 }
 string Opcodes::ParseFromBinary(vector<uint8_t>& data, int& pos) {
+    cout <<" A AARGH * "<<endl;
     string s = "";
     uint8_t opcode = data[pos];
     s = m_opcodeToAsm[opcode];
@@ -145,12 +154,14 @@ string Opcodes::ParseFromBinary(vector<uint8_t>& data, int& pos) {
    
         if (str=="datastream") {
             pos++;
-            int cnt = data[pos++];
+            int cnt = (data[pos]) | (data[pos+1]<<8);
+            pos+=2;
 //            cout << "Recreate: "<<s <<to_string(cnt);
             for (int i=0;i<cnt;i++) {
                 s+=m_hexprefix+Util::toHex(data[pos++]) + " ";
             }          
         }
+        std::cout << s << endl;
 
         if (m_opcodeToAsm.contains(v) && v>0xF0) {
             // We have a const type int64 etc

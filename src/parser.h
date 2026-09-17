@@ -13,6 +13,7 @@ class Parser {
 public:
     const char* m_id = "TRP";    
     vector<uint8_t> ParseText(string inFile); 
+    vector<string> TripeOptimise(string inFile); 
     vector<string> ParseBinary(string inFile, string arch); 
 private:
     

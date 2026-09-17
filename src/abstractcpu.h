@@ -46,12 +46,21 @@ public:
         return "#$"+str;
     }
 
+    bool isRef() {
+        return str.starts_with("#");
+    }
+
+    string clean() {
+        string s = str;
+        return s.erase(0,1);
+    }
+
 };
 
 
 class AbstractCPU {
-public:
-
+public: 
+    bool m_initialized = false;
     int m_curPos = 0;
     AbstractCPU() {
 
@@ -86,6 +95,8 @@ protected:
     bool isBinaryOpOpcode(int code);
     bool isBranchOpcode(int code);
     bool isSingleParamOpcode(int code);
+
+    bool is16bit(string val);
 
     int m_currentRegister;
 

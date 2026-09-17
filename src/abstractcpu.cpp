@@ -1,7 +1,14 @@
 #include "abstractcpu.h"
 #include "error.h"
 
+bool AbstractCPU::is16bit(string val) {
+    return (m_symtab[val]=="uint16" || m_symtab[val]=="ptr");
+}
+
+
 void AbstractCPU::Init(string opcodes) {
+    if (m_initialized)
+        return;    
 //    auto d = Util::read_text_code_file(opcodes);
     vector<string> d;
     auto oc = Util::load_text_file("/home/leuat/code/tripe/opcodes.txt");
@@ -37,6 +44,7 @@ void AbstractCPU::Init(string opcodes) {
         }
         m_opcodeToParams[val] = params;
     }
+    m_initialized = true;
 }
 
 Param AbstractCPU::getNextParam(vector<uint8_t>& data, int& pos) {

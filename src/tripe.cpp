@@ -47,7 +47,10 @@ void Tripe::Execute() {
     if (arch=="trasm2tripe") {
         Util::save_binary(outFile, p.ParseText(inFile));
     }
-    else
+    else if (arch=="tropt")
+        Util::save_text(outFile, p.TripeOptimise(inFile));
+
+    else 
         Util::save_text(outFile, p.ParseBinary(inFile,arch));
         
 

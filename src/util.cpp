@@ -3,6 +3,8 @@
 #include <vector>
 #include <string>
 #include <iostream>
+#include <algorithm>
+
 string Util::trim(const std::string &s)
 {
     auto wsfront=std::find_if_not(s.begin(),s.end(),[](int c){return std::isspace(c);});

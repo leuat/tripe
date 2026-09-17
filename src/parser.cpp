@@ -3,6 +3,7 @@
 #include "util.h"
 #include "opcodes.h"
 #include "cpu6502.h"
+#include "tropt.h"
 //#include "cpu_amd64.h"
 #include "error.h"
 
@@ -11,15 +12,25 @@ vector<uint8_t> Parser::ParseText(string inFile) {
     m_src = Util::read_text_code_file(inFile,true);
     m_src_org = Util::read_text_code_file(inFile,false);
 
-/*    for (auto s:m_src)
-        std::cout << s << endl;
-    for (auto s:m_src_org)
-        std::cout << s << endl;*/
     ParseTextToBinary();
 
 
 
     return m_data;
+
+}
+
+
+vector<string> Parser::TripeOptimise(string inFile) {
+    m_data.clear();
+    m_src = Util::read_text_code_file(inFile,false);
+    Tropt t;
+    for (int i=0;i<3;i++) 
+        m_src = t.optimise(m_src);
+
+    std::cout << "Optimized "<<t.m_noLines<<" lines" << endl;
+
+    return m_src;
 
 }
 
@@ -74,7 +85,7 @@ void Parser::ParseTextToBinary() {
     int cnt = 0;
     for (auto s : m_src) {
         if (op.m_inRawAsm) {
-                std::cout << m_src_org[cnt] << endl;
+//                std::cout << m_src_org[cnt] << endl;
             if (s.find(".endasm")!=std::string::npos) {
                 m_data.push_back(op.m_asmToOpcode[".endasm"]);
                 op.m_inRawAsm = false;
