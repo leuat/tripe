@@ -18,6 +18,7 @@ public:
 	void bops();
 	void mov1();
 	void load1();
+	void load2();
 
 	int m_noLines = 0;
 };

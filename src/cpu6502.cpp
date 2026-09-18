@@ -66,7 +66,7 @@ string CPU6502::ParseFromBinary(vector<uint8_t>& data, int& pos) {
         s="\t"+m_typeTripeToNative[stype] +"\t";
         int cnt = (uint8_t)data[pos] | (((uint8_t)data[pos+1])<<8);
         pos+=2;
-        cout << "COUNT "<<to_string(cnt)<< endl;
+//        cout << "COUNT "<<to_string(cnt)<< endl;
         for (int i=0;i<cnt;i++) {
             int val =  data[pos];
             if (opcode==m_asmToOpcode[".uint16"]) {
@@ -236,7 +236,7 @@ string CPU6502::ParseFromBinary(vector<uint8_t>& data, int& pos) {
             Asm(s,"sta "+val.prefix());
         }
         if (opcode==m_asmToOpcode["load"]) {
-            std::cout << " SYM " <<val.str << " "<< val.prefix()<< " " <<m_symtab[val.str] << endl;
+ //           std::cout << " SYM " <<val.str << " "<< val.prefix()<< " " <<m_symtab[val.str] << endl;
             if (m_symtab[val.str]=="uint16") {
                 Asm(s,"lda "+idx.prefix());
                 Asm(s,"tax");
@@ -267,7 +267,7 @@ string CPU6502::ParseFromBinary(vector<uint8_t>& data, int& pos) {
 
         }
         else     
-            Label(s,name.str,m_typeTripeToNative[  m_opcodeToAsm[value.type]  ]  + "\t"+ value.str);
+            Label(s,name.str,m_typeTripeToNative[  m_opcodeToAsm[value.type]  ]  + "\t"+ "$"+value.str);
         m_symtab[name.str] = m_opcodeToAsm[value.type];
     }
 /*    if (opcode==m_asmToOpcode["declptr"]) { 

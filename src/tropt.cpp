@@ -17,6 +17,7 @@ void Tropt::bops() {
 		auto l1 = getLine(i+1);
 		auto cur = m_cur[i];
 		if (find(bp.begin(), bp.end(), l0[0]) != bp.end()) {
+			if (l0.size()==4 && l1.size()==3)
 			if (l1.size()>=2 && l0.size()>=1 && l1[0]=="mov")
 //				cout << "Potential: " <<m_cur[i] << endl; 
 				if (l0[1]==l1[2] && l0[1].starts_with("t_")) {
@@ -55,6 +56,7 @@ void Tropt::mov1() {
 		auto l0 = getLine(i);
 		auto l1 = getLine(i+1);
 		auto cur = m_cur[i];
+		if (l0.size()==3 && l1.size()==3)
 		if (l0[0]=="mov" && l1[0]=="mov") {
 			if (l0[1]==l1[2] && l0[1].starts_with("t_")) {
 					// Perform replace
@@ -84,6 +86,7 @@ void Tropt::load1() {
 		auto l0 = getLine(i);
 		auto l1 = getLine(i+1);
 		auto cur = m_cur[i];
+		if (l0.size()==4 && l1.size()==3)
 		if ((l0[0]=="load_p" || l0[0]=="load") && l1[0]=="mov") {
 			if (l0[3]==l1[2] && l0[3].starts_with("t_")) {
 					// Perform replace
@@ -101,6 +104,35 @@ void Tropt::load1() {
 
 }
 
+// Typical index loading
+void Tropt::load2() {
+
+	vector<string> n;
+//	mov	t_uint8_idx2	uint8:0x00
+//	load_p Screen_p1 t_uint8_idx2 t_uint8_ret1
+
+	for (int i=0;i<m_cur.size();i++) {
+		auto l0 = getLine(i);
+		auto l1 = getLine(i+1);
+		auto cur = m_cur[i];
+		if (l0.size()==3 && l1.size()==4)
+		if ((l1[0]=="load_p" || l1[0]=="load") && l0[0]=="mov") {
+			if (l0[1]==l1[2] && l0[1].starts_with("t_")) {
+
+					// Perform replace
+					cur = t + l1[0] + t +l1[1] + t + l0[2] + t + l1[3];
+//					cout << "replace with : " << cur << endl <<endl;
+					m_noLines++;
+					i+=1;
+
+				}		
+		}
+		n.push_back(cur);
+	}
+
+	m_cur = n;
+
+}
 
 vector<string> Tropt::optimise(vector<string> input) {
 	m_cpu.Init("");
@@ -111,6 +143,7 @@ vector<string> Tropt::optimise(vector<string> input) {
 	bops();
 	mov1();
 	load1();
+	load2();
 
 //	for (auto s : m_cur)
 //		std::cout << s << endl;

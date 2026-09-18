@@ -25,7 +25,7 @@ vector<string> Parser::TripeOptimise(string inFile) {
     m_data.clear();
     m_src = Util::read_text_code_file(inFile,false);
     Tropt t;
-    for (int i=0;i<3;i++) 
+    for (int i=0;i<4;i++) 
         m_src = t.optimise(m_src);
 
     std::cout << "Optimized "<<t.m_noLines<<" lines" << endl;

@@ -29,13 +29,21 @@ public:
         std::istringstream ( str ) >> hex >>ival;
     }
     string lo() { 
-        if (type==1)
-            return str;
+        if (type==1) {
+            if (isRef())
+                return "#<"+clean();
+            else
+                return str;
+        }
          return "#$"+Util::toHex(ival&255);       
     }
     string hi() { 
-        if (type==1)
-            return str+"+1";
+        if (type==1) {
+            if (isRef())
+                return "#>"+clean();
+            else
+                return str+"+1";
+        }
          return "#$"+Util::toHex((ival>>8)&255);       
     }
 
