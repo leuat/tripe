@@ -20,7 +20,7 @@ CPU6502::CPU6502() : AbstractCPU() {
     m_typeTripeToNative["beq"] = "beq";
     m_typeTripeToNative["bgtu"] = "bcc";
     m_typeTripeToNative["bltu"] = "bcs";
-    m_typeTripeToNative["shr"] = "shr";
+    m_typeTripeToNative["shr"] = "lsr";
     m_typeTripeToNative["shl"] = "asl";
 
     m_typeTripeToNative["jump"] = "jmp";
@@ -103,6 +103,10 @@ string CPU6502::ParseFromBinary(vector<uint8_t>& data, int& pos) {
         Asm(s,"lda "+a.str);
         Asm(s,"cmp "+b.prefix());
     }
+    if (opcode==m_asmToOpcode[".incbin"]) {
+        auto p1 = getNextParam(data,pos);
+        Asm(s,"incbin "+p1.prefix());
+    }
 
 
     if (opcode==m_asmToOpcode[".code"] || opcode==m_asmToOpcode[".data"]) {
@@ -141,6 +145,13 @@ string CPU6502::ParseFromBinary(vector<uint8_t>& data, int& pos) {
   //          std::cout << "shlll  " << b.ival<<std::endl;
             for (int i=0;i<b.ival;i++)
                 Asm(s,"asl");
+            Asm(s,"sta "+res.prefix());
+            return s; 
+        } 
+        if (op=="lsr") {
+  //          std::cout << "shlll  " << b.ival<<std::endl;
+            for (int i=0;i<b.ival;i++)
+                Asm(s,"lsr");
             Asm(s,"sta "+res.prefix());
             return s; 
         } 
@@ -185,21 +196,11 @@ string CPU6502::ParseFromBinary(vector<uint8_t>& data, int& pos) {
 //            cout << "16 bit load: address? " << (int)val.type <<" :" <<val.prefix() << endl;
   //          cout << m_symtab[val.prefix()] <<endl;
 
-            if (!val.isRef()) {
-                Asm(s,"ldx "+val.hi());
-                Asm(s,"stx "+res.str + "+1");
+            Asm(s,"ldx "+val.hi());
+            Asm(s,"stx "+res.str + "+1");
 
-                Asm(s,"lda "+val.lo());
-                Asm(s,"sta "+res.str);
-            }
-            else {
-                Asm(s,"ldx #>"+val.clean());
-                Asm(s,"stx "+res.str + "+1");
-
-                Asm(s,"lda #<"+val.clean());
-                Asm(s,"sta "+res.str);
-
-            }
+            Asm(s,"lda "+val.lo());
+            Asm(s,"sta "+res.str);
 
         } 
         else {

@@ -14,7 +14,7 @@ var
 	// you can split strings into several substrings	
 	
   	text : string = ("HELLO  WORLD");
-	cheap_scroller : string = "YES THIS IS A VERY STRING AND IT WILL NOT LOOK PARTICULARLY NICE WHEN IT REACHES ITS END BECAUSE THERE IS NO TEST WHETHER THE STRING SHOULD WRAP OR NOT";
+	cheap_scroller : cstring = "YES THIS IS A VERY STRING AND IT WILL NOT LOOK PARTICULARLY NICE WHEN IT REACHES ITS END BECAUSE THERE IS NO TEST WHETHER THE STRING SHOULD WRAP OR NOT";
 	i, j:byte;
 	k:byte = 4;
 	p,t,sp : ^byte;
@@ -38,7 +38,7 @@ begin
 		
 	Screen::PrintString(#text, 1,16*2,#Screen::Screen0);
 
-	time := time+220;
+	time := time+255;
 	screen_bg_col:=black;
 	// Fill the screen (at screen0 = $400) with  40*25 bytes of character $20 - "space"
 	Screen::Clear(#Screen::screen0, key_space);
@@ -63,11 +63,13 @@ begin
 		// Point ptr to line 22 on the screen
 		p := #Screen::screen0 + (screen_width*22);	
 		// Copy the data from the cstring to the screen
-		asm(";fail");
-		t:=#cheap_scroller+time;
+		asm("
+	nop
+	");
+		t:=#cheap_scroller+i;
 		Memory::Copy(t, p, 40);
 		
-		Tst();
+//		Tst();
 		
 		// Increase the counter
 		// Reset the text counter when the reaches the end of the string

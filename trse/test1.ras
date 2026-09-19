@@ -23,6 +23,8 @@ end;
 	
 	
 begin
+	i:=p[i] + p[j];
+/*
 	
 	screen_bg_col:=black;
 	p:=$0400;
@@ -49,4 +51,5 @@ eee:
 	jmp eee
 	");
 	i:=0;
+	*/
 end.
