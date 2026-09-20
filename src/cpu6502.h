@@ -17,6 +17,7 @@ public:
 
     string ParseFromBinary(vector<uint8_t>& m_data, int& pos) override;
     void InsertTempValues(vector<string>& lst) override;
+    string loadIndex(string& s,string idx, string type);
 
 //    void triplet(vector<uint8_t>& data, int& pos, bool isPtr, bool isLoad);
 

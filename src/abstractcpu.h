@@ -4,10 +4,12 @@
 #include <vector>
 #include <map>
 #include <string>
-#include "util.h"
 #include <sstream>
-#include "error.h"
 #include <cstdint>
+
+#include "error.h"
+#include "util.h"
+#include "phopt.h"
 
 using namespace std;
 
@@ -70,6 +72,7 @@ class AbstractCPU {
 public: 
     bool m_initialized = false;
     int m_curPos = 0;
+    Phopt* m_phopt = 0;
     AbstractCPU() {
 
     }

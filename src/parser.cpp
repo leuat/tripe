@@ -6,6 +6,7 @@
 #include "tropt.h"
 //#include "cpu_amd64.h"
 #include "error.h"
+#include "phopt6502.h"
 
 vector<uint8_t> Parser::ParseText(string inFile) {
     m_data.clear();
@@ -69,6 +70,14 @@ vector<string> Parser::ParseBinary(string inFile, string arch) {
     
     ParseBinary(cpu);
 
+    Phopt* phOpt = NULL;
+    if (arch=="mos6502")
+        phOpt = new Phopt6502();        
+
+    for (int i=0;i<4;i++) 
+        m_src = phOpt->optimize(m_src);
+        
+  
     return m_src;
 
 }
@@ -121,8 +130,13 @@ void Parser::ParseBinary(AbstractCPU* op) {
     int pos = 0;
     while (pos<m_data.size()) {
         string s = op->ParseFromBinary(m_data, pos);
-        if (s!="")
-            m_src.push_back(s);
+        vector<string> sp;
+        sp = Util::split(s,'\n',sp);
+        for (auto p : sp)
+
+            if (p!="")
+                m_src.push_back(p);
+
         if (m_src.size()!=0)
         if (m_src.back().find(".",0)==0) {
             m_src.insert(m_src.end()-1,"");

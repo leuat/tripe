@@ -43,6 +43,21 @@ void CPU6502::InsertTempValues(vector<string>& lst) {
     }        
 }
 
+string CPU6502::loadIndex(string& s,string idx, string type) {
+    string xy = "x";
+    if (type.starts_with("ptr"))
+        xy = "y";
+
+    if (type=="ptr16" || type=="uint16") {
+        Asm(s,"lda "+idx);
+        Asm(s,"asl"); 
+        Asm(s,"ta"+xy);
+    }
+    else 
+        Asm(s,"ld"+xy + " "+idx);
+    return xy;
+}
+
 string CPU6502::ParseFromBinary(vector<uint8_t>& data, int& pos) {
     string s = "";
     uint8_t opcode = data[pos];
@@ -138,6 +153,17 @@ string CPU6502::ParseFromBinary(vector<uint8_t>& data, int& pos) {
 
 //        cout <<res.type<<endl; 
         string op = m_typeTripeToNative [m_opcodeToAsm[opcode] ];
+        // Inc / dec
+        if (op=="adc" && res.str==a.str && b.str=="1" ) {
+            Asm(s,"inc "+res.str);
+            return s;
+        }
+        if (op=="sbc" && res.str==a.str && b.str=="1" ) {
+            Asm(s,"dec "+res.str);
+            return s;
+        }
+
+
         Asm(s,"lda "+a.lo());
 
 //        std::cout << " tst " << (int)opcode  <<  " " <<op<< " "  <<m_opcodeToAsm[opcode] << " " << (int)a.ival << " " << b.prefix() <<std::endl;
@@ -155,6 +181,7 @@ string CPU6502::ParseFromBinary(vector<uint8_t>& data, int& pos) {
             Asm(s,"sta "+res.prefix());
             return s; 
         } 
+
 
 
         if (op=="adc") 
@@ -210,49 +237,59 @@ string CPU6502::ParseFromBinary(vector<uint8_t>& data, int& pos) {
             Asm(s,"sta "+res.str);
         }
     }
-    if (opcode==m_asmToOpcode["store_p"] || opcode==m_asmToOpcode["store"] || opcode==m_asmToOpcode["load_p"] || opcode==m_asmToOpcode["load"]) {
+    if (opcode==m_asmToOpcode["store"] || opcode==m_asmToOpcode["load"]) {
         auto res = getNextParam(data,pos);
         auto idx = getNextParam(data,pos);
         auto val = getNextParam(data,pos);
 
-        if (opcode==m_asmToOpcode["store_p"]) {
-            // store_p ptr idx val
+//        std::cout << "SYM : " <<res.str << " " <<m_symtab[res.str] << endl;
 
-            Asm(s,"lda "+idx.prefix());
-            Asm(s,"tay");
-            Asm(s,"lda "+val.prefix());
-            Asm(s,"sta ("+res.str+"),y");
-        }
         if (opcode==m_asmToOpcode["store"]) {
+            // store_p ptr idx val
+                auto type =  m_symtab[res.str];
+                string y = loadIndex(s,idx.prefix(), type);
+                Asm(s,"lda "+val.lo());
+                if (y=="y")
+                    Asm(s,"sta ("+res.str+"),"+y);
+                else 
+                    Asm(s,"sta "+res.str+","+y);
 
-            Asm(s,"lda "+idx.prefix());
-            Asm(s,"tax");
-            Asm(s,"lda "+val.prefix());
-            Asm(s,"sta "+res.str+",x");
-        }
-        if (opcode==m_asmToOpcode["load_p"]) {
-            Asm(s,"lda "+idx.prefix());
-            Asm(s,"tay");
-            Asm(s,"lda ("+res.str+"),y");
-            Asm(s,"sta "+val.prefix());
+                  if (type=="uint16") {
+                        Asm(s,"lda "+val.hi());
+                        if (y=="y") {
+                            Asm(s, "iny");
+                            Asm(s,"sta ("+res.str+"),"+y);
+                        }
+                        else 
+                            Asm(s,"sta "+res.str+"+1,"+y);
+
+                        Asm(s,"sta "+val.prefix()+"+1");
+
+                    }
+
         }
         if (opcode==m_asmToOpcode["load"]) {
- //           std::cout << " SYM " <<val.str << " "<< val.prefix()<< " " <<m_symtab[val.str] << endl;
-            if (m_symtab[val.str]=="uint16") {
-                Asm(s,"lda "+idx.prefix());
-                Asm(s,"tax");
-                Asm(s,"lda "+res.str+",x");
-                Asm(s,"sta "+val.lo());
-                Asm(s,"lda "+res.str+"+1,x");
-                Asm(s,"sta "+val.hi());
+            // store_p ptr idx val
+                auto type =  m_symtab[val.str];
+                string y = loadIndex(s,idx.prefix(), type);
+                if (y=="y")
+                    Asm(s,"lda ("+res.str+"),"+y);
+                else 
+                    Asm(s,"lda "+res.str+","+y);
 
-            }
-            else {
-                Asm(s,"lda "+idx.prefix());
-                Asm(s,"tax");
-                Asm(s,"lda "+res.str+",x");
                 Asm(s,"sta "+val.prefix());
-            }
+                if (type=="uint16") {
+                    if (y=="y") {
+                        Asm(s, "iny");
+                        Asm(s,"lda ("+res.str+"),"+y);
+                    }
+                    else 
+                        Asm(s,"lda "+res.str+"+1,"+y);
+
+                    Asm(s,"sta "+val.prefix()+"+1");
+
+                }
+
         }
 
     } 
@@ -262,7 +299,7 @@ string CPU6502::ParseFromBinary(vector<uint8_t>& data, int& pos) {
     if (opcode==m_asmToOpcode["decl"]) { 
         auto name = getNextParam(data,pos);
         auto value = getNextParam(data,pos);
-        if (m_symtab[name.str]=="ptr") {
+        if (m_symtab[name.str].starts_with("ptr")) {
             s = name.str + "\t=\t"+ to_string(m_curZp);
             m_curZp+=2;
 

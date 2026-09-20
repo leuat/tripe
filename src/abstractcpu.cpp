@@ -2,7 +2,7 @@
 #include "error.h"
 
 bool AbstractCPU::is16bit(string val) {
-    return (m_symtab[val]=="uint16" || m_symtab[val]=="ptr");
+    return (m_symtab[val]=="uint16" || m_symtab[val].starts_with("ptr"));
 }
 
 
@@ -19,6 +19,8 @@ void AbstractCPU::Init(string opcodes) {
         
         s = Util::trim(s);
         if (s=="")
+            continue;
+        if (s.starts_with("#"))
             continue;
         vector<string> v;
         s = Util::ReplaceString(s," ","");
