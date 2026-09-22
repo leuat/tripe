@@ -30,6 +30,9 @@ public:
     static vector<string> read_text_code_file(string f, bool trim);
     static string load_text_file(string f);
 
+    static string insertInFilename(string fn, string val);
+    static string getFilenameAlone(string fn);
+
     static string toLower(string str) {
         transform(str.begin(), str.end(),str.begin(), ::tolower);
         return str;

@@ -189,3 +189,17 @@ string Util::ReplaceString(std::string str, const std::string& from, const std::
     }
     return str;
 }
+//std::vector<std::string> &Util::split(const std::string &s, char delim, std::vector<std::string> &elems) {
+
+string Util::insertInFilename(string fn, string val) {
+    vector<string> lst;
+    lst = Util::split(fn, '.',lst);
+    return lst[0] + val+"."+lst[1];
+}
+
+string Util::getFilenameAlone(string fn) {
+    vector<string> lst;
+    lst = Util::split(fn, '.',lst);
+    return lst[0];
+
+}

@@ -52,15 +52,27 @@ void Tripe::Execute() {
     if (sys!="")
         params["sys"] = sys;
 
-    if (arch=="trasm2tripe") {
-        Util::save_binary(outFile, p.ParseText(inFile));
-    }
-    else if (arch=="tropt")
-        Util::save_text(outFile, p.TripeOptimise(inFile));
 
-    else 
-        Util::save_text(outFile, p.ParseBinary(inFile,arch,params));
+    if (m_args.contains("c")) {
+        // Do all in a row
+            auto optTripe = Util::insertInFilename(inFile, "_opt");
+            auto binTripe = Util::getFilenameAlone(inFile)+ ".trp";
+            cout << optTripe << endl;
+            Util::save_text(optTripe, p.TripeOptimise(inFile));
+            Util::save_binary(binTripe, p.ParseText(optTripe));
+            Util::save_text(outFile, p.ParseBinary(binTripe,arch,params));
+
+    }
+    else {
+        if (arch=="trasm2tripe") {
+            Util::save_binary(outFile, p.ParseText(inFile));
+        }
+        else if (arch=="tropt")
+            Util::save_text(outFile, p.TripeOptimise(inFile));
+        else 
+            Util::save_text(outFile, p.ParseBinary(inFile,arch,params));
         
+    }
 
 
     cout << "ok."<<endl;
