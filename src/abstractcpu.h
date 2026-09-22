@@ -9,7 +9,7 @@
 
 #include "error.h"
 #include "util.h"
-#include "phopt.h"
+#include "opts/phopt.h"
 
 using namespace std;
 
@@ -72,6 +72,7 @@ class AbstractCPU {
 public: 
     bool m_initialized = false;
     int m_curPos = 0;
+    int m_foundStartPos = -1;
     Phopt* m_phopt = 0;
     AbstractCPU() {
 
@@ -80,6 +81,8 @@ public:
     virtual void InsertTempValues(vector<string>& lst) {}
 
     virtual string ParseFromBinary(vector<uint8_t>& data, int& pos) = 0;
+
+    virtual vector<string> stub(map<string,string> params) {return vector<string>(); }
 
     std::string ParseInlineAsm(vector<uint8_t>& data, int& pos);
 

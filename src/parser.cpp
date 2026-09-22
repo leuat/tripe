@@ -3,10 +3,9 @@
 #include "util.h"
 #include "opcodes.h"
 #include "cpu6502.h"
-#include "tropt.h"
-//#include "cpu_amd64.h"
+#include "opts/tropt.h"
 #include "error.h"
-#include "phopt6502.h"
+#include "opts/phopt6502.h"
 
 vector<uint8_t> Parser::ParseText(string inFile) {
     m_data.clear();
@@ -49,7 +48,7 @@ void Parser::LoadBinary(string inFile) {
     m_src.clear();
 
 }
-vector<string> Parser::ParseBinary(string inFile, string arch) {
+vector<string> Parser::ParseBinary(string inFile, string arch, map<string,string> params) {
     LoadBinary(inFile);
 
     AbstractCPU* cpu = NULL;
@@ -57,8 +56,6 @@ vector<string> Parser::ParseBinary(string inFile, string arch) {
         cpu = new Opcodes();        
     if (arch=="mos6502")
         cpu = new CPU6502();        
-    //    if (arch=="amd64")
-    //    cpu = new CPUAMD64();        
 
     if (cpu == NULL)
         Error::RaiseError("ParseBinary error: unrecognized architecture "+arch);
@@ -66,8 +63,8 @@ vector<string> Parser::ParseBinary(string inFile, string arch) {
     // Pass 0
     ParseBinary(cpu);
     // pass 1
-    m_src.clear();
-    
+//    m_src.clear();
+    m_src = cpu->stub(params);
     ParseBinary(cpu);
 
     Phopt* phOpt = NULL;

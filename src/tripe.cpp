@@ -1,6 +1,7 @@
 #include "tripe.h"
 #include "error.h"
 #include "util.h"
+#include <map>
 #include <filesystem>
 #include "parser.h"
 
@@ -36,13 +37,20 @@ void Tripe::Execute() {
     string inFile = m_args["i"];    
     string outFile = m_args["o"];    
     string arch = Util::toLower(m_args["arch"]);
+    string sys = m_args["sys"];
     if (!std::filesystem::exists(inFile)) 
         Error::RaiseError("Could not find input file: "+inFile);
     if (!contains(m_supportedArchitectures,arch))
         Error::RaiseError("Architecture '"+arch+"' not supported. ");
+    if (sys!="")
+        if (!contains(m_supportedSystems,sys))
+            Error::RaiseError("System '"+sys+"' not supported. ");
 
 
     Parser p;
+    map<string,string> params;
+    if (sys!="")
+        params["sys"] = sys;
 
     if (arch=="trasm2tripe") {
         Util::save_binary(outFile, p.ParseText(inFile));
@@ -51,7 +59,7 @@ void Tripe::Execute() {
         Util::save_text(outFile, p.TripeOptimise(inFile));
 
     else 
-        Util::save_text(outFile, p.ParseBinary(inFile,arch));
+        Util::save_text(outFile, p.ParseBinary(inFile,arch,params));
         
 
 

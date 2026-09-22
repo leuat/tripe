@@ -24,7 +24,7 @@ add_executable(tripe
   src/opts/tropt.cpp
   src/opts/phopt6502.cpp
   src/util.cpp
-  src/tripe.cpp  
+  src/tripe.cpp
   
 )
 

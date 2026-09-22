@@ -37,6 +37,7 @@ public:
     }
 
     static string toHex(uint64_t);
+    static string toDec(uint64_t);
 
     static void save_binary(string file, const vector<uint8_t> data);
     static void save_text(string file, const vector<string> data);

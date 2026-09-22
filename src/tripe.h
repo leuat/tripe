@@ -11,8 +11,9 @@ using namespace std;
 class Tripe {
 public:
 
-    vector<string> m_requireNextParam = {"i","o","arch"};
+    vector<string> m_requireNextParam = {"i","o","arch", "sys"};
     vector<string> m_supportedArchitectures = {"mos6502","tripe2trasm","trasm2tripe", "amd64", "tropt"};
+    vector<string> m_supportedSystems = {"c64"};
 
     Tripe(int argc, char *argv[]);
 

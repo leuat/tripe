@@ -1,5 +1,6 @@
 #include "abstractcpu.h"
 #include "error.h"
+#include "opcodes_data.h"
 
 bool AbstractCPU::is16bit(string val) {
     return (m_symtab[val]=="uint16" || m_symtab[val].starts_with("ptr"));
@@ -9,12 +10,9 @@ bool AbstractCPU::is16bit(string val) {
 void AbstractCPU::Init(string opcodes) {
     if (m_initialized)
         return;    
-//    auto d = Util::read_text_code_file(opcodes);
     vector<string> d;
-    auto oc = Util::load_text_file("/home/leuat/code/tripe/opcodes.txt");
-//    cout << "F  "<< endl;
+    string oc = string((char*)resources_opcodes_txt);
     d = Util::split(oc,'\n',d);
-//    cout << opcodes;
     for (auto s: d) {
         
         s = Util::trim(s);
@@ -24,11 +22,9 @@ void AbstractCPU::Init(string opcodes) {
             continue;
         vector<string> v;
         s = Util::ReplaceString(s," ","");
-//        s = Util::ReplaceString(s,"\n","");
         Util::split(s,',',v);
         if (v.size()<=1)
             continue;
-  //      cout << s<<endl;
         int val;
         stringstream (v[1]) >>hex>>val;
         string str = Util::toLower(Util::trim(v[0]));
@@ -102,7 +98,6 @@ std::string AbstractCPU::ParseInlineAsm(vector<uint8_t>& data, int& pos) {
     uint8_t opcode = data[pos];
     s = m_opcodeToAsm[opcode];
 
-//    std::cout << "opcode : " << s <<  " " << (int)opcode <<std::endl;
     if (s==".asm") {
         std::string as = "";
         pos++;
@@ -110,7 +105,6 @@ std::string AbstractCPU::ParseInlineAsm(vector<uint8_t>& data, int& pos) {
             as+=data[pos++];
         }
         pos++;
-//        std::cout << "Found ASM : "<<as << std::endl;
         return as;
     }
     return "";

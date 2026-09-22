@@ -146,6 +146,12 @@ string Util::toHex(uint64_t val) {
     return stream.str();
 }
 
+string Util::toDec(uint64_t val) {
+    std::stringstream stream;
+    stream << std::dec << val;
+    return stream.str();
+}
+
 void Util::append_string(string s, vector<uint8_t>& data) {
     int n= s.length();
     char char_array[n+1];

@@ -1,9 +1,21 @@
 #include <iostream>
 #include "tripe.h"
 
+using namespace std;
+
 void print_usage() {
-    std::cout << "Usage: "<<std::endl;
-    std::cout << " tripe -arch [ system ] -i [ in.trp ] -o [ out.asm ]  -params... "<<std::endl;
+    cout << "Usage: "<< endl;
+    cout << " tripe -arch [ system ] -i [ in.trp ] -o [ out.asm ]  -params... "<< endl;
+    cout << endl;
+    cout << " -arch mos6502 : compiles a tripe .trp binary file to a 6502 binary"<<endl;
+    cout << " -arch trasm2tripe : compiles a .trasm text assembly file to a .tripe binary file"<<endl;
+    cout << " -arch tropt : optimises a .trasm text assembly file"<<endl;
+    cout << endl;
+    cout << "optional parameters:"<<endl;
+    cout << " -sys [c64, vic20] : adds loading stub for the current system"<<endl; 
+    cout << " -c : performs a full compile and optimization for the current system"<<endl;
+    cout << " -start_address $1000 : custom start address for the system"<<endl;
+
 }
 
 

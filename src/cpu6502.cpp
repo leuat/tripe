@@ -74,6 +74,8 @@ string CPU6502::ParseFromBinary(vector<uint8_t>& data, int& pos) {
     }
     pos++;
 
+
+
     if (opcode==m_asmToOpcode[".uint8"] || opcode==m_asmToOpcode[".uint16"]) {
         string stype = m_opcodeToAsm[opcode];
 //        cout << "INSIDE "<<stype<<" " <<Util::toHex(opcode)<< " " <<Util::toHex(data[pos])<<endl; 
@@ -133,6 +135,8 @@ string CPU6502::ParseFromBinary(vector<uint8_t>& data, int& pos) {
         }
         if (p1.ival!=0) {
            m_curPos = p1.ival;
+           if (m_foundStartPos==-1)
+              m_foundStartPos = m_curPos;
            if (m_curPos>=0x200) {
                Asm(s,"org " + p1.prefix() + name);
            }
@@ -319,3 +323,37 @@ string CPU6502::ParseFromBinary(vector<uint8_t>& data, int& pos) {
     return s;
 }
 
+
+
+vector<string> CPU6502::stub(map<string,string> params) {
+    vector<string> src;
+    string startAddress = "";
+    string printAddress = "";
+
+    bool print = false;
+    int istart = 0;
+    if (params.contains("start_address"))
+        startAddress = params["start_address"];
+
+
+    if (params.contains("sys"))
+    if (params["sys"]=="c64") {
+        if (startAddress=="") istart = m_foundStartPos;
+        print = true;
+
+        string s = Util::toDec(istart);
+        for (auto c: s) {
+            printAddress += "$"+Util::toHex(c) + ",";
+        }
+        // add missing spaces
+        while (printAddress.size()<4)
+            printAddress+="$20, ";
+    }
+
+    if (print) {
+        src.push_back("\torg $801");
+        src.push_back("\tdc.b $b, $8, $a, $0, $9e, $20,"+printAddress +" $0, $0, $0");
+    }
+
+    return src;
+}
