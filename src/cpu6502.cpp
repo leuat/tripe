@@ -25,6 +25,7 @@ CPU6502::CPU6502() : AbstractCPU() {
 
     m_typeTripeToNative["jump"] = "jmp";
     m_typeTripeToNative["call"] = "jsr";
+    m_typeTripeToNative["fcall"] = "jsr";
 
     m_typeTripeToNative["bcc"] = "bcc";
     m_typeTripeToNative["bcs"] = "bcs";
@@ -153,9 +154,6 @@ string CPU6502::ParseFromBinary(vector<uint8_t>& data, int& pos) {
         auto a = getNextParam(data,pos);
         auto b = getNextParam(data,pos);
 
-
-
-//        cout <<res.type<<endl; 
         string op = m_typeTripeToNative [m_opcodeToAsm[opcode] ];
         // Inc / dec
         if (op=="adc" && res.str==a.str && b.str=="1" ) {
@@ -274,8 +272,9 @@ string CPU6502::ParseFromBinary(vector<uint8_t>& data, int& pos) {
         }
         if (opcode==m_asmToOpcode["load"]) {
             // store_p ptr idx val
-                auto type =  m_symtab[val.str];
+                auto type =  m_symtab[res.str];
                 string y = loadIndex(s,idx.prefix(), type);
+                Asm(s," ; type : "+type);
                 if (y=="y")
                     Asm(s,"lda ("+res.str+"),"+y);
                 else 
@@ -300,6 +299,8 @@ string CPU6502::ParseFromBinary(vector<uint8_t>& data, int& pos) {
 
     if (opcode==m_asmToOpcode["return"]) 
         Asm(s,"rts");
+    if (opcode==m_asmToOpcode["rti"]) 
+        Asm(s,"rti");
     if (opcode==m_asmToOpcode["decl"]) { 
         auto name = getNextParam(data,pos);
         auto value = getNextParam(data,pos);

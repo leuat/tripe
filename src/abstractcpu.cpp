@@ -1,4 +1,4 @@
-#include "abstractcpu.h"
+ #include "abstractcpu.h"
 #include "error.h"
 #include "opcodes_data.h"
 
@@ -79,7 +79,7 @@ Param AbstractCPU::getNextParam(vector<uint8_t>& data, int& pos) {
 bool AbstractCPU::isBinaryOpOpcode(int code) {
     for (string s:m_similarBinops) {
         if (m_asmToOpcode[s]==code)
-        return true;
+            return true;
     }
 
     return false;
@@ -87,7 +87,7 @@ bool AbstractCPU::isBinaryOpOpcode(int code) {
 bool AbstractCPU::isSingleParamOpcode(int code) {
     for (string s:m_singleParamOpcodes) {
         if (m_asmToOpcode[s]==code)
-        return true;
+            return true;
     }
 
     return false;

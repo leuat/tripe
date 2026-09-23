@@ -42,6 +42,7 @@ void Tripe::Execute() {
         Error::RaiseError("Could not find input file: "+inFile);
     if (!contains(m_supportedArchitectures,arch))
         Error::RaiseError("Architecture '"+arch+"' not supported. ");
+    
     if (sys!="")
         if (!contains(m_supportedSystems,sys))
             Error::RaiseError("System '"+sys+"' not supported. ");

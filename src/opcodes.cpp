@@ -34,14 +34,10 @@ void Opcodes::ParseToBinary(vector<string>& line,vector<uint8_t>& data) {
             Error::RaiseError("Incorrect number of parameters");
 
         if (s=="datastream") {
-//            cout  << endl<<line[0]<<" DATASTREAM !"<<line[i]<< " :" <<endl;
             string type = line[0];
-  //          type.erase(type.begin(),type.begin()+1);
             uint16_t cnt = 0;
             vector<uint8_t> d;
             bool is16bit = (type == ".uint16");
-  //          if (is16bit)
-    //            cout << "HOORAH 16 bit **** "<<endl;
             while (i<line.size()) {
                 auto val = Util::trim(line[i]);
 //                cout << val << " ";
@@ -55,7 +51,6 @@ void Opcodes::ParseToBinary(vector<string>& line,vector<uint8_t>& data) {
                 }
                 i++;
             }
-//            cout <<"Number of elements : "<< cnt<<endl;;
             if (cnt>=256)
                 Error::RaiseError("Error: cannot have more than 255 elements per line");
 
