@@ -1,3 +1,4 @@
+#./compile_resources.sh
 rm build/tripe
 cd build
 cmake --build .

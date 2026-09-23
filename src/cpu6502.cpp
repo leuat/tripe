@@ -106,6 +106,9 @@ string CPU6502::ParseFromBinary(vector<uint8_t>& data, int& pos) {
         auto name = getNextParam(data,pos);
         Label(s,name.str);
     }
+    if (opcode==m_asmToOpcode[".gcode"]){
+        Asm(s, ".gcode");
+    }
 
 /*
     if (opcode==m_asmToOpcode[".processor"]){
@@ -159,7 +162,6 @@ string CPU6502::ParseFromBinary(vector<uint8_t>& data, int& pos) {
         auto ret = getNextParam(data,pos);
         auto a = getNextParam(data,pos);
         auto b = getNextParam(data,pos);
-        Asm(s, "; 8 bit mul");
         Asm(s, "ldx "+b.prefix());
         Asm(s, "lda "+a.prefix());
         Asm(s, "jsr mul_8bit_");
@@ -174,7 +176,6 @@ string CPU6502::ParseFromBinary(vector<uint8_t>& data, int& pos) {
         auto ret = getNextParam(data,pos);
         auto a = getNextParam(data,pos);
         auto b = getNextParam(data,pos);
-        Asm(s, "; 8 bit mul");
         Asm(s, "lda "+a.prefix());
         Asm(s, "sta div8x8_d");
         Asm(s, "lda "+b.prefix());

@@ -50,11 +50,24 @@ void Parser::LoadBinary(string inFile) {
 }
 
 void Parser::AppendExtraCode(AbstractCPU* cpu) {
-    for (auto code : cpu->m_usedCode) {
-        vector<string> d;
-        d = Util::split(cpu->m_code[code],'\n',d);
-        for (auto& s: d)
-            m_src.push_back(s);
+    int lineNumber = -1;
+    for (int i=0;i<m_src.size();i++) {
+        if (Util::trim(m_src[i])==".gcode") {
+            lineNumber = i;
+            break;
+        }
+    }
+    if (lineNumber!=-1) {
+        m_src[lineNumber] = "; tripe cpu specific code";
+        
+        for (auto code : cpu->m_usedCode) {
+            vector<string> d;
+            d = Util::split(cpu->m_code[code],'\n',d);
+            int i = lineNumber+1;
+            for (auto& s: d)
+                m_src.insert(m_src.begin()+i++,s);
+
+        }
 
     }
 

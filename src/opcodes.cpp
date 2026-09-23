@@ -11,6 +11,7 @@ void Opcodes::ParseToBinary(vector<string>& line,vector<uint8_t>& data) {
     }
     vector<string>& p = m_opcodeToParams[opcode];
     bool isMulU = opcode == m_asmToOpcode["mulu"];
+    bool isDivU = opcode == m_asmToOpcode["divu"];
 
     data.push_back(opcode);
 
@@ -89,7 +90,7 @@ void Opcodes::ParseToBinary(vector<string>& line,vector<uint8_t>& data) {
                 d = Util::ival2int8(v[1],v[0]);
 
                 // replace mulu power of 2 with shl
-                if (isMulU) {
+                if (isMulU || isDivU) {
                     int i = d[0];
                     int val = -1;
                     if (i==1) val = 0;
@@ -102,9 +103,9 @@ void Opcodes::ParseToBinary(vector<string>& line,vector<uint8_t>& data) {
                     if (i==128) val = 7;
                     if (i==256) val = 8;
                     if (val!=-1) {
-                        std::cout << (int)data[opCodePos] << " " <<(int)opcode << std::endl;
+//                        std::cout << (int)data[opCodePos] << " " <<(int)opcode << std::endl;
                         d[0] = val;
-                        data[opCodePos] = (uint8_t)m_asmToOpcode["shl"];
+                        data[opCodePos] = (uint8_t)m_asmToOpcode[isMulU?"shl":"shr"];
 //                        std::cout << "REPLACE MUL WITH SHL " << (int)m_asmToOpcode["shl"] << "  a:" <<a<< std::endl;
 
                     }
