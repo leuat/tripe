@@ -17,7 +17,7 @@ Tripe::Tripe(int argc, char *argv[]) {
                 val = argv[i + 1];
                 i++;
             }
-            m_args[Util::toLower(arg1)] = Util::toLower(val);
+            m_args[Util::toLower(arg1)] = val;
         }
     }
 }
@@ -35,8 +35,11 @@ void Tripe::Execute() {
     string outFile = m_args["o"];
     string arch = Util::toLower(m_args["arch"]);
     string sys = m_args["sys"];
+    cout << inFile << endl;
+
     if (!std::filesystem::exists(inFile))
         Error::RaiseError("Could not find input file: " + inFile);
+
     if (!contains(m_supportedArchitectures, arch))
         Error::RaiseError("Architecture '" + arch + "' not supported. ");
 

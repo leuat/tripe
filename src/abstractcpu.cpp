@@ -173,10 +173,14 @@ string AbstractCPU::ParseFromBinary(int &pos) {
         Cmp(pos);
     if (opcode == m_asmToOpcode[".incbin"])
         Asm("incbin " + getNextParam(data, pos).prefix());
-    if (opcode == m_asmToOpcode["mulu"])
+    if (opcode == m_asmToOpcode["mulu"]) {
         Mulu(pos);
-    if (opcode == m_asmToOpcode["divu"])
+        return m_line;
+    }
+    if (opcode == m_asmToOpcode["divu"]) {
         Divu(pos);
+        return m_line;
+    }
     if (opcode == m_asmToOpcode["decl"])
         Declare(pos);
     if (isBinaryOpOpcode(opcode))
