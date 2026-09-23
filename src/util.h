@@ -1,31 +1,28 @@
 #ifndef UTIL_H
 #define UTIL_H
 
-#include <string>
-#include <fstream>
-#include <cstdint>
 #include <algorithm>
-#include <vector>
-#include <iostream>
+#include <cstdint>
 #include <cstring>
+#include <fstream>
+#include <iostream>
+#include <string>
+#include <vector>
 using namespace std;
 
-template <typename T>
-bool contains(vector<T> vec, const T & elem)
-{
+template <typename T> bool contains(vector<T> vec, const T &elem) {
     bool result = false;
-    if( find(vec.begin(), vec.end(), elem) != vec.end() )
-    {
+    if (find(vec.begin(), vec.end(), elem) != vec.end()) {
         result = true;
     }
     return result;
 }
 
 class Util {
-public:   
-
+  public:
     static string trim(const std::string &s);
-    static std::vector<std::string> &split(const std::string &s, char delim, std::vector<std::string> &elems);
+    static std::vector<std::string> &split(const std::string &s, char delim,
+                                           std::vector<std::string> &elems);
 
     static vector<string> read_text_code_file(string f, bool trim);
     static string load_text_file(string f);
@@ -34,9 +31,8 @@ public:
     static string getFilenameAlone(string fn);
 
     static string toLower(string str) {
-        transform(str.begin(), str.end(),str.begin(), ::tolower);
+        transform(str.begin(), str.end(), str.begin(), ::tolower);
         return str;
-
     }
 
     static string toHex(uint64_t);
@@ -47,14 +43,12 @@ public:
     static vector<uint8_t> load_binary(string file);
     static int getIntLen(string type);
     static vector<uint8_t> ival2int8(string ival, string type);
-    static string ival2string(vector<uint8_t>& data, int pos, string type);
+    static string ival2string(vector<uint8_t> &data, int pos, string type);
 
-    static void append_string(string s, vector<uint8_t>& data);
+    static void append_string(string s, vector<uint8_t> &data);
 
-    static string ReplaceString(std::string str, const std::string& from, const std::string& to);
-
-
+    static string ReplaceString(std::string str, const std::string &from,
+                                const std::string &to);
 };
-
 
 #endif

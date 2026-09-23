@@ -1,3 +1,3 @@
 #include "data.h"
 
-std::string Data::s_opcodes ="";
+std::string Data::s_opcodes = "";

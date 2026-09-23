@@ -3,11 +3,9 @@
 
 #include <string>
 
-
-
 class Data {
- public:
-  static std::string s_opcodes;
+  public:
+    static std::string s_opcodes;
 }
 
 #endif
