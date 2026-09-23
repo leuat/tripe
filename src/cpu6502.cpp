@@ -2,6 +2,8 @@
 #include "error.h"
 #include "data.h"
 #include <algorithm>
+#include "resources/mul8_6502.h"
+#include "resources/div8_6502.h"
 
 CPU6502::CPU6502() : AbstractCPU() {
     Init(Data::s_opcodes);
@@ -34,6 +36,9 @@ CPU6502::CPU6502() : AbstractCPU() {
     m_similarBinops ={ "add","sub","or","and","xor", "mulu", "shl", "shr" };
     m_singleParamOpcodes ={ "bne","beq","bgts","blts","bgs","bls","bgtu","bltu","bgu","blu",
         "call","jump", "bcc", "bcs"};
+
+    m_code["mul8"] = string((char*)resources_6502_mul8_asm);
+    m_code["div8"] = string((char*)resources_6502_div8_asm);
 
 }
 
@@ -74,7 +79,6 @@ string CPU6502::ParseFromBinary(vector<uint8_t>& data, int& pos) {
         return as;
     }
     pos++;
-
 
 
     if (opcode==m_asmToOpcode[".uint8"] || opcode==m_asmToOpcode[".uint16"]) {
@@ -149,6 +153,39 @@ string CPU6502::ParseFromBinary(vector<uint8_t>& data, int& pos) {
         Asm(s,m_typeTripeToNative[m_opcodeToAsm[opcode]]+"\t"+lbl.str);       
  
    }
+   if (opcode==m_asmToOpcode["mulu"]) {
+        // Do mulu stuff
+        addCode("mul8");
+        auto ret = getNextParam(data,pos);
+        auto a = getNextParam(data,pos);
+        auto b = getNextParam(data,pos);
+        Asm(s, "; 8 bit mul");
+        Asm(s, "ldx "+b.prefix());
+        Asm(s, "lda "+a.prefix());
+        Asm(s, "jsr mul_8bit_");
+        Asm(s, "stx "+ret.prefix());
+//        Asm(s, "ldy #0");
+
+        return s;
+   }
+   if (opcode==m_asmToOpcode["divu"]) {
+        // Do mulu stuff
+        addCode("div8");
+        auto ret = getNextParam(data,pos);
+        auto a = getNextParam(data,pos);
+        auto b = getNextParam(data,pos);
+        Asm(s, "; 8 bit mul");
+        Asm(s, "lda "+a.prefix());
+        Asm(s, "sta div8x8_d");
+        Asm(s, "lda "+b.prefix());
+        Asm(s, "sta div8x8_c");
+        Asm(s, "jsr div_8bit_");
+        Asm(s, "sta "+ret.prefix());
+//        Asm(s, "ldy #0");
+
+        return s;
+   }
+
    if (isBinaryOpOpcode(opcode)) {
         auto res = getNextParam(data,pos);
         auto a = getNextParam(data,pos);

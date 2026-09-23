@@ -78,6 +78,16 @@ public:
 
     }
     void Init(string opcodes);
+
+    map<string,string> m_code;
+    vector<string> m_usedCode;
+
+    void addCode(string s) {
+        int cnt = count(m_usedCode.begin(), m_usedCode.end(), s);
+        if (cnt==0)
+            m_usedCode.push_back(s);
+    }
+
     virtual void InsertTempValues(vector<string>& lst) {}
 
     virtual string ParseFromBinary(vector<uint8_t>& data, int& pos) = 0;

@@ -17,7 +17,9 @@ public:
     vector<string> TripeOptimise(string inFile); 
     vector<string> ParseBinary(string inFile, string arch, map<string,string> params); 
 private:
-    
+  
+    void AppendExtraCode(AbstractCPU* cpu);  
+  
     void ParseTextToBinary();
     void ParseBinary(AbstractCPU* op);
 

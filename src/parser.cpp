@@ -48,6 +48,18 @@ void Parser::LoadBinary(string inFile) {
     m_src.clear();
 
 }
+
+void Parser::AppendExtraCode(AbstractCPU* cpu) {
+    for (auto code : cpu->m_usedCode) {
+        vector<string> d;
+        d = Util::split(cpu->m_code[code],'\n',d);
+        for (auto& s: d)
+            m_src.push_back(s);
+
+    }
+
+}  
+
 vector<string> Parser::ParseBinary(string inFile, string arch, map<string,string> params) {
     LoadBinary(inFile);
 
@@ -66,6 +78,7 @@ vector<string> Parser::ParseBinary(string inFile, string arch, map<string,string
 //    m_src.clear();
     m_src = cpu->stub(params);
     ParseBinary(cpu);
+    AppendExtraCode(cpu);
 
     Phopt* phOpt = NULL;
     if (arch=="mos6502")

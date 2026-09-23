@@ -94,12 +94,13 @@ void Opcodes::ParseToBinary(vector<string>& line,vector<uint8_t>& data) {
                     int val = -1;
                     if (i==1) val = 0;
                     if (i==2) val = 1;
-                    if (i==3) val = 2;
-                    if (i==4) val = 3;
-                    if (i==5) val = 4;
-                    if (i==6) val = 5;
-                    if (i==7) val = 6;
-                    if (i==8) val = 7;
+                    if (i==4) val = 2;
+                    if (i==8) val = 3;
+                    if (i==16) val = 4;
+                    if (i==32) val = 5;
+                    if (i==64) val = 6;
+                    if (i==128) val = 7;
+                    if (i==256) val = 8;
                     if (val!=-1) {
                         std::cout << (int)data[opCodePos] << " " <<(int)opcode << std::endl;
                         d[0] = val;
