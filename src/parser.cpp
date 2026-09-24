@@ -24,8 +24,7 @@ vector<string> Parser::TripeOptimise(string inFile) {
     for (int i = 0; i < 4; i++)
         m_src = t.optimise(m_src);
 
-    std::cout << "Optimized " << t.m_noLines << " lines" << endl;
-
+    std::cout << "Optimized " << t.m_noLines << " lines of tripe" << endl;
     return m_src;
 }
 
@@ -61,6 +60,7 @@ void Parser::AppendExtraCode(AbstractCPU *cpu) {
             for (auto &s : d)
                 m_src.insert(m_src.begin() + i++, s);
         }
+        cpu->InsertTempValues(m_src, lineNumber);
     }
 }
 
@@ -84,6 +84,7 @@ vector<string> Parser::ParseBinary(string inFile, string arch,
     //    m_src.clear();
     m_src = cpu->stub(params);
     ParseBinary(cpu);
+
     AppendExtraCode(cpu);
 
     Phopt *phOpt = NULL;
@@ -159,5 +160,4 @@ void Parser::ParseBinary(AbstractCPU *op) {
                 m_src.insert(m_src.end() - 1, "");
             }
     }
-    op->InsertTempValues(m_src);
 }

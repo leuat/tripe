@@ -16,7 +16,7 @@ class CPU6502 : public AbstractCPU {
     CPU6502();
 
     //    string ParseFromBinary(vector<uint8_t>& m_data, int& pos) override;
-    void InsertTempValues(vector<string> &lst) override;
+    void InsertTempValues(vector<string> &lst, int pos) override;
     string loadIndex(string &s, string idx, string type);
     vector<string> stub(map<string, string> params) override;
 

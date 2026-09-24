@@ -44,7 +44,7 @@ begin
 	// print 25 rows
 	for i:=0 to screen_height  do begin
 		// divide by some value
-		dst[0]:=src[0]/8 + charVal-5;
+		dst[0]:=src[0]/8 + (charVal-5);
 		// Goto next row
 		dst+=screen_width;
 		src+=screen_width;

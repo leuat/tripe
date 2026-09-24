@@ -1,28 +1,28 @@
 #ifndef TROPT_H
 #define TROPT_H
 
+#include "cpu6502.h"
 #include <string>
 #include <vector>
-#include "cpu6502.h"
 
 class Tropt {
-private:
-	CPU6502 m_cpu;
-	vector<string> m_org, m_cur;
-	string t = "\t";
-public:
-	std::vector<std::string> optimise(vector<string> input);
+  private:
+    CPU6502 m_cpu;
+    vector<string> m_org, m_cur;
+    string t = "\t";
+    bool isTemp(string &s) { return s.starts_with("_r"); }
 
-	std::vector<std::string> getLine(int i);
+  public:
+    std::vector<std::string> optimise(vector<string> input);
 
-	void bops();
-	void mov1();
-	void load1();
-	void load2();
+    std::vector<std::string> getLine(int i);
 
-	int m_noLines = 0;
+    void bops();
+    void mov1();
+    void load1();
+    void load2();
+
+    int m_noLines = 0;
 };
-
-
 
 #endif

@@ -2,7 +2,7 @@ program MyProgram;
 @use "screen/screen"
 
 var  
-   i,j,k: byte; 
+	i,j,k: byte; 
 	p,src:^byte;
 	hex: string = "0123456789ABCDEF";
 
@@ -11,8 +11,16 @@ var
 	end;
 	
 	stars : array[8] of tst;
-	
+	tab40 : array[25] of integer = buildtable("i*40");
+procedure Print();
+begin
+	for i:=0 to 10 do
+		p[i]:=i+j;	
+
+end;	
 	
 begin
-	stars[0].x := 10;
+	p[0]:=p[0]/8;// + (charVal-5);
+	
+//	p[i+1]:=0;
 end.

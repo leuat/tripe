@@ -1,0 +1,95 @@
+program FireFire;
+@use "screen/screen"
+@use "system/memory"
+var
+
+ // use chars 64-72 as fire chars. You could try others here, like 80
+ 
+@define OPTIMIZED 0 // Optimized, turn to 0 to turn off optimization
+
+
+
+   	const fireChar:byte = 64;
+
+	const charLoc:address =  $2000;
+
+
+	val,i : byte;
+	x,y,ystart : byte;
+	// Use custom charset
+	charset: IncBin("charset.bin",charLoc);
+	// Fire colors, from low to high brightness
+	color : array [] of byte = (9, 2,2,8,8, 13,10, 7,7,1, 1,1,1); 
+	// Shiftx shifts random values
+	shiftx: byte;
+
+	rands : array[256] of byte= buildtable("Math.random()*256");
+
+	colorzp, p: ^byte;
+
+// Remove this line to use unoptimized version
+
+/*
+ 	This tutorial shows a typical preferred coding method using the TRSE language: 
+	- First prototype in TRSE
+	- Identify slow bottlenecks
+	- Rewrite inner loops to assembler
+	- Turn on / off OPTIMIZED flag to view the effect optimized in assembler and unoptimized
+
+*/
+@startblock $4000 "Code"
+procedure Fire();
+begin
+
+	shiftx:=shiftx+31;
+	ystart:=3;
+	colorzp:=#screen_col_loc+120;// +ystart*Screen::width;
+	p:=#Screen::screen0+120;// + ystart*Screen::width;
+	for y:=0 to 5 offpage do begin // 160*4
+	//	 Original code
+		for x:=0 to 160 do begin
+			// This is the main method for calculating "fire" : current neighbouring values+ lower value
+			val:=p[x+39]+p[x+40]+p[x+41] + p[x+80];
+			val:=val/4;
+			p[x]:=val;
+			colorzp[x]:=color[val];
+		end;
+		p+=160;
+		colorzp+=160;
+	end;
+	for i:=0 to Screen::width unroll do begin
+		p[i]:=rands[i+shiftx];
+		p[i+Screen::width]:=rands[i-shiftx];
+	end;
+end;	
+@endblock
+
+
+procedure InitRandom();
+begin
+	for i:=0 to 256 do
+		rands[i]:=rands[i]/18;
+
+end;
+
+
+begin
+	InitRandom();
+	// Set color background
+	Screen::background := black;
+	Screen::border := black;
+	// Set charmap location at $2000
+	// Clear screen and color memory
+	Screen::Clear(#Screen::screen0, 0);
+	Screen::Clear(#Screen::color, black);
+	
+	Screen::SetCharsetLocation(#charLoc);
+	
+	Memory::Copy(#charLoc+fireChar*8,#charLoc,0);
+	Memory::Fill(#charLoc+^8*^8,$FF,128);
+	
+	while (true) do 
+		Fire();
+end.
+
+ 

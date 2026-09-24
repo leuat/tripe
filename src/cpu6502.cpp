@@ -44,10 +44,11 @@ CPU6502::CPU6502() : AbstractCPU() {
     m_code["div8"] = string((char *)resources_6502_div8_asm);
 }
 
-void CPU6502::InsertTempValues(vector<string> &lst) {
+void CPU6502::InsertTempValues(vector<string> &lst, int pos) {
     for (auto s : m_registersUsed) {
-        lst.push_back(s + " = $" + Util::toHex(m_tmpZp));
-        m_tmpZp += 2;
+        lst.insert(lst.begin() + pos, s + " = $" + Util::toHex(m_tmpZp));
+        pos += 1;
+        m_tmpZp += m_symtab[s] == "uint8" ? 1 : 2;
     }
 }
 
@@ -156,6 +157,10 @@ void CPU6502::LoadStore(int &pos, int opcode) {
 void CPU6502::Declare(int &pos) {
     auto name = getNextParam(m_data, pos);
     auto value = getNextParam(m_data, pos);
+    if (isRegister(name.str)) {
+        m_symtab[name.str] = m_opcodeToAsm[value.type];
+        return;
+    }
     if (m_symtab[name.str].starts_with("ptr")) {
         Asm(name.str + "\t=\t" + to_string(m_curZp));
         m_curZp += 2;
@@ -239,6 +244,7 @@ void CPU6502::Binop(int &pos, int opcode) {
     //        <<(int)(b.type==m_asmToOpcode["uint16"]) << endl; std::cout << "
     //        Type : " << m_symtab[a.prefix()] << " "
     //        <<(int)(b.type==m_asmToOpcode["uint16"]) << endl;
+
     if (is16bit(a.str) || is16bit(b.str) || a.isRef() || b.isRef()) {
 
         //          Error::RaiseError("Add / sub doesn't work with 16 bit yet");

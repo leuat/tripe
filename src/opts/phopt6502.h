@@ -6,19 +6,22 @@
 using namespace std;
 
 class Phopt6502 : public Phopt {
-public:
+  public:
+    vector<string> m_bops = {"adc", "sbc", "eor", "and", "or"};
 
-	vector<string> m_bops = {"adc", "sbc", "eor", "and", "or"};
+    enum Type { BOP1, LDASTA, LDALDXLDA, LDASTA2 };
 
-	vector<string> optimize(vector<std::string> in) override; 
-	void bop1(); 
-	void ldasta();
-	void ldaldxlda();
-	void ldX(string v);
-
+    vector<string> optimize(vector<std::string> in) override;
+    void Bop1(vector<vector<string>> &line, vector<string> &l, int &cur,
+              vector<string> &src);
+    void ldasta(vector<vector<string>> &line, vector<string> &l, int &cur,
+                vector<string> &src);
+    void ldasta2(vector<vector<string>> &line, vector<string> &l, int &cur,
+                 vector<string> &src);
+    void ldaldxlda(vector<vector<string>> &line, vector<string> &l, int &cur,
+                   vector<string> &src);
+    void ldX(string cmd);
+    void Opt(Type type, int noLinesToCheck);
 };
 
-
-
 #endif
-

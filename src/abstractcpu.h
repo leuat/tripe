@@ -77,13 +77,15 @@ class AbstractCPU {
     map<string, string> m_code;
     vector<string> m_usedCode;
 
+    bool isRegister(string &s) { return s.starts_with("_r"); }
+
     void addCode(string s) {
         int cnt = count(m_usedCode.begin(), m_usedCode.end(), s);
         if (cnt == 0)
             m_usedCode.push_back(s);
     }
 
-    virtual void InsertTempValues(vector<string> &lst) {}
+    virtual void InsertTempValues(vector<string> &lst, int pos) {}
 
     string ParseFromBinary(int &pos);
 
@@ -97,6 +99,7 @@ class AbstractCPU {
     map<uint8_t, string> m_opcodeToAsm;
 
     Param getNextParam(vector<uint8_t> &data, int &pos);
+    vector<string> m_registersUsed;
 
   protected:
     string m_opcodeFile = "";
@@ -125,7 +128,6 @@ class AbstractCPU {
     map<string, string> m_typeTripeToNative;
     vector<string> m_similarBinops;
     vector<string> m_singleParamOpcodes;
-    vector<string> m_registersUsed;
     vector<string> m_registers;
     map<string, string> m_symtab;
 
