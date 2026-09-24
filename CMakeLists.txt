@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.15...4.0)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -O3 -s")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -Os -fno-ident -s")
 
 project(
   tripe

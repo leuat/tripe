@@ -1,55 +1,18 @@
 program MyProgram;
+@use "screen/screen"
 
-@startassembler "
-
-.code uint16:0x801 run
-
-.uint8 0b  08 0a 00 9e 20 32  30 36 34  00  00  00  ff
-"
-
-@endassembler ""
 var  
    i,j,k: byte; 
-	p:^byte;
-	
-procedure Test();
-begin
-	if (i*2=6) then
-	begin
-		screen_bg_col:=i;
-	end;
-	
-end;
-	
-	
-begin
-	i:=p[i] + p[j];
-/*
-	
-	screen_bg_col:=black;
-	p:=$0400;
-	j:=0;
-	p[0]:=2;
-	k:=0;
-	for i:=0 to 40 do
-	begin
-		
-//		p[i*2]:=j;
-		asm( " nop");
-		j:=p[k];
-		asm( " nop");
-		p[i+1]:=j;
-//		j+=2;
-		Test();		
-	end;
-	
-	while (true) do begin end;
-	
-	asm("
-eee:
+	p,src:^byte;
+	hex: string = "0123456789ABCDEF";
 
-	jmp eee
-	");
-	i:=0;
-	*/
+	tst = record
+		x : byte;
+	end;
+	
+	stars : array[8] of tst;
+	
+	
+begin
+	stars[0].x := 10;
 end.

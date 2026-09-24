@@ -134,7 +134,7 @@ void CPU6502::LoadStore(int &pos, int opcode) {
         // store_p ptr idx val
         auto type = m_symtab[res.str];
         string y = loadIndex(s, idx.prefix(), type);
-        Asm(" ; type : " + type);
+        //        Asm(" ; type : " + type);
         if (y == "y")
             Asm("lda (" + res.str + ")," + y);
         else

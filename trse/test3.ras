@@ -3,12 +3,6 @@ program PlasmaProgram;
 @use "system/memory"
 var
 
-@startassembler "
-
-.code uint16:0x801 run
-
-.uint8 0b  08 0a 00 9e 20 32  30 36 34  00  00  00  ff
-"
 
 
 // set to "0" to get the unoptimized version
@@ -23,13 +17,14 @@ var
 	const charsetLocation: address = $2000;
  // look in the character set
  	const baseCharacter:byte = $68;
+// 	const baseCharacter:byte = $68-24;
  	
 	// Use custom charset
 	@export "charset.flf" "charset.bin" 256
 	charset: IncBin("charset.bin",charsetLocation);
 	// nice colors
 	fadeTab : array [] of byte = (11,6,12,12,4,14,15,1,1,1,1,15,14,4,12,12,6,11,1,1); 
-	sin :array[256] of byte = buildsinetable(127);
+	sin :array[256] of byte = buildsinetable(255);
 	
 
 	// mini sine table
@@ -40,10 +35,11 @@ var
 	lookupDiv16 : array[256] of byte = buildtable("i/16");
 
 	ptr : ^byte;
+	ip : ^integer; 
+@donotremove ip
 
-
-	const yStart:byte = 2;
-	const yEnd:byte = 23;
+	const yStart:byte = 0;
+	const yEnd:byte = 24;
 	const xStart:byte = 1;
 	const xEnd:byte = 39;
 
@@ -55,17 +51,15 @@ procedure Plasma();
 begin
 	c2x:=ax;
 	c2y:=ay;
-	
 	// Set up y-sine table
 	for x:=0 to Screen::height do begin 
-		siny[x]:=  sin[c2x] + sin[c2y];
+		siny[x]:=  sin[c2x] + sin[c2y] - sin[c2x-c2y];
 		c2x:=c2x+4;
 		c2y:=c2y+9;
 	end;
 
 	ax:=ax+3;
 	ay:=ay-5;
-
 	// Set up x-sine table
 	for x:=0 to Screen::width do begin 
 		sinx[x] := sin[c2x] + sin[c2y];
@@ -74,10 +68,11 @@ begin
 
 	end;
 	// Move cursor to (1,y) on $0400 on bank 1
-	ptr := #Screen::screen0 + Screen::width*yStart;
+//	ptr := #Screen::screen0 + Screen::width*yStart;
+	ptr := #Screen::screen0 + Screen::tab40[yStart];
 	// moveto could also be replaced with : screenmemory:=$0400 + @y_start*40;
 	
-	colorP:=#Screen::color + yStart*Screen::width;
+	colorP:=#Screen::color + Screen::tab40[yStart];
 	for y:=yStart to yEnd offpage do 
 	begin
 		val:=siny[y];
@@ -95,30 +90,14 @@ begin
 
 end;
 
-procedure SetCharsetLocation(i1: integer);
-begin
-	//i:=i1>>11;
-	asm("
-		lda i1+1
-		lsr
-		lsr
-		lsr
-		sta i
-	
-	");
-	asm(" nop");
-	i:=(i&%00001111)<<1;
-	vic_data_loc:=((vic_data_loc)&%11110000)|i;
-end;
-
 
 begin
 	// Set color background
 	Screen::background:=black;
 	Screen::border:=black;
 	// Set charmap location at $2000
-	
-	SetCharsetLocation(#charsetLocation);
+//	ip[0]:=0;
+	Screen::SetCharsetLocation(#charsetLocation);
 	// Copy the 16 characters rom baseCharacter to 0
 	Memory::Copy(#charsetLocation +8*baseCharacter, #charsetLocation,8*16);
 	ax:=1;
@@ -127,7 +106,7 @@ begin
 	Screen::Clear(#Screen::screen0, key_space);
 	// Main loop
 	while (true) do begin
-		Screen::WaitForVerticalBlank();
+//		Screen::WaitForVerticalBlank();
 		Plasma();
 	end;
 

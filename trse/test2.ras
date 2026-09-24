@@ -1,12 +1,6 @@
 program HelloWorld;
 @use "screen/screen"
 @use "system/memory"
-@startassembler "
-
-.code uint16:0x801 run
-
-.uint8 0b  08 0a 00 9e 20 32  30 36 34  00  00  00  ff
-"
 
 
 //@use "system/memory"
@@ -37,7 +31,8 @@ end;
 begin
 		
 	Screen::PrintString(#text, 1,16*2,#Screen::Screen0);
-
+	loop();
+	/*
 	time := time+255;
 	screen_bg_col:=black;
 	// Fill the screen (at screen0 = $400) with  40*25 bytes of character $20 - "space"
@@ -77,7 +72,7 @@ begin
 		time+=1;
 	end;	
 
-
+*/
 	
 
 end.

@@ -1,23 +1,17 @@
 program MatrixEffect;
 
-
-@startassembler "
-
-.code uint16:0x801h run
-
-.uint8 0b  08 0a 00 9e 20 32  30 36 34  00  00  00  ff
-"
+//@projectsettings "startaddress" $C000
 
 @use "screen/screen"
 
 var  
    	i,j: byte; 
-   	// The ypos array will contain the current pos for each column, ranging from 0-200. These values are divided by 8
+   	// The ypos array will contain the  current pos for each column, ranging from 0-200. These values are divided by 8
    	// before being used as a y-coordinate
    	ypos : array[screen_width] of byte;
    	// Yadd contains the addition value for each column. Is reset for each cycle
    	yadd : array[screen_width] of byte;
-   	// Screen and color address tables
+   	// Screen and color address tables0xF0
 	saddr: array[screen_width] of integer = buildtable("0x400+40*i"); // Screen address table
 	caddr: array[screen_width] of integer = buildtable("0xd800+40*i"); // Color adress table
    	sp : ^byte;
@@ -25,8 +19,18 @@ var
    	div80 : array[256] of byte = buildtable("i/80+1");
    	
    	randd : array[256] of byte = buildtable("Math.random()*256");
-   	
+   	rval : byte = 0;
 	const ymax:byte = 240;
+
+
+
+function ran() : byte;
+begin
+	rval+=1;
+	ran:=randd[rval];
+end;
+
+
 
 /**
 	Method that initializes the lookup tables used in this program
@@ -34,9 +38,9 @@ var
 procedure InitTables();
 begin
 	// Yadd has random values (0-255)/80 +1
-	for i:=0 to screen_width do yadd[i]:=div80[randd[i]];
+	for i:=0 to screen_width do begin yadd[i]:=div80[ran()]; end;
 	// ypos has values 0-128
-	for i:=0 to screen_width do ypos[i]:=randd[i]>>1;
+	for i:=0 to screen_width do begin ypos[i]:=ran()>>1; end;
 	// Lookup address tables for 40 column mode, screen address and color address
 
 end;
@@ -71,7 +75,7 @@ begin
 		if (j<screen_height) then begin
 //			AddressTable(#saddr,i,j);
 			sp:=saddr[j]+i;//
-			sp^:=randd[i]>>2; // random character is located between 0 and 64
+			sp^:=ran()>>2; // random character is located between 0 and 64
 			// sp^ is the same as sp[0]
 		end;
 		// Fill the "tail" colors
@@ -87,7 +91,7 @@ begin
 		if (ypos[i]>=ymax) then
 		begin 
 			ypos[i]:=0;
-			yadd[i]:=div80[randd[i]]
+			yadd[i]:=div80[ran()];
 		end;
 	end;	
 end;	
@@ -100,7 +104,6 @@ begin
 	Screen::border:=black;
 	Screen::background:=black;
 	// Clear screens	
-	
 	Screen::Clear(#Screen::screen0,key_space);
 	Screen::Clear(#Screen::color,black);
 	// Initialize tables	

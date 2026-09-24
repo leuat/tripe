@@ -24,7 +24,6 @@ void Opcodes::ParseToBinary(vector<string> &line, vector<uint8_t> &data) {
     for (auto s : p) {
         if (s == "0")
             break;
-        //        cout << s<< ":";
         vector<uint8_t> d;
         i++;
         while (line[i] == "")

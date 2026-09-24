@@ -90,8 +90,12 @@ vector<string> Parser::ParseBinary(string inFile, string arch,
     if (arch == "mos6502")
         phOpt = new Phopt6502();
 
+    Phopt::s_optLines = 0;
     for (int i = 0; i < 4; i++)
         m_src = phOpt->optimize(m_src);
+
+    std::cout << "optimized " << Phopt::s_optLines << " native lines of asm"
+              << endl;
 
     return m_src;
 }
