@@ -7,6 +7,7 @@ vector<string> Phopt6502::optimize(vector<string> in) {
     Opt(LDASTA2, 3);
     Opt(LDALDXLDA, 3);
     Opt(BOP1, 6);
+    Opt(BOP2, 3);
     ldX("y");
     ldX("x");
     return m_src;
@@ -181,6 +182,65 @@ becomes
     }
 }
 
+void Phopt6502::Bop2(vector<vector<string>> &line, vector<string> &l, int &cur,
+                     vector<string> &src) {
+
+    /*
+    sta _r8_4
+    lda _r8_3
+    clc
+    adc _r8_4
+
+    should just be
+    clc
+    adc _r8_3
+
+
+    sta _r8_4
+    lda _r8_3
+    adc _r8_4
+
+    */
+
+    if (!(line[0].size() == 2 && line[1].size() == 2))
+        return;
+
+    string sec = "";
+    if (line[2][0] == "sec" || line[2][0] == "clc") {
+        sec = l[2];
+        string ll;
+        line.push_back(getNextLine(ll));
+        l.push_back(ll);
+        line.erase(line.begin() + 2);
+    }
+
+    if (!(line[0][0] == "sta" && line[1][0] == "lda" && isTemp8(line[0][1]) &&
+          isTemp8(line[1][1])))
+        return;
+
+    if (!(line[0][1] == line[2][1]))
+        return;
+
+    // perform opt
+    string cmd = line[2][0];
+    if (!(cmd == "sbc" || cmd == "adc" || cmd == "or" || cmd == "and" ||
+          cmd == "xor"))
+        return;
+    /*
+        cout << "HERE " << endl;
+        int i = 0;
+        for (auto s : l) {
+            cout << s << endl;
+        }
+    */
+    cur = m_curLine;
+    s_optLines += 2;
+    // do the opt:
+    if (sec != "")
+        src.push_back(sec);
+    src.push_back(tab + cmd + " " + line[1][1] + " ; bop2 opt ");
+}
+
 void Phopt6502::Bop1(vector<vector<string>> &line, vector<string> &l, int &cur,
                      vector<string> &src) {
 
@@ -193,6 +253,11 @@ void Phopt6502::Bop1(vector<vector<string>> &line, vector<string> &l, int &cur,
      sec
      sbc t_uint8_load2
 
+
+    sta _r8_4
+    lda _r8_3
+    clc
+    adc _r8_4
 
 
     sta t_uint8_load1
@@ -282,6 +347,8 @@ void Phopt6502::Opt(Type type, int noLinesToCheck) {
             ldaldxlda(line, l, cur, src);
         else if (type == BOP1)
             Bop1(line, l, cur, src);
+        else if (type == BOP2)
+            Bop2(line, l, cur, src);
         else {
             cout << "ERROR " << endl;
             exit(1);

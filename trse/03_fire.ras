@@ -49,8 +49,7 @@ begin
 	//	 Original code
 		for x:=0 to 160 do begin
 			// This is the main method for calculating "fire" : current neighbouring values+ lower value
-			val:=p[x+39]+p[x+40]+p[x+41] + p[x+80];
-			val:=val/4;
+			val:=(p[x+39]+p[x+40]+p[x+41] + p[x+80])/4;
 			p[x]:=val;
 			colorzp[x]:=color[val];
 		end;
