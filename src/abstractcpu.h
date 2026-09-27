@@ -131,6 +131,8 @@ class AbstractCPU {
     vector<string> m_registers;
     map<string, string> m_symtab;
 
+    string m_nada = "_nada";
+
     string pushReg() { return m_registers[m_currentRegister++]; }
     void popReg() {
         m_currentRegister--;

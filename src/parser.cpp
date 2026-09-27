@@ -151,9 +151,8 @@ void Parser::ParseBinary(AbstractCPU *op) {
         vector<string> sp;
         sp = Util::split(s, '\n', sp);
         for (auto p : sp)
-
-            if (p != "")
-                m_src.push_back(p);
+            //            if (p != "" && !p.ends_with("nada"))
+            m_src.push_back(p);
 
         if (m_src.size() != 0)
             if (m_src.back().find(".", 0) == 0) {

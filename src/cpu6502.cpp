@@ -272,7 +272,6 @@ void CPU6502::Mov(int &pos) {
         //            cout << "16 bit load: address? " << (int)val.type <<" :"
         //            <<val.prefix() << endl;
         //          cout << m_symtab[val.prefix()] <<endl;
-
         Asm("ldx " + val.hi());
         Asm("stx " + res.str + "+1");
 
@@ -281,7 +280,8 @@ void CPU6502::Mov(int &pos) {
 
     } else {
 
-        Asm("lda " + val.prefix());
+        if (val.str != m_nada)
+            Asm("lda " + val.prefix());
         Asm("sta " + res.str);
     }
 }
@@ -290,6 +290,7 @@ void CPU6502::Cmp(int &pos) {
     auto a = getNextParam(m_data, pos);
     auto b = getNextParam(m_data, pos);
 
-    Asm("lda " + a.str);
+    if (a.str != m_nada)
+        Asm("lda " + a.str);
     Asm("cmp " + b.prefix());
 }
