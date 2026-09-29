@@ -1,6 +1,7 @@
 #include "cpu6502.h"
 #include "data.h"
 #include "error.h"
+#include "resources/div16_6502.h"
 #include "resources/div8_6502.h"
 #include "resources/mul16_6502.h"
 #include "resources/mul8_6502.h"
@@ -42,6 +43,7 @@ CPU6502::CPU6502() : AbstractCPU() {
     m_code["mul8"] = string((char *)resources_6502_mul8_asm);
     m_code["div8"] = string((char *)resources_6502_div8_asm);
     m_code["mul16"] = string((char *)resources_6502_mul16_asm);
+    m_code["div16"] = string((char *)resources_6502_div16_asm);
 }
 
 void CPU6502::InsertTempValues(vector<string> &lst, int pos) {
@@ -189,34 +191,55 @@ void CPU6502::Mulu(int &pos) {
             Asm("lda #0");
             Asm("sta " + ret.hi());
         }
-
-    } else {
-        addCode("mul16");
-        if (is16bit(b) && !is16bit(a))
-            swap(a, b);
-        Asm("lda " + a.lo());
-        Asm("ldy " + a.hi());
-        Asm("sta mul16x8_num1");
-        Asm("sty mul16x8_num1Hi");
-        Asm("lda " + b.lo());
-        Asm("sta mul16x8_num2");
-        Asm("jsr mul_16bit");
-        Asm("sta " + ret.lo());
-        Asm("sty " + ret.hi());
+        return;
     }
+    addCode("mul16");
+    if (is16bit(b) && !is16bit(a))
+        swap(a, b);
+    Asm("lda " + a.lo());
+    Asm("ldy " + a.hi());
+    Asm("sta mul16x8_num1");
+    Asm("sty mul16x8_num1Hi");
+    Asm("lda " + b.lo());
+    Asm("sta mul16x8_num2");
+    Asm("jsr mul_16bit");
+    Asm("sta " + ret.lo());
+    Asm("sty " + ret.hi());
     //        Asm( "ldy #0");
 }
 void CPU6502::Divu(int &pos) {
-    addCode("div8");
     auto ret = getNextParam(m_data, pos);
     auto a = getNextParam(m_data, pos);
     auto b = getNextParam(m_data, pos);
-    Asm("lda " + a.prefix());
-    Asm("sta div8x8_d");
-    Asm("lda " + b.prefix());
-    Asm("sta div8x8_c");
-    Asm("jsr div_8bit_");
-    Asm("sta " + ret.prefix());
+
+    if (!(is16bit(a) || is16bit(b))) {
+
+        addCode("div8");
+        Asm("lda " + a.prefix());
+        Asm("sta div8x8_d");
+        Asm("lda " + b.prefix());
+        Asm("sta div8x8_c");
+        Asm("jsr div_8bit_");
+        Asm("sta " + ret.prefix());
+        return;
+    }
+    addCode("div16");
+
+    //    Asm("ldy #0");
+    Asm("lda " + a.lo());
+    Asm("ldy " + a.lhi());
+    Asm("sta initdiv16x8_dividend");
+    Asm("sty initdiv16x8_dividend+1");
+    Asm("lda " + b.lo());
+    Asm("ldy " + b.lhi());
+
+    Asm("sta initdiv16x8_divisor");
+    Asm("sty initdiv16x8_divisor+1");
+    Asm("jsr div_16bit");
+    Asm("lda initdiv16x8_dividend");
+    Asm("ldy initdiv16x8_dividend+1");
+    Asm("sta " + ret.lo());
+    Asm("sty " + ret.hi());
 }
 
 void CPU6502::Binop(int &pos, int opcode) {
@@ -235,18 +258,52 @@ void CPU6502::Binop(int &pos, int opcode) {
         return;
     }
 
-    Asm("lda " + a.lo());
-
-    //        std::cout << " tst " << (int)opcode  <<  " " <<op<< " "
-    //        <<m_opcodeToAsm[opcode] << " " << (int)a.ival << " " << b.prefix()
-    //        <<std::endl;
     if (op == "asl") {
-        //          std::cout << "shlll  " << b.ival<<std::endl;
+        if (is16bit(a)) {
+            Asm("lda " + a.lo());
+            Asm("sta " + res.lo());
+            Asm("lda " + a.lhi());
+            Asm("sta " + res.hi());
+            for (int i = 0; i < b.ival; i++) {
+                Asm("asl " + res.lo());
+                Asm("rol " + res.hi());
+            }
+
+            return;
+        }
+        Asm("lda " + a.lo());
         for (int i = 0; i < b.ival; i++)
             Asm("asl");
         Asm("sta " + res.prefix());
         return;
     }
+
+    if (op == "lsr") {
+        //          std::cout << "shlll  " << b.ival<<std::endl;
+        if (is16bit(a)) {
+            Asm("lda " + a.lo());
+            Asm("sta " + res.lo());
+            Asm("lda " + a.lhi());
+            Asm("sta " + res.hi());
+            for (int i = 0; i < b.ival; i++) {
+                Asm("lsr " + res.hi());
+                Asm("ror " + res.lo());
+            }
+
+            return;
+        }
+        Asm("lda " + a.lo());
+        for (int i = 0; i < b.ival; i++)
+            Asm("lsr");
+        Asm("sta " + res.prefix());
+        return;
+    }
+
+    Asm("lda " + a.lo());
+
+    //        std::cout << " tst " << (int)opcode  <<  " " <<op<< " "
+    //        <<m_opcodeToAsm[opcode] << " " << (int)a.ival << " " << b.prefix()
+    //        <<std::endl;
     if (op == "lsr") {
         //          std::cout << "shlll  " << b.ival<<std::endl;
         for (int i = 0; i < b.ival; i++)
@@ -296,9 +353,11 @@ void CPU6502::Mov(int &pos) {
         //            <<val.prefix() << endl;
         //          cout << m_symtab[val.prefix()] <<endl;
 
-        Asm("lda " + val.lhi());
+        if (is16bit(res)) {
+            Asm("lda " + val.lhi());
 
-        Asm("sta " + res.hi());
+            Asm("sta " + res.hi());
+        }
 
         Asm("lda " + val.lo());
         Asm("sta " + res.str);
