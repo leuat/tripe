@@ -3,7 +3,6 @@
 vector<string> Phopt6502::optimize(vector<string> in) {
 
     m_src = in;
-    // return m_src;
     Opt(LDASTA, 2);
     Opt(LDASTA2, 3);
     Opt(LDALDXLDA, 3);
@@ -78,11 +77,12 @@ void Phopt6502::ldaldxlda(vector<vector<string>> &line, vector<string> &l,
         auto op1 = Util::toLower(line1[0]);
         auto op2 = Util::toLower(line2[0]);
         auto op3 = Util::toLower(line3[0]);
-        if (line1[0] == "sta" && line3[0] == "lda" && line1[1] == line3[1]) {
+        if (line1[0] == "sta" && line3[0] == "lda" && line1[1] == line3[1] &&
+            !line1[1].ends_with(",x") && !line1[1].ends_with(",y")) {
             if (line2[0] == "ldy" || line2[0] == "ldx") {
                 src.push_back(";opt4");
-                if (!line1[1].starts_with("t_"))
-                    src.push_back(l1);
+                if (!line1[1].starts_with("_"))
+                    src.push_back(l1 + " ; opt ldxldy");
                 else
                     s_optLines += 1;
 

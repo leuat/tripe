@@ -258,47 +258,85 @@ void CPU6502::Binop(int &pos, int opcode) {
         return;
     }
 
-    if (op == "asl") {
+    if (op == "asl" || op == "lsr") {
         if (is16bit(a)) {
             Asm("lda " + a.lo());
             Asm("sta " + res.lo());
             Asm("lda " + a.lhi());
             Asm("sta " + res.hi());
-            for (int i = 0; i < b.ival; i++) {
-                Asm("asl " + res.lo());
-                Asm("rol " + res.hi());
+            string one = "asl " + res.lo();
+            string two = "rol " + res.hi();
+            if (op == "lsr") {
+                one = "lsr " + res.hi();
+                two = "ror " + res.lo();
+            }
+            //            cout << b.ival << endl;
+            if (b.ival != 0) // fixed number, unroll
+                for (int i = 0; i < b.ival; i++) {
+                    Asm(one);
+                    Asm(two);
+                }
+            else {
+                auto loop = getTempLabel();
+                auto cancel = getTempLabel();
+                Asm("ldx " + b.str);
+                Asm("cpx #0");
+                Asm("beq " + cancel);
+                Label(loop);
+                Asm(one);
+                Asm(two);
+                Asm("dex");
+                Asm("cpx #0");
+                Asm("bne " + loop);
+                Label(cancel);
             }
 
             return;
         }
+
         Asm("lda " + a.lo());
-        for (int i = 0; i < b.ival; i++)
-            Asm("asl");
+        if (b.ival != 0) {
+            for (int i = 0; i < b.ival; i++)
+                Asm(op);
+        } else {
+            auto loop = getTempLabel();
+            auto cancel = getTempLabel();
+            Asm("ldx " + b.str);
+            Asm("cpx #0");
+            Asm("beq " + cancel);
+            Label(loop);
+            Asm(op);
+            Asm("dex");
+            Asm("cpx #0");
+            Asm("bne " + loop);
+            Label(cancel);
+        }
+
         Asm("sta " + res.prefix());
         return;
     }
+    /*
+        if (op == "lsr") {
+            //          std::cout << "shlll  " << b.ival<<std::endl;
+            if (is16bit(a)) {
+                Asm("lda " + a.lo());
+                Asm("sta " + res.lo());
+                Asm("lda " + a.lhi());
+                Asm("sta " + res.hi());
+                for (int i = 0; i < b.ival; i++) {
+                    Asm("lsr " + res.hi());
+                    Asm("ror " + res.lo());
+                }
 
-    if (op == "lsr") {
-        //          std::cout << "shlll  " << b.ival<<std::endl;
-        if (is16bit(a)) {
+                return;
+            }
             Asm("lda " + a.lo());
-            Asm("sta " + res.lo());
-            Asm("lda " + a.lhi());
-            Asm("sta " + res.hi());
-            for (int i = 0; i < b.ival; i++) {
-                Asm("lsr " + res.hi());
-                Asm("ror " + res.lo());
-            }
-
+            for (int i = 0; i < b.ival; i++)
+                Asm("lsr");
+            Asm("sta " + res.prefix());
             return;
         }
-        Asm("lda " + a.lo());
-        for (int i = 0; i < b.ival; i++)
-            Asm("lsr");
-        Asm("sta " + res.prefix());
-        return;
-    }
-
+    */
     Asm("lda " + a.lo());
 
     //        std::cout << " tst " << (int)opcode  <<  " " <<op<< " "
@@ -349,9 +387,6 @@ void CPU6502::Mov(int &pos) {
 
     if (m_symtab.contains(res.str) && is16bit(res) || val.isRef() ||
         is16bit(val)) {
-        //            cout << "16 bit load: address? " << (int)val.type <<" :"
-        //            <<val.prefix() << endl;
-        //          cout << m_symtab[val.prefix()] <<endl;
 
         if (is16bit(res)) {
             Asm("lda " + val.lhi());
@@ -395,7 +430,6 @@ void CPU6502::Branch(int &pos, int opcode) {
             Label(lblOK);
         }
         if (opcode == m_asmToOpcode["jgte"]) {
-            //            Asm("bne " + lbl.str);
             Asm("bcs " + lbl.str);
         }
         if (opcode == m_asmToOpcode["jlt"])
