@@ -3,6 +3,7 @@
 vector<string> Phopt6502::optimize(vector<string> in) {
 
     m_src = in;
+    // return m_src;
     Opt(LDASTA, 2);
     Opt(LDASTA2, 3);
     Opt(LDALDXLDA, 3);

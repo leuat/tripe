@@ -9,8 +9,10 @@ AbstractCPU::AbstractCPU() {
     m_branchOpcodes = {"jeq", "jneq", "jgt", "jlt", "jgte", "jlte"};
 }
 
-bool AbstractCPU::is16bit(string val) {
-    return (m_symtab[val] == "uint16" || m_symtab[val].starts_with("ptr"));
+bool AbstractCPU::is16bit(const Param &val) {
+    return (m_symtab[val.str] == "uint16" ||
+            m_symtab[val.str].starts_with("ptr")) ||
+           m_opcodeToAsm[val.type] == "uint16";
 }
 
 void AbstractCPU::Init(string opcodes) {
@@ -55,12 +57,14 @@ Param AbstractCPU::getNextParam(vector<uint8_t> &data, int &pos) {
     string s = "";
     int type = 0;
     uint8_t v = data[pos];
+    string typeName = "";
     if (m_opcodeToAsm.contains(v) && v > 0xF0) {
         // We have a const type int64 etc
         pos += 1;
         s += Util::ival2string(data, pos, m_opcodeToAsm[v]);
         pos += Util::getIntLen(m_opcodeToAsm[v]);
         type = v;
+        typeName = m_opcodeToAsm[type];
     } else // Some text
     {
         while (data[pos] != 0) {
@@ -68,6 +72,7 @@ Param AbstractCPU::getNextParam(vector<uint8_t> &data, int &pos) {
         }
         pos++;
         type = Param::VAR;
+        typeName = m_symtab[s];
     }
     if (s.starts_with("_r")) {
         bool ok = true;
@@ -77,7 +82,7 @@ Param AbstractCPU::getNextParam(vector<uint8_t> &data, int &pos) {
         if (ok)
             m_registersUsed.push_back(s);
     }
-    return Param(s, type);
+    return Param(s, type, typeName);
 }
 
 bool AbstractCPU::isBinaryOpOpcode(int code) {

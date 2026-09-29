@@ -19,14 +19,17 @@ class Param {
     string str;
     uint64_t ival;
     int type;
+    string typeName = "";
     Param() {
         str = "";
         type = 0;
         ival = 0;
+        typeName = "";
     }
-    Param(string s, int t) {
+    Param(string s, int t, string tn) {
         str = s;
         type = t;
+        typeName = tn;
         std::istringstream(str) >> hex >> ival;
     }
     string lo() {
@@ -38,11 +41,25 @@ class Param {
         }
         return "#$" + Util::toHex(ival & 255);
     }
+    string lhi() {
+        if (type == 1) {
+            if (isRef())
+                return "#>" + clean();
+            else if (typeName == "uint16" || typeName.starts_with("ptr"))
+                //                   str.starts_with("screen"))
+                return str + "+1";
+            else {
+                //                cout << str << " " << typeName << endl;
+                return "#0"; // byte cast
+            }
+        }
+        return "#$" + Util::toHex((ival >> 8) & 255);
+    }
     string hi() {
         if (type == 1) {
             if (isRef())
                 return "#>" + clean();
-            else
+            else // if (typeName == "uint16" || typeName.starts_with("ptr"))
                 return str + "+1";
         }
         return "#$" + Util::toHex((ival >> 8) & 255);
@@ -128,7 +145,7 @@ class AbstractCPU {
     bool isBranchOpcode(int code);
     bool isSingleParamOpcode(int code);
 
-    bool is16bit(string val);
+    bool is16bit(const Param &val);
 
     int m_currentRegister;
 
