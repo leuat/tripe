@@ -290,26 +290,74 @@ void CPU6502::Branch(int &pos, int opcode) {
     auto b = getNextParam(m_data, pos);
     auto lbl = getNextParam(m_data, pos);
 
-    if (is16bit(a.str) || is16bit(b.str)) {
-        Asm("ldx " + a.hi());
-        Asm("lda " + a.lo());
-        Asm("cmp " + b.lo());
-        m_nextCompare = "cpx " + b.hi();
-        m_prevCmpWas16bit = true;
-    } else {
+    bool is16 = is16bit(a.str) || is16bit(b.str);
+
+    if (!is16) {
         if (a.str != m_nada)
             Asm("lda " + a.str);
-        Asm("cmp " + b.prefix());
-    }
-    if (opcode == m_asmToOpcode["jeq"])
-        Asm("beq " + lbl.str);
-    if (opcode == m_asmToOpcode["jneq"])
-        Asm("bne " + lbl.str);
 
-    if (opcode == m_asmToOpcode["jgt"])
-        Asm("bcs " + lbl.str);
-    if (opcode == m_asmToOpcode["jlt"])
-        Asm("bcc " + lbl.str);
+        Asm("cmp " + b.prefix());
+
+        if (opcode == m_asmToOpcode["jeq"])
+            Asm("beq " + lbl.str);
+        if (opcode == m_asmToOpcode["jneq"])
+            Asm("bne " + lbl.str);
+
+        if (opcode == m_asmToOpcode["jgt"] || opcode == m_asmToOpcode["jgte"])
+            Asm("bcc " + lbl.str);
+        if (opcode == m_asmToOpcode["jlt"] || opcode == m_asmToOpcode["jlte"])
+            Asm("bcs " + lbl.str);
+
+    } else {
+        auto lblDone = getTempLabel();
+
+        if (opcode == m_asmToOpcode["jneq"]) {
+            Asm("ldx " + a.hi());
+            Asm("lda " + a.lo());
+            Asm("cmp " + b.lo());
+
+            Asm("bne " + lbl.str);
+            Asm("cpx " + b.hi());
+            Asm("bne " + lbl.str);
+        }
+        if (opcode == m_asmToOpcode["jeq"]) {
+            Asm("ldx " + a.hi());
+            Asm("lda " + a.lo());
+            Asm("cmp " + b.lo());
+            Asm("bne " + lblDone);
+            Asm("cpx " + b.hi());
+            Asm("beq " + lbl.str);
+            Label(lblDone);
+        }
+
+        if (opcode == m_asmToOpcode["jlt"] || opcode == m_asmToOpcode["jlte"]) {
+            Asm("; Integer Less");
+            Asm("lda " + a.hi() + "   ; compare high bytes");
+            Asm("cmp " + b.hi() + " ;keep");
+            Asm("bcc  " + lblDone);
+            Asm("bne " + lbl.str);
+            Asm("lda " + a.lo());
+            Asm("cmp " + b.lo() + " ;keep");
+            if (opcode == m_asmToOpcode["jlte"])
+                Asm("beq " + lblDone);
+            Asm("bcs " + lbl.str);
+            Label(lblDone);
+        }
+
+        if (opcode == m_asmToOpcode["jgt"] || opcode == m_asmToOpcode["jgte"]) {
+            Asm("; Integer Greater");
+            Asm("lda " + a.hi() + "   ; compare high bytes");
+            Asm("cmp " + b.hi() + " ;keep");
+            Asm("bcc " + lbl.str);
+            Asm("bne " + lblDone);
+            Asm("lda " + a.lo());
+            Asm("cmp " + b.lo() + " ;keep");
+            Asm("bcc " + lbl.str);
+            if (opcode == m_asmToOpcode["jgt"])
+                Asm("beq " + lbl.str);
+            Label(lblDone);
+        }
+    }
 }
 /*
 void CPU6502::Beq(int &pos, string cmd) {
