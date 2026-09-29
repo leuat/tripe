@@ -3,6 +3,12 @@
 #include "error.h"
 #include "opcodes_data.h"
 
+AbstractCPU::AbstractCPU() {
+    m_similarBinops = {"add", "sub", "or", "and", "xor", "mulu", "shl", "shr"};
+    m_singleParamOpcodes = {"call", "jump"};
+    m_branchOpcodes = {"jeq", "jneq", "jgt", "jlt", "jgte", "jlte"};
+}
+
 bool AbstractCPU::is16bit(string val) {
     return (m_symtab[val] == "uint16" || m_symtab[val].starts_with("ptr"));
 }
@@ -76,6 +82,15 @@ Param AbstractCPU::getNextParam(vector<uint8_t> &data, int &pos) {
 
 bool AbstractCPU::isBinaryOpOpcode(int code) {
     for (string s : m_similarBinops) {
+        if (m_asmToOpcode[s] == code)
+            return true;
+    }
+
+    return false;
+}
+
+bool AbstractCPU::isBranchOpcode(int code) {
+    for (string s : m_branchOpcodes) {
         if (m_asmToOpcode[s] == code)
             return true;
     }
@@ -160,6 +175,7 @@ string AbstractCPU::ParseFromBinary(int &pos) {
             }
         }
     }
+
     if (isSingleParamOpcode(opcode)) {
         auto lbl = getNextParam(data, pos);
         Asm(m_typeTripeToNative[m_opcodeToAsm[opcode]] + "\t" + lbl.str);
@@ -169,8 +185,11 @@ string AbstractCPU::ParseFromBinary(int &pos) {
         Label(getNextParam(data, pos).str);
     if (opcode == m_asmToOpcode[".gcode"])
         Asm(".gcode");
-    if (opcode == m_asmToOpcode["cmp"])
-        Cmp(pos);
+    if (isBranchOpcode(opcode)) {
+        Branch(pos, opcode);
+        return m_line;
+    }
+
     if (opcode == m_asmToOpcode[".incbin"])
         Asm("incbin " + getNextParam(data, pos).prefix());
     if (opcode == m_asmToOpcode["mulu"]) {

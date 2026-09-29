@@ -68,14 +68,18 @@ class AbstractCPU {
     bool m_initialized = false;
     int m_curPos = 0;
     int m_foundStartPos = -1;
+    int m_tempLabel = 1;
     vector<uint8_t> m_data;
     Phopt *m_phopt = 0;
     string m_line;
-    AbstractCPU() {}
     void Init(string opcodes);
+    bool m_prevCmpWas16bit = false;
+    string m_nextCompare = "";
 
     map<string, string> m_code;
     vector<string> m_usedCode;
+
+    AbstractCPU();
 
     bool isRegister(string &s) { return s.starts_with("_r"); }
 
@@ -84,6 +88,8 @@ class AbstractCPU {
         if (cnt == 0)
             m_usedCode.push_back(s);
     }
+
+    string getTempLabel() { return "temp_label_" + to_string(m_tempLabel++); }
 
     virtual void InsertTempValues(vector<string> &lst, int pos) {}
 
@@ -115,7 +121,9 @@ class AbstractCPU {
     virtual void Divu(int &pos) {}
     virtual void Binop(int &pos, int opcode) {}
     virtual void Mov(int &pos) {}
-    virtual void Cmp(int &pos) {}
+    virtual void Branch(int &pos, int cmd) {}
+    //    virtual void Beq(int &pos, string cmd) {}
+
     bool isBinaryOpOpcode(int code);
     bool isBranchOpcode(int code);
     bool isSingleParamOpcode(int code);
@@ -126,7 +134,7 @@ class AbstractCPU {
 
     map<uint8_t, vector<string>> m_opcodeToParams;
     map<string, string> m_typeTripeToNative;
-    vector<string> m_similarBinops;
+    vector<string> m_similarBinops, m_branchOpcodes;
     vector<string> m_singleParamOpcodes;
     vector<string> m_registers;
     map<string, string> m_symtab;

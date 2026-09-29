@@ -6,6 +6,7 @@
 #include <algorithm>
 
 CPU6502::CPU6502() : AbstractCPU() {
+    //    AbstractCPU();
     Init(Data::s_opcodes);
     m_symtab.clear();
     m_hexprefix = "$";
@@ -18,10 +19,12 @@ CPU6502::CPU6502() : AbstractCPU() {
     m_typeTripeToNative["and"] = "and";
     m_typeTripeToNative["xor"] = "eor";
 
-    m_typeTripeToNative["bne"] = "bne";
-    m_typeTripeToNative["beq"] = "beq";
-    m_typeTripeToNative["bgtu"] = "bcc";
-    m_typeTripeToNative["bltu"] = "bcs";
+    /*
+        m_typeTripeToNative["bne"] = "bne";
+        m_typeTripeToNative["beq"] = "beq";
+        m_typeTripeToNative["bgtu"] = "bcc";
+        m_typeTripeToNative["bltu"] = "bcs";
+        */
     m_typeTripeToNative["shr"] = "lsr";
     m_typeTripeToNative["shl"] = "asl";
 
@@ -32,13 +35,8 @@ CPU6502::CPU6502() : AbstractCPU() {
     m_typeTripeToNative["return"] = "rts";
     m_typeTripeToNative["rti"] = "rti";
 
-    m_typeTripeToNative["bcc"] = "bcc";
-    m_typeTripeToNative["bcs"] = "bcs";
-
-    m_similarBinops = {"add", "sub", "or", "and", "xor", "mulu", "shl", "shr"};
-    m_singleParamOpcodes = {"bne",  "beq",  "bgts", "blts", "bgs",
-                            "bls",  "bgtu", "bltu", "bgu",  "blu",
-                            "call", "jump", "bcc",  "bcs"};
+    //    m_typeTripeToNative["bcc"] = "bcc";
+    //    m_typeTripeToNative["bcs"] = "bcs";
 
     m_code["mul8"] = string((char *)resources_6502_mul8_asm);
     m_code["div8"] = string((char *)resources_6502_div8_asm);
@@ -65,6 +63,7 @@ string CPU6502::loadIndex(string &s, string idx, string type) {
         Asm("ld" + xy + " " + idx);
     return xy;
 }
+
 /*
 string CPU6502::ParseFromBinary(vector<uint8_t>& data, int& pos) {
 }
@@ -203,11 +202,11 @@ void CPU6502::Binop(int &pos, int opcode) {
 
     string op = m_typeTripeToNative[m_opcodeToAsm[opcode]];
     // Inc / dec
-    if (op == "adc" && res.str == a.str && b.str == "1") {
+    if (op == "adc" && res.str == a.str && b.str == "1" && !is16bit(res.str)) {
         Asm("inc " + res.str);
         return;
     }
-    if (op == "sbc" && res.str == a.str && b.str == "1") {
+    if (op == "sbc" && res.str == a.str && b.str == "1" && !is16bit(res.str)) {
         Asm("dec " + res.str);
         return;
     }
@@ -286,11 +285,46 @@ void CPU6502::Mov(int &pos) {
     }
 }
 
-void CPU6502::Cmp(int &pos) {
+void CPU6502::Branch(int &pos, int opcode) {
     auto a = getNextParam(m_data, pos);
     auto b = getNextParam(m_data, pos);
+    auto lbl = getNextParam(m_data, pos);
 
-    if (a.str != m_nada)
-        Asm("lda " + a.str);
-    Asm("cmp " + b.prefix());
+    if (is16bit(a.str) || is16bit(b.str)) {
+        Asm("ldx " + a.hi());
+        Asm("lda " + a.lo());
+        Asm("cmp " + b.lo());
+        m_nextCompare = "cpx " + b.hi();
+        m_prevCmpWas16bit = true;
+    } else {
+        if (a.str != m_nada)
+            Asm("lda " + a.str);
+        Asm("cmp " + b.prefix());
+    }
+    if (opcode == m_asmToOpcode["jeq"])
+        Asm("beq " + lbl.str);
+    if (opcode == m_asmToOpcode["jneq"])
+        Asm("bne " + lbl.str);
+
+    if (opcode == m_asmToOpcode["jgt"])
+        Asm("bcs " + lbl.str);
+    if (opcode == m_asmToOpcode["jlt"])
+        Asm("bcc " + lbl.str);
 }
+/*
+void CPU6502::Beq(int &pos, string cmd) {
+    auto lbl = getNextParam(m_data, pos);
+    if (m_prevCmpWas16bit && cmd == "bne") {
+        auto lblDone = getTempLabel();
+        Asm(cmd + " " + lbl.str);
+        Asm(m_nextCompare);
+        Asm(cmd + " " + lbl.str);
+        //        Asm("jmp " + lbl.str);
+        //        Label(lblDone);
+        m_prevCmpWas16bit = false;
+        return;
+    }
+
+    Asm(cmd + " " + lbl.str);
+}
+*/

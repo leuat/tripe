@@ -26,7 +26,9 @@ class CPU6502 : public AbstractCPU {
     void Divu(int &pos) override;
     void Binop(int &pos, int opcode) override;
     void Mov(int &pos) override;
-    void Cmp(int &pos) override;
+    void Branch(int &pos, int opcode) override;
+    //    void Beq(int &pos, string cmd) override;
+
     //    void triplet(vector<uint8_t>& data, int& pos, bool isPtr, bool
     //    isLoad);
 };
