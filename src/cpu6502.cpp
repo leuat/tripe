@@ -389,12 +389,13 @@ void CPU6502::Mov(int &pos) {
         is16bit(val)) {
 
         if (is16bit(res)) {
-            Asm("lda " + val.lhi());
+            Asm("ldx " + val.lhi());
 
-            Asm("sta " + res.hi());
+            Asm("stx " + res.hi());
         }
+        if (val.lo() != m_nada)
+            Asm("lda " + val.lo());
 
-        Asm("lda " + val.lo());
         Asm("sta " + res.str);
 
     } else {

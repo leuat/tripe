@@ -115,27 +115,34 @@ void Opcodes::ParseToBinary(vector<string> &line, vector<uint8_t> &data) {
 
                 d = Util::ival2int8(v[1], v[0]);
 
-                // replace mulu power of 2 with shl
-                if (isMulU || isDivU) {
-                    int i = d[0];
+                // replace mulu power of 2 with shl, also for div but only in
+                // the correct placement
+                if (isMulU || (isDivU && i == 3)) {
+                    int j = d[0];
+                    //                    if (isDivU)
+                    /*                    for (auto l : line)
+                                            std::cout << l;
+                                        std::cout << endl;
+                                        cout << isDivU << " : " << i << " : " <<
+                       j << endl;*/
                     int val = -1;
-                    if (i == 1)
+                    if (j == 1)
                         val = 0;
-                    if (i == 2)
+                    if (j == 2)
                         val = 1;
-                    if (i == 4)
+                    if (j == 4)
                         val = 2;
-                    if (i == 8)
+                    if (j == 8)
                         val = 3;
-                    if (i == 16)
+                    if (j == 16)
                         val = 4;
-                    if (i == 32)
+                    if (j == 32)
                         val = 5;
-                    if (i == 64)
+                    if (j == 64)
                         val = 6;
-                    if (i == 128)
+                    if (j == 128)
                         val = 7;
-                    if (i == 256)
+                    if (j == 256)
                         val = 8;
                     if (val != -1) {
                         //                        std::cout <<
