@@ -1,6 +1,7 @@
 #include "abstractcpu.h"
 
 #include "error.h"
+#include "opcodes.h"
 #include "opcodes_data.h"
 
 AbstractCPU::AbstractCPU() {
@@ -152,12 +153,27 @@ string AbstractCPU::ParseFromBinary(int &pos) {
         int cnt = (uint8_t)data[pos] | (((uint8_t)data[pos + 1]) << 8);
         pos += 2;
         for (int i = 0; i < cnt; i++) {
-            int val = data[pos];
-            if (opcode == m_asmToOpcode[".uint16"]) {
-                val |= data[++pos] << 8;
+
+            uint8_t flag = data[pos++];
+            if (flag == Opcodes::DATATYPE_NUMBER) {
+                int val = data[pos];
+                //                cout << val;
+                if (opcode == m_asmToOpcode[".uint16"]) {
+                    val |= data[++pos] << 8;
+                }
+                pos++;
+                m_line += m_hexprefix + Util::toHex(val);
             }
-            pos++;
-            m_line += m_hexprefix + Util::toHex(val);
+            if (flag == Opcodes::DATATYPE_STRING) {
+                string s = "";
+                while (data[pos] != 0) {
+                    s += char(data[pos++]);
+                }
+                pos++;
+                //                cout << " line data " << s << endl;
+                m_line += s;
+            }
+
             if (i != cnt - 1)
                 m_line += ", ";
         }

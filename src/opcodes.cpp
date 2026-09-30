@@ -36,16 +36,43 @@ void Opcodes::ParseToBinary(vector<string> &line, vector<uint8_t> &data) {
             string type = line[0];
             uint16_t cnt = 0;
             vector<uint8_t> d;
+            stringstream ss;
             bool is16bit = (type == ".uint16");
             while (i < line.size()) {
                 auto val = Util::trim(line[i]);
-                //                cout << val << " ";
+                bool isHex = false;
+                if (val.starts_with("0x")) {
+                    isHex = true;
+                }
+                uint8_t flag = DATATYPE_NUMBER;
                 if (val != "") {
                     int ival = 0;
-                    stringstream(val) >> hex >> ival;
-                    d.push_back(ival & 0xFF);
-                    if (is16bit)
-                        d.push_back((ival >> 8) & 0xFF);
+                    ss.clear();
+                    if (isHex)
+                        ss << std::hex << val;
+                    else
+                        ss << std::dec << val;
+                    ss >> ival;
+                    if (ss.fail()) {
+                        flag = DATATYPE_STRING;
+                        //                        cout << " FAIL '" << val << "'
+                        //                        " << ival << endl;
+                    }
+                    // else
+                    //     cout << "OK '" << val << "'  " << ival << endl;
+                    d.push_back(flag);
+                    if (flag == DATATYPE_NUMBER) {
+                        d.push_back(ival & 0xFF);
+                        if (is16bit)
+                            d.push_back((ival >> 8) & 0xFF);
+                    } else {
+                        // String
+                        for (auto c : val) {
+                            d.push_back((uint8_t)c);
+                        }
+                        d.push_back((uint8_t)0);
+                    }
+
                     cnt++;
                 }
                 i++;

@@ -412,9 +412,11 @@ void CPU6502::Branch(int &pos, int opcode) {
 
     bool is16 = is16bit(a) || is16bit(b);
 
+    if (m_symtab.contains(a.str) && !is16bit(a))
+        is16 = false;
     if (!is16) {
         if (a.str != m_nada)
-            Asm("lda " + a.str);
+            Asm("lda " + a.prefix());
 
         Asm("cmp " + b.prefix());
 
