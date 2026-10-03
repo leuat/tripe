@@ -1,39 +1,58 @@
-# opcodes
+# opcodes used in tripe
 
 
+# address: place the variable at a specific memory address. no initial value
+address,0xF7,
+# uint types
 uint8,0xF8,
 uint16,0xF9,
 uint32,0xFA,
 uint64,0xFB,
+# pointer types: *uint8, *uint16 or *uint32
 ptr8,0xFC,
 ptr16,0xFD,
 ptr32,0xFE,
 
+# section markers
 .tripe,0x01,ival
 .code,0x02,ival:p
 .data,0x3,ival
+
+# declare a variable
 decl,0x4,p:ival
-.endasm,0x5,
-.processor,0x6,p
+
+# asm
 .asm,0x7,p
+.endasm,0x5,
+
+# define cpu
+.processor,0x6,p
+
+#labels
 .label,0x8,p
+
+# where to place tripe generated code (mul/div code etc)
 .gcode,0x9,0
+
+# block data stream
 
 .uint8,0xF0,datastream
 .uint16,0xF1,datastream
-.incbin,0xF7,p
+.incbin,0xF6,p
 
+#end code
 .end,0x0F,0
 
+# the tree main opcodes in tripe
 
+mov,0x12,p:p
+store,0x13,p:p:p 
+load,0x14,p:p:p 
 
 return,0x10,0
-mov,0x11,p:p
-#store_p,0x12,p:p:p 
-#load_p,0x13,p:p:p 
-store,0x12,p:p:p 
-load,0x13,p:p:p 
-rti,0x14,0
+rti,0x11,0
+
+# binary operations
 
 add,0x20,p:p:p
 sub,0x21,p:p:p
@@ -45,6 +64,7 @@ or,0x2C,p:p:p
 and,0x2D,p:p:p
 xor,0x2E,p:p:p
 
+# branching
 
 jeq,0x40,p:p:p
 jneq,0x41,p:p:p
@@ -53,11 +73,7 @@ jlt,0x43,p:p:p
 jgte,0x44,p:p:p
 jlte,0x45,p:p:p
 
-#cmp,0x40,p:p
-#beq,0x44,p
-#bne,0x45,p
-#bcc,0x46,p
-#bcs,0x47,p
+# jumps
 
 jump,0x80,p
 call,0x81,p
