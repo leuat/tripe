@@ -259,7 +259,7 @@ void CPU6502::Binop(int &pos, int opcode) {
     }
 
     if (op == "asl" || op == "lsr") {
-        if (is16bit(a)) {
+        if (is16bit(a) || is16bit(b)) {
             Asm("lda " + a.lo());
             Asm("sta " + res.lo());
             Asm("lda " + a.lhi());
@@ -313,30 +313,12 @@ void CPU6502::Binop(int &pos, int opcode) {
         }
 
         Asm("sta " + res.prefix());
+        if (is16bit(res)) {
+            Asm("ldx #0 ; make sure hi bit is set");
+            Asm("stx " + res.hi());
+        }
         return;
     }
-    /*
-        if (op == "lsr") {
-            //          std::cout << "shlll  " << b.ival<<std::endl;
-            if (is16bit(a)) {
-                Asm("lda " + a.lo());
-                Asm("sta " + res.lo());
-                Asm("lda " + a.lhi());
-                Asm("sta " + res.hi());
-                for (int i = 0; i < b.ival; i++) {
-                    Asm("lsr " + res.hi());
-                    Asm("ror " + res.lo());
-                }
-
-                return;
-            }
-            Asm("lda " + a.lo());
-            for (int i = 0; i < b.ival; i++)
-                Asm("lsr");
-            Asm("sta " + res.prefix());
-            return;
-        }
-    */
     Asm("lda " + a.lo());
 
     //        std::cout << " tst " << (int)opcode  <<  " " <<op<< " "

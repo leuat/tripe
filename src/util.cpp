@@ -206,3 +206,13 @@ string Util::getFilenameAlone(string fn) {
     lst = Util::split(fn, '.', lst);
     return lst[0];
 }
+
+int Util::fromNumber(string s) {
+    stringstream st(s);
+    uint64_t val;
+    if (s.find("0x", 0) == 0)
+        st >> hex >> val;
+    else
+        st >> val;
+    return val;
+}

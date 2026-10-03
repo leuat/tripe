@@ -1,11 +1,18 @@
 #include "opts/tropt.h"
 #include <iostream>
-
+#include <map>
 using namespace std;
 
 void Tropt::bops() {
 
-    vector<string> bp = {"and", "add", "or", "xor", "sub"};
+    /*
+    Doesn't work:
+    add     _r16_1  uint16:0x400    _r16_2
+    mov     ptr     _r16_1
+*/
+
+    vector<string> bp = {"and", "add", "or",   "xor", "sub",
+                         "shl", "shr", "divu", "mulu"};
 
     vector<string> n;
     // add 	t_uint8_2	j	uint8:0x01
@@ -16,10 +23,9 @@ void Tropt::bops() {
         auto l1 = getLine(i + 1);
         auto cur = m_cur[i];
         if (find(bp.begin(), bp.end(), l0[0]) != bp.end()) {
-            if (l0.size() == 4 && l1.size() == 3)
-                if (l1.size() >= 2 && l0.size() >= 1 && l1[0] == "mov")
-                    //				cout
-                    //<< "Potential: " <<m_cur[i] << endl;
+            if (l0.size() == 4 && l1.size() == 3) {
+
+                if (l1.size() >= 2 && l0.size() >= 1 && l1[0] == "mov") {
                     if (l0[1] == l1[2] && isTemp(l0[1])) {
                         // Perform replace
                         cur = t + l0[0] + t + l1[1] + t + l0[2] + t + l0[3];
@@ -31,6 +37,45 @@ void Tropt::bops() {
                         m_noLines++;
                         i += 1;
                     }
+                }
+            }
+        }
+        n.push_back(cur);
+    }
+
+    m_cur = n;
+}
+
+void Tropt::muldiv() {
+
+    vector<string> n;
+    // add  t_uint8_2   j   uint8:0x01
+    // mov j t_uint8_2
+    map<int, int> p2;
+    int start = 2;
+    for (int i = 0; i < 16; i++) {
+        p2[start] = i + 1;
+        start *= 2;
+    }
+
+    for (int i = 0; i < m_cur.size(); i++) {
+        auto l0 = getLine(i);
+        auto cur = m_cur[i];
+        l0[0] = Util::toLower(l0[0]);
+        if (l0.size() == 4 && (l0[0] == "mulu" || l0[0] == "divu")) {
+            vector<string> lst;
+            lst = Util::split(l0[3], ':', lst);
+            if (lst.size() == 2) {
+                auto type = lst[0];
+                int ival = Util::fromNumber(lst[1]);
+                if (p2.contains(ival)) {
+
+                    cur = t + ((l0[0] == "mulu") ? "shl" : "shr") + t + l0[1] +
+                          t + l0[2] + t + type + ":0x" + Util::toHex(p2[ival]);
+                    //                    cout << m_cur[i] << " -> " << cur <<
+                    //                    endl;
+                }
+            }
         }
         n.push_back(cur);
     }
@@ -136,12 +181,13 @@ vector<string> Tropt::optimise(vector<string> input) {
     mov1();
     load1();
     load2();
+    muldiv();
 
     return m_cur;
 }
 
 vector<string> Tropt::getLine(int i) {
-    vector<string> ret;
+    vector<string> ret, ret2;
     if (i >= m_cur.size())
         return ret;
     auto s = Util::trim(m_cur[i]);
@@ -153,5 +199,9 @@ vector<string> Tropt::getLine(int i) {
     if (ret.size() > 0)
         ret[0] = Util::toLower(ret[0]);
 
-    return ret;
+    for (auto c : ret)
+        if (Util::trim(c) != "")
+            ret2.push_back(c);
+
+    return ret2;
 }

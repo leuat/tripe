@@ -38,6 +38,8 @@ class Util {
     static string toHex(uint64_t);
     static string toDec(uint64_t);
 
+    static int fromNumber(string s);
+
     static void save_binary(string file, const vector<uint8_t> data);
     static void save_text(string file, const vector<string> data);
     static vector<uint8_t> load_binary(string file);

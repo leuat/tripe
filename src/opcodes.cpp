@@ -11,6 +11,7 @@ void Opcodes::ParseToBinary(vector<string> &line, vector<uint8_t> &data) {
     vector<string> &p = m_opcodeToParams[opcode];
     bool isMulU = opcode == m_asmToOpcode["mulu"];
     bool isDivU = opcode == m_asmToOpcode["divu"];
+    bool isFirstParam = true;
 
     data.push_back(opcode);
 
@@ -21,6 +22,7 @@ void Opcodes::ParseToBinary(vector<string> &line, vector<uint8_t> &data) {
 
     int opCodePos = data.size() - 1;
     int i = 0;
+
     for (auto s : p) {
         if (s == "0")
             break;
@@ -109,22 +111,24 @@ void Opcodes::ParseToBinary(vector<string> &line, vector<uint8_t> &data) {
 
                 //              replace( a.begin(), a.end(), '*', ' ');
                 a = Util::trim(a);
-                //                cout << a <<" " << v[0] <<" "<< v[1]<<endl;
+                // cout << a << " " << v[0] << " " << v[1] << endl;
                 if (!m_asmToOpcode.contains(a))
                     Error::RaiseError("Unknown type: " + a);
 
                 d = Util::ival2int8(v[1], v[0]);
 
                 // replace mulu power of 2 with shl, also for div but only in
+
                 // the correct placement
-                if (isMulU || (isDivU && i == 3)) {
+                /*
+                if (isMulU || isDivU {
                     int j = d[0];
-                    //                    if (isDivU)
-                    /*                    for (auto l : line)
-                                            std::cout << l;
-                                        std::cout << endl;
-                                        cout << isDivU << " : " << i << " : " <<
-                       j << endl;*/
+                    //                   if (isDivU)
+                    //                    for (auto l : line)
+                    //                      std::cout << l;
+                    //                std::cout << endl;
+                    cout << line[i] << "  " << isDivU << " : " << (int)d[0]
+                         << "   " << (int)d[1] << " : " << j << endl;
                     int val = -1;
                     if (j == 1)
                         val = 0;
@@ -156,10 +160,9 @@ void Opcodes::ParseToBinary(vector<string> &line, vector<uint8_t> &data) {
                         //                        (int)m_asmToOpcode["shl"] << "
                         //                        a:" <<a<< std::endl;
                     }
-                }
+                }*/
                 // cout << "length : "<<a << "   " <<d.size() << " "
                 // <<std::to_string(d[0]) << " " <<d[1]<< endl;
-
                 d.insert(d.begin(), m_asmToOpcode[a]);
             }
             for (auto b : d) {

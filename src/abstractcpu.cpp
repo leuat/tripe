@@ -204,8 +204,10 @@ string AbstractCPU::ParseFromBinary(int &pos) {
 
     if (opcode == m_asmToOpcode[".label"])
         Label(getNextParam(data, pos).str);
-    if (opcode == m_asmToOpcode[".gcode"])
+    if (opcode == m_asmToOpcode[".gcode"]) {
         Asm(".gcode");
+        return m_line;
+    }
     if (isBranchOpcode(opcode)) {
         Branch(pos, opcode);
         return m_line;

@@ -21,6 +21,7 @@ class Tropt {
     void mov1();
     void load1();
     void load2();
+    void muldiv();
 
     int m_noLines = 0;
 };

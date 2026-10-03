@@ -66,17 +66,21 @@ void Phopt6502::ldaldxlda(vector<vector<string>> &line, vector<string> &l,
     ldy i
     lda varPrefixed_c
 */
+    if (line.size() != 3)
+        return;
+    if (l.size() != 3)
+        return;
     auto line3 = line[2];
     auto line2 = line[1];
     auto line1 = line[0];
     auto l1 = l[0];
     auto l2 = l[1];
-    auto l3 = l[3];
-    if (line2.size() != 0 && line3.size() != 0 && line1.size() != 0) {
-
+    auto l3 = l[2];
+    if (line1.size() == 2 && line2.size() == 2 && line3.size() == 2) {
         auto op1 = Util::toLower(line1[0]);
         auto op2 = Util::toLower(line2[0]);
         auto op3 = Util::toLower(line3[0]);
+
         if (line1[0] == "sta" && line3[0] == "lda" && line1[1] == line3[1] &&
             !line1[1].ends_with(",x") && !line1[1].ends_with(",y")) {
             if (line2[0] == "ldy" || line2[0] == "ldx") {
@@ -151,7 +155,7 @@ becomes
             char cmd = op2.at(2);
             //              cout
             //<< cmd << endl;
-            if (line2[1] == line1[1]) {
+            if ((line2[1] == line1[1]) && !line2[1].starts_with("$")) {
                 if (cmd == 'a') {
                     if (isTemp(line1[1])) {
                         cur = m_curLine;
