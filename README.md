@@ -3,8 +3,8 @@ Turbo Rascal Intermediate Processing Engine
 ## Huh?
 What is Tripe - and what will it be? 
 ## the process
-When finished, Tripe will basically be LLVM for 8/16 systems. This means that 
-any homebrew compiler needs to output the relatively simple .tripe intermediate language as a text file (semi-asm) 
+When finished, Tripe will basically be LLVM for 8/16/20/32 bit systems. This means that 
+any homebrew compiler only needs to output the relatively simple .tripe intermediate language as a text file (semi-asm) 
 - tripe will optimise this .trasm file for you, so the compiler can generate crappy code 
 - tripe then converts the .trasm to a binary .trp file (for future linking, with symbols etc) 
 - tripe then converts the binary .trp file to an .asm file of the given architecture/system, think 6502/c64 or 6502/vic20 or 6809/coco3 
@@ -35,13 +35,14 @@ CPUs that will be targeted in the future: 6502, 6809, m68k, Z80/GB, 16 bit X86 &
 
 // compiles to the following tripe
 
-	load	siny	yy	val
 	mov 	i 	uint8:0x01
 .label Plasma_forloop28
 	load 	sinx 	i 	_r8_3
 	add  	_r8_2 	_r8_3 	val
 	load	lookupDiv16	_r8_2	varPrefixed_c
 	store ptr i varPrefixed_c
+	load 	fadeTab 	varPrefixed_c 	_r8_1
+	store 	colorP 	i 	_r8_1
 .label Plasma_loopstart29
 	add	i	i	uint8:0x01
 	jneq 	i 	uint8:0x27 	Plasma_forloop28
