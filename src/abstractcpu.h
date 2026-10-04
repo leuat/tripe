@@ -57,6 +57,8 @@ class Param {
     }
     string hi() {
         if (type == 1) {
+            if (typeName == "uint8")
+                return "#0";
             if (isRef())
                 return "#>" + clean();
             else // if (typeName == "uint16" || typeName.starts_with("ptr"))

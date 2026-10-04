@@ -117,7 +117,9 @@ void CPU6502::LoadStore(int &pos, int opcode) {
         // store_p ptr idx val
         auto type = m_symtab[res.str];
         string y = loadIndex(s, idx.prefix(), type);
-        Asm("lda " + val.lo());
+        if (val.lo() != m_nada)
+            Asm("lda " + val.lo());
+
         if (y == "y")
             Asm("sta (" + res.str + ")," + y);
         else
@@ -145,12 +147,18 @@ void CPU6502::LoadStore(int &pos, int opcode) {
             Asm("lda " + res.str + "," + y);
 
         Asm("sta " + val.prefix());
-        if (type == "uint16") {
-            if (y == "y") {
-                Asm("iny");
-                Asm("lda (" + res.str + ")," + y);
+
+        // If store type is 16 bit
+        if (is16bit(val)) {
+            // if load type is 16 bit
+            if (is16bit(res)) {
+                if (y == "y") {
+                    Asm("iny");
+                    Asm("lda (" + res.str + ")," + y);
+                } else
+                    Asm("lda " + res.str + "+1," + y);
             } else
-                Asm("lda " + res.str + "+1," + y);
+                Asm("lda #0 ; loading uint8, storing uint16");
 
             Asm("sta " + val.prefix() + "+1");
         }
@@ -190,7 +198,7 @@ void CPU6502::Mulu(int &pos) {
     auto a = getNextParam(m_data, pos);
     auto b = getNextParam(m_data, pos);
 
-    if (!(is16bit(a) || is16bit(b))) {
+    if (!(is16bit(a) || is16bit(b) || is16bit(ret))) {
         addCode("mul8");
         //        cout << m_opcodeToAsm[a.type] << "  " << b.str << endl;
         Asm("ldx " + b.prefix());
@@ -214,7 +222,8 @@ void CPU6502::Mulu(int &pos) {
     Asm("sta mul16x8_num2");
     Asm("jsr mul_16bit");
     Asm("sta " + ret.lo());
-    Asm("sty " + ret.hi());
+    if (is16bit(ret))
+        Asm("sty " + ret.hi());
     //        Asm( "ldy #0");
 }
 void CPU6502::Divu(int &pos) {
@@ -249,7 +258,8 @@ void CPU6502::Divu(int &pos) {
     Asm("lda initdiv16x8_dividend");
     Asm("ldy initdiv16x8_dividend+1");
     Asm("sta " + ret.lo());
-    Asm("sty " + ret.hi());
+    if (is16bit(ret))
+        Asm("sty " + ret.hi());
 }
 
 void CPU6502::Binop(int &pos, int opcode) {
@@ -270,6 +280,14 @@ void CPU6502::Binop(int &pos, int opcode) {
 
     if (op == "asl" || op == "lsr") {
         if (is16bit(a) || is16bit(b)) {
+
+            bool useTemp = !is16bit(res);
+            auto resKeep = res;
+            if (useTemp) {
+                res.str = "$F0";
+                res.typeName = "uint16";
+            }
+
             Asm("lda " + a.lo());
             Asm("sta " + res.lo());
             Asm("lda " + a.lhi());
@@ -299,6 +317,10 @@ void CPU6502::Binop(int &pos, int opcode) {
                 Asm("cpx #0");
                 Asm("bne " + loop);
                 Label(cancel);
+            }
+            if (useTemp) {
+                Asm("lda " + res.str);
+                Asm("sta " + resKeep.lo());
             }
 
             return;
@@ -354,21 +376,15 @@ void CPU6502::Binop(int &pos, int opcode) {
     //        <<(int)(b.type==m_asmToOpcode["uint16"]) << endl; std::cout << "
     //        Type : " << m_symtab[a.prefix()] << " "
     //        <<(int)(b.type==m_asmToOpcode["uint16"]) << endl;
+    bool ab16bit =
+        is16bit(a) || is16bit(b) || a.isRef() || b.isRef() || is16bit(res);
 
-    if (is16bit(a) || is16bit(b) || a.isRef() || b.isRef()) {
+    if (ab16bit) {
 
         //          Error::RaiseError("Add / sub doesn't work with 16 bit yet");
         Asm("lda " + a.hi());
-        if (m_symtab[b.prefix()] == "uint8") {
-            Asm(op + " #0");
-
-        } else {
-            if (b.type == 1)
-                Asm(op + " " + b.prefix() + "+1");
-            else
-                Asm(op + " " + b.hi());
-        }
-
+        Asm(op + " " + b.hi());
+        //
         Asm("sta " + res.prefix() + "+1");
     }
 }

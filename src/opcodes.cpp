@@ -4,6 +4,9 @@
 #include <sstream>
 
 void Opcodes::ParseToBinary(vector<string> &line, vector<uint8_t> &data) {
+    if (!m_asmToOpcode.contains(line[0]))
+        Error::RaiseError("Error parsing line with opcode: " + line[0]);
+
     uint8_t opcode = m_asmToOpcode[line[0]];
     if (opcode == 0) {
         Error::RaiseError("Incorrect opcode on line : " + line[0]);
@@ -22,7 +25,6 @@ void Opcodes::ParseToBinary(vector<string> &line, vector<uint8_t> &data) {
 
     int opCodePos = data.size() - 1;
     int i = 0;
-
     for (auto s : p) {
         if (s == "0")
             break;
@@ -116,62 +118,13 @@ void Opcodes::ParseToBinary(vector<string> &line, vector<uint8_t> &data) {
                     Error::RaiseError("Unknown type: " + a);
 
                 d = Util::ival2int8(v[1], v[0]);
-
-                // replace mulu power of 2 with shl, also for div but only in
-
-                // the correct placement
-                /*
-                if (isMulU || isDivU {
-                    int j = d[0];
-                    //                   if (isDivU)
-                    //                    for (auto l : line)
-                    //                      std::cout << l;
-                    //                std::cout << endl;
-                    cout << line[i] << "  " << isDivU << " : " << (int)d[0]
-                         << "   " << (int)d[1] << " : " << j << endl;
-                    int val = -1;
-                    if (j == 1)
-                        val = 0;
-                    if (j == 2)
-                        val = 1;
-                    if (j == 4)
-                        val = 2;
-                    if (j == 8)
-                        val = 3;
-                    if (j == 16)
-                        val = 4;
-                    if (j == 32)
-                        val = 5;
-                    if (j == 64)
-                        val = 6;
-                    if (j == 128)
-                        val = 7;
-                    if (j == 256)
-                        val = 8;
-                    if (val != -1) {
-                        //                        std::cout <<
-                        //                        (int)data[opCodePos] << " "
-                        //                        <<(int)opcode << std::endl;
-                        d[0] = val;
-                        data[opCodePos] =
-                            (uint8_t)m_asmToOpcode[isMulU ? "shl" : "shr"];
-                        //                        std::cout << "REPLACE MUL WITH
-                        //                        SHL " <<
-                        //                        (int)m_asmToOpcode["shl"] << "
-                        //                        a:" <<a<< std::endl;
-                    }
-                }*/
-                // cout << "length : "<<a << "   " <<d.size() << " "
-                // <<std::to_string(d[0]) << " " <<d[1]<< endl;
                 d.insert(d.begin(), m_asmToOpcode[a]);
             }
             for (auto b : d) {
                 data.push_back(b);
             }
         }
-        //      cout << s<< ", ";
     }
-    //    cout <<endl;
 }
 string Opcodes::ParseFromBinary(int &pos) {
     return "";

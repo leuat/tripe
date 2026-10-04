@@ -137,7 +137,7 @@ void Parser::ParseTextToBinary() {
         Error::s_curLine = s;
         Error::s_lineNumber = ln++;
         vector<string> v;
-        //        cout << s << endl;
+        // cout << s << endl;
         Util::split(s, ' ', v);
         op.ParseToBinary(v, m_data);
         cnt++;
