@@ -3,8 +3,8 @@ Turbo Rascal Intermediate Processing Engine
 ## Huh?
 What is Tripe - and what will it be? 
 ## the process
-When finished, Tripe will basically be LLVM for 8/16 systems. This means that 
-any homebrew compiler needs to output the relatively simple .tripe intermediate language as a text file (semi-asm) 
+When finished, Tripe will basically be LLVM for 8/16/20/32 bit systems. This means that 
+any homebrew compiler only needs to output the relatively simple .tripe intermediate language as a text file (semi-asm) 
 - tripe will optimise this .trasm file for you, so the compiler can generate crappy code 
 - tripe then converts the .trasm to a binary .trp file (for future linking, with symbols etc) 
 - tripe then converts the binary .trp file to an .asm file of the given architecture/system, think 6502/c64 or 6502/vic20 or 6809/coco3 
@@ -24,18 +24,40 @@ CPUs that will be targeted in the future: 6502, 6809, m68k, Z80/GB, 16 bit X86 &
 ## Trasm example
 
 ```
-  ; whole line: sinx[x] = sin[c2x] + sin[c2y];
+// The following pascal code
 
-  ; t_uint8_load1 = sin[c2x]
-	load 	sin 	c2x 	t_uint8_load1  
-  ; t_uint8_load2 = sin[c2y]
-	load 	sin 	c2y 	t_uint8_load2
-  ; t_uint8_1 = t_uint8_load1 + t_uint8_load2
-	add 	t_uint8_1 	t_uint8_load1 	t_uint8_load2
-  ; sinx[x] = t_uint8_1
-	store 	sinx 	x 	t_uint8_1
-  ; c2x+=3
-	add	c2x	c2x	uint8:0x03
+		for i:=xStart to xEnd do 
+		begin
+			c:=lookupDiv16[ (sinx[i] +val) ];
+			ptr[i]:=c;
+			colorP[i] := fadeTab[ c ];
+		end;
 
+// compiles to the following tripe
+
+	mov 	i 	uint8:0x01
+.label Plasma_forloop28
+	load 	sinx 	i 	_r8_3
+	add  	_r8_2 	_r8_3 	val
+	load	lookupDiv16	_r8_2	varPrefixed_c
+	store ptr i varPrefixed_c
+	load 	fadeTab 	varPrefixed_c 	_r8_1
+	store 	colorP 	i 	_r8_1
+.label Plasma_loopstart29
+	add	i	i	uint8:0x01
+	jneq 	i 	uint8:0x27 	Plasma_forloop28
 
 ```
+
+# comments
+
+The extensive list of opcodes/instructions in tripe can be found in https://github.com/leuat/tripe/blob/main/resources/opcodes.txt .
+Note that this definition might change over time, as tripe is being developed. 
+
+# register-free assembler
+
+Tripe uses temporary values _r8_1 (uint8), _r16_2 (uint16) etc for storing in-between calculations. These values will either be converted
+to real registers on some cpus (like d0-d6 on the m68k) or zero-page temp values on the 6502 etc, or might even be optimized out by Tripe.
+
+	load 	fadeTab 	varPrefixed_c 	_r8_1
+	store 	colorP 	i 	_r8_1
