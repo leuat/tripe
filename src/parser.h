@@ -22,7 +22,7 @@ class Parser {
     void AppendExtraCode(AbstractCPU *cpu);
 
     void ParseTextToBinary();
-    void ParseBinary(AbstractCPU *op);
+    void ParseBinary(AbstractCPU *op, int pass);
 
     void LoadBinary(string inFile);
 

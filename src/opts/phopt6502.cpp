@@ -24,11 +24,14 @@ void Phopt6502::ldX(string cmd) {
     m_curLine = 0;
     for (int i = 0; i < m_src.size(); i++) {
 
+        bool remove = false;
         string l1 = "";
         auto line1 = getLine(i);
-        bool remove = false;
+
         if (line1.size() != 0) {
             auto op1 = Util::toLower(line1[0]);
+            if (line1[0] == ".gcode")
+                remove = true;
             if (curVal != "")
                 if (op1.find(":") != std::string::npos || op1 == tax ||
                     op1 == "jmp" || op1 == "bne" || op1 == "beq" ||

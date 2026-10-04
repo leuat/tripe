@@ -24,9 +24,13 @@ class CPU6502 : public AbstractCPU {
     void Declare(int &pos) override;
     void Mulu(int &pos) override;
     void Divu(int &pos) override;
+    void Const(int &pos) override;
     void Binop(int &pos, int opcode) override;
     void Mov(int &pos) override;
     void Branch(int &pos, int opcode) override;
+
+    int estimateCodeSize(const string &s) override;
+
     //    void Beq(int &pos, string cmd) override;
 
     //    void triplet(vector<uint8_t>& data, int& pos, bool isPtr, bool

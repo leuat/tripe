@@ -225,6 +225,8 @@ string AbstractCPU::ParseFromBinary(int &pos) {
     }
     if (opcode == m_asmToOpcode["decl"])
         Declare(pos);
+    if (opcode == m_asmToOpcode["const"])
+        Const(pos);
     if (isBinaryOpOpcode(opcode))
         Binop(pos, opcode);
     if (opcode == m_asmToOpcode["mov"])
@@ -237,4 +239,35 @@ string AbstractCPU::ParseFromBinary(int &pos) {
         Asm(m_typeTripeToNative["rti"]);
 
     return m_line;
+}
+
+int AbstractCPU::branchSizeEstimator(const string &lbl, int pos) {
+
+    int size = 0;
+    int curLine = m_branches[pos];
+    int endLine = curLine - 1;
+    // Backward
+    // cout << " START LINE " << m_src[curLine] << endl;
+    while (!m_src[endLine].starts_with(lbl) && endLine > 0) {
+        endLine--;
+    }
+    if (endLine == 0) {
+        endLine = curLine + 1;
+        while (!m_src[endLine].starts_with(lbl) && endLine < m_src.size()) {
+            endLine++;
+        }
+    }
+    //   cout << "END LINE " << m_src[endLine] << endl;
+    if (endLine == 0 || endLine == m_src.size() - 1)
+        Error::RaiseError("Branching error: could not find label " + lbl);
+    if (curLine > endLine)
+        swap(curLine, endLine);
+
+    // cout << "From lines: " << curLine << "  to " << endLine << endl;
+    for (int i = curLine; i < endLine; i++)
+        size += estimateCodeSize(m_src[i]);
+
+    //    cout << "End : " << m_src[curLine] << endl;
+
+    return size;
 }

@@ -47,7 +47,6 @@ void Parser::AppendExtraCode(AbstractCPU *cpu) {
     for (int i = 0; i < m_src.size(); i++) {
         if (Util::trim(m_src[i]) == ".gcode") {
             lineNumber = i;
-            break;
         }
     }
     if (lineNumber != -1) {
@@ -78,12 +77,15 @@ vector<string> Parser::ParseBinary(string inFile, string arch,
         Error::RaiseError("ParseBinary error: unrecognized architecture " +
                           arch);
 
+    cpu->m_src.clear();
+    cpu->m_curBranch = 0;
     // Pass 0
-    ParseBinary(cpu);
+    ParseBinary(cpu, 0);
+    // estimated source code, used for branching
+    cpu->m_src = m_src;
     // pass 1
-    //    m_src.clear();
     m_src = cpu->stub(params);
-    ParseBinary(cpu);
+    ParseBinary(cpu, 1);
 
     AppendExtraCode(cpu);
 
@@ -142,10 +144,12 @@ void Parser::ParseTextToBinary() {
     }
 }
 
-void Parser::ParseBinary(AbstractCPU *op) {
+void Parser::ParseBinary(AbstractCPU *op, int pass) {
     int ln = 0;
     int pos = 0;
     op->m_data = m_data;
+    op->m_pass = pass;
+    op->m_curBranch = 0;
     while (pos < m_data.size()) {
         string s = op->ParseFromBinary(pos);
         vector<string> sp;
@@ -158,5 +162,6 @@ void Parser::ParseBinary(AbstractCPU *op) {
             if (m_src.back().find(".", 0) == 0) {
                 m_src.insert(m_src.end() - 1, "");
             }
+        op->m_curLine = m_src.size() - 1;
     }
 }

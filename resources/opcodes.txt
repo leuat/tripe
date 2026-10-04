@@ -20,19 +20,20 @@ ptr32,0xFE,
 
 # declare a variable
 decl,0x4,p:ival
+const,0x5,p:ival
 
 # asm
-.asm,0x7,p
-.endasm,0x5,
+.asm,0x6,p
+.endasm,0x7,
 
 # define cpu
-.processor,0x6,p
+.processor,0x8,p
 
 #labels
-.label,0x8,p
+.label,0x9,p
 
 # where to place tripe generated code (mul/div code etc)
-.gcode,0x9,0
+.gcode,0xA,0
 
 # block data stream
 

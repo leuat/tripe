@@ -157,6 +157,13 @@ void CPU6502::LoadStore(int &pos, int opcode) {
     }
 }
 
+void CPU6502::Const(int &pos) {
+    auto name = getNextParam(m_data, pos);
+    auto value = getNextParam(m_data, pos);
+    Asm(name.str + " = " + Util::toHex(value.ival));
+    m_symtab[name.str] = m_opcodeToAsm[value.type];
+}
+
 void CPU6502::Declare(int &pos) {
     auto name = getNextParam(m_data, pos);
     auto value = getNextParam(m_data, pos);
@@ -164,7 +171,10 @@ void CPU6502::Declare(int &pos) {
         m_symtab[name.str] = m_opcodeToAsm[value.type];
         return;
     }
-    if (m_symtab[name.str].starts_with("ptr")) {
+    if (m_opcodeToAsm[value.type] == "address") {
+        Asm(name.str + "\t=\t" + value.str);
+
+    } else if (m_symtab[name.str].starts_with("ptr")) {
         Asm(name.str + "\t=\t" + to_string(m_curZp));
         m_curZp += 2;
 
@@ -393,6 +403,16 @@ void CPU6502::Branch(int &pos, int opcode) {
     auto b = getNextParam(m_data, pos);
     auto lbl = getNextParam(m_data, pos);
 
+    int size = 0;
+    bool isOffpage = false;
+    if (m_pass == 1) {
+        size = branchSizeEstimator(lbl.str, m_curBranch);
+        isOffpage = size > 120;
+    }
+    string lblKeep = lbl.str;
+    if (isOffpage)
+        lbl.str = getTempLabel();
+
     bool is16 = is16bit(a) || is16bit(b);
 
     if (m_symtab.contains(a.str) && !is16bit(a))
@@ -474,4 +494,68 @@ void CPU6502::Branch(int &pos, int opcode) {
             Label(lblDone);
         }
     }
+    if (m_pass == 0) {
+        vector<string> lst;
+        m_branches.push_back(m_curLine + Util::split(m_line, '\n', lst).size() +
+                             1);
+    }
+
+    if (isOffpage) {
+        string cont = getTempLabel();
+        Asm("; branch is offpage");
+        Asm("jmp " + cont);
+        Label(lbl.str);
+        Asm("jmp " + lblKeep);
+        Label(cont);
+    }
+    m_curBranch++;
+    /*
+    if (m_pass == 1)
+        cout << "isoffpage : " << isOffpage << "  : " << size
+             << "   label : " << lblKeep << endl;
+             */
+}
+
+int CPU6502::estimateCodeSize(const string &s) {
+    //    std::cout << s << endl;
+
+    if (Util::trim(s) == "")
+        return 0; // nada
+    if (!s.starts_with("\t"))
+        return 0;
+    if (Util::trim(s).starts_with(";"))
+        return 0; // comment
+    if (s.find("=") != string::npos)
+        return 0; // const
+
+    string v = Util::ReplaceString(s, "\t", " ");
+    v = Util::ReplaceString(s, "  ", " ");
+    vector<string> lst;
+    lst = Util::split(v, ';', lst);
+    v = lst[0]; // remove end comments
+    lst.clear();
+    lst = Util::split(v, ' ', lst);
+
+    int size = 0;
+    // cout << " ****** OK " << lst.size() << " : " << endl;
+
+    if (lst.size() == 1)
+        size = 1; // single byte op
+
+    if (lst.size() >= 2) {
+        string p = lst[1];
+        vector<string> ps;
+
+        ps = Util::split(p, ',', ps);
+        p = ps[0]; // pick first one, ignore ",x" etc
+        if (p.starts_with("#")) {
+            size = 2; // const
+        } else
+            size = 3; // address
+    }
+    //    cout << " - " << s << " : " << size << "  list size: " << lst.size()
+    //       << endl;
+    //   for (auto c : lst)
+    //      cout << "  *** " << c << endl;
+    return size;
 }

@@ -123,6 +123,13 @@ class AbstractCPU {
 
     Param getNextParam(vector<uint8_t> &data, int &pos);
     vector<string> m_registersUsed;
+    vector<string> m_src;
+
+    vector<int> m_branches;
+
+    int m_curBranch = 0;
+    int m_pass = 0;
+    int m_curLine;
 
   protected:
     string m_opcodeFile = "";
@@ -139,6 +146,10 @@ class AbstractCPU {
     virtual void Binop(int &pos, int opcode) {}
     virtual void Mov(int &pos) {}
     virtual void Branch(int &pos, int cmd) {}
+    virtual void Const(int &pos) {}
+
+    virtual int estimateCodeSize(const string &s) { return 0; }
+    int branchSizeEstimator(const string &lbl, int pos);
     //    virtual void Beq(int &pos, string cmd) {}
 
     bool isBinaryOpOpcode(int code);
