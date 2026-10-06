@@ -22,6 +22,8 @@ class Tropt {
     void load1();
     void load2();
     void muldiv();
+    void cleanupAsm();
+    void constIndex();
 
     int m_noLines = 0;
 };

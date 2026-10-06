@@ -280,6 +280,11 @@ void Phopt6502::Bop1(vector<vector<string>> &line, vector<string> &l, int &cur,
 
     */
     // first line stores to temp
+
+    if (!(line[0].size() == 2 && line[1].size() == 2 && line[2].size() == 2 &&
+          line[3].size() == 2))
+        return;
+
     if (!(line[0][0] == "sta" && isTemp8(line[0][1])))
         return;
 

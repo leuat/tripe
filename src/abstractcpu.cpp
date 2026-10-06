@@ -144,6 +144,8 @@ string AbstractCPU::ParseFromBinary(int &pos) {
         return as;
     }
     pos++;
+    if (!m_opcodeToAsm[opcode].starts_with("."))
+        Asm("; " + m_opcodeToAsm[opcode]);
 
     if (opcode == m_asmToOpcode[".uint8"] ||
         opcode == m_asmToOpcode[".uint16"]) {
@@ -257,7 +259,6 @@ int AbstractCPU::branchSizeEstimator(const string &lbl, int pos) {
             endLine++;
         }
     }
-    //   cout << "END LINE " << m_src[endLine] << endl;
     if (endLine == 0 || endLine == m_src.size() - 1)
         Error::RaiseError("Branching error: could not find label " + lbl);
     if (curLine > endLine)

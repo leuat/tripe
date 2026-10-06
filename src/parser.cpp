@@ -124,10 +124,10 @@ void Parser::ParseTextToBinary() {
                 m_data.push_back(c);
 
             m_data.push_back(10); // newline
+            //            m_data.push_back('\t'); // newline
             cnt++;
             continue;
         }
-
         s = Util::ReplaceString(s, "$", "0x"); // replace all 'x' to 'y'
         s = Util::ReplaceString(s, "\t", " "); // replace all 'x' to 'y'
         s = Util::ReplaceString(s, "  ", " "); // replace all 'x' to 'y'

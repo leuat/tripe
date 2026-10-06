@@ -126,7 +126,7 @@ void Tropt::load1() {
         auto l1 = getLine(i + 1);
         auto cur = m_cur[i];
         if (l0.size() == 4 && l1.size() == 3)
-            if ((l0[0] == "load_p" || l0[0] == "load") && l1[0] == "mov") {
+            if ((l0[0] == "load") && l1[0] == "mov") {
                 if (l0[3] == l1[2] && isTemp(l0[3])) {
                     // Perform replace
                     cur = t + l0[0] + t + l0[1] + t + l0[2] + t + l1[1];
@@ -171,18 +171,82 @@ void Tropt::load2() {
     m_cur = n;
 }
 
+// Typical index loading
+void Tropt::cleanupAsm() {
+
+    vector<string> n;
+    //  mov t_uint8_idx2    uint8:0x00
+    //  load_p Screen_p1 t_uint8_idx2 t_uint8_ret1
+
+    for (int i = 0; i < m_cur.size(); i++) {
+        auto l0 = getLine(i);
+        auto l1 = getLine(i + 1);
+        auto cur = m_cur[i];
+        if (l0.size() == 1 && l1.size() == 1) {
+
+            if ((l0[0] == ".asm" && l1[0] == ".endasm")) {
+                m_noLines += 2;
+                i += 1;
+                continue;
+            }
+        }
+
+        n.push_back(cur);
+    }
+
+    m_cur = n;
+}
+
+void Tropt::constIndex() {
+    /*
+        mov     _r8_1   uint8:0x1a
+        add     _r8_2   i   uint8:0x12
+        store   p1  _r8_2   _r8_1
+    */
+
+    vector<string> n;
+    //  mov t_uint8_idx2    uint8:0x00
+    //  load_p Screen_p1 t_uint8_idx2 t_uint8_ret1
+
+    for (int i = 0; i < m_cur.size(); i++) {
+        auto l0 = getLine(i);
+        auto l1 = getLine(i + 1);
+        auto l2 = getLine(i + 2);
+        auto cur = m_cur[i];
+        //        cout << i << " : " << m_cur.size() << " " << cur << "  " <<
+        //        l1.size()
+        //           << " " << l2.size() << endl;
+        if (l0.size() == 3 && l1.size() == 4 && l2.size() == 4) {
+            if ((l0[0] == "mov" && l2[0] == "store") && l0[1] == l2[3]) {
+
+                m_noLines += 1;
+                i += 2;
+                //                n.push_back(t + "; constopt1");
+                n.push_back(t + l1[0] + t + l1[1] + t + l1[2] + t + l1[3]);
+                n.push_back(t + l2[0] + t + l2[1] + t + l2[2] + t + l0[2]);
+                //                cout << "QHERE" << endl;
+
+                continue;
+            }
+        }
+
+        n.push_back(cur);
+    }
+    m_cur = n;
+}
+
 vector<string> Tropt::optimise(vector<string> input) {
     m_cpu.Init("");
     m_org = input;
     m_cur = m_org;
 
-    //	return m_cur;
     bops();
     mov1();
     load1();
     load2();
     muldiv();
-
+    cleanupAsm();
+    constIndex();
     return m_cur;
 }
 
@@ -194,6 +258,7 @@ vector<string> Tropt::getLine(int i) {
     s = Util::ReplaceString(s, "\t", " "); // replace all 'x' to 'y'
     s = Util::ReplaceString(s, "  ", " "); // replace all 'x' to 'y'
 
+    //    s = Util::split(s, ';', ret)[0];
     ret = Util::split(s, ' ', ret);
     // Lowercase operation
     if (ret.size() > 0)

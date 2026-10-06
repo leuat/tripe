@@ -44,6 +44,8 @@ CPU6502::CPU6502() : AbstractCPU() {
     m_code["div8"] = string((char *)resources_6502_div8_asm);
     m_code["mul16"] = string((char *)resources_6502_mul16_asm);
     m_code["div16"] = string((char *)resources_6502_div16_asm);
+    //    addCode("mul8");
+    //    addCode("mul16");
 }
 
 void CPU6502::InsertTempValues(vector<string> &lst, int pos) {
@@ -58,6 +60,8 @@ string CPU6502::loadIndex(string &s, string idx, string type) {
     string xy = "x";
     if (type.starts_with("ptr"))
         xy = "y";
+    if (type.starts_with("address"))
+        xy = "x";
 
     if (type == "ptr16" || type == "uint16") {
         Asm("lda " + idx);
@@ -83,11 +87,19 @@ vector<string> CPU6502::stub(map<string, string> params) {
     if (params.contains("start_address"))
         startAddress = params["start_address"];
 
+    string basicStart = "$801";
+
     if (params.contains("sys"))
-        if (params["sys"] == "c64") {
+        if (params["sys"] == "c64" || params["sys"] == "vic20") {
             if (startAddress == "")
                 istart = m_foundStartPos;
             print = true;
+
+            if (params["sys"] == "vic20") {
+                basicStart = "$" + Util::toHex(m_foundStartPos - 15);
+                if (m_foundStartPos == 0x2000)
+                    basicStart = "$1201";
+            }
 
             string s = Util::toDec(istart);
             for (auto c : s) {
@@ -99,7 +111,7 @@ vector<string> CPU6502::stub(map<string, string> params) {
         }
 
     if (print) {
-        src.push_back("\torg $801");
+        src.push_back("\torg " + basicStart);
         src.push_back("\tdc.b $b, $8, $a, $0, $9e, $20," + printAddress +
                       " $0, $0, $0");
     }
@@ -180,7 +192,7 @@ void CPU6502::Declare(int &pos) {
         return;
     }
     if (m_opcodeToAsm[value.type] == "address") {
-        Asm(name.str + "\t=\t" + value.str);
+        Asm(name.str + "\t=\t" + "0x" + value.str);
 
     } else if (m_symtab[name.str].starts_with("ptr")) {
         Asm(name.str + "\t=\t" + to_string(m_curZp));
@@ -397,9 +409,10 @@ void CPU6502::Mov(int &pos) {
         is16bit(val)) {
 
         if (is16bit(res)) {
-            Asm("ldx " + val.lhi());
+            if (val.str != m_nada)
+                Asm("ldy " + val.lhi());
 
-            Asm("stx " + res.hi());
+            Asm("sty " + res.hi());
         }
         if (val.lo() != m_nada)
             Asm("lda " + val.lo());
@@ -433,6 +446,7 @@ void CPU6502::Branch(int &pos, int opcode) {
 
     if (m_symtab.contains(a.str) && !is16bit(a))
         is16 = false;
+
     if (!is16) {
         if (a.str != m_nada)
             Asm("lda " + a.prefix());
@@ -510,6 +524,7 @@ void CPU6502::Branch(int &pos, int opcode) {
             Label(lblDone);
         }
     }
+
     if (m_pass == 0) {
         vector<string> lst;
         m_branches.push_back(m_curLine + Util::split(m_line, '\n', lst).size() +
@@ -525,6 +540,7 @@ void CPU6502::Branch(int &pos, int opcode) {
         Label(cont);
     }
     m_curBranch++;
+
     /*
     if (m_pass == 1)
         cout << "isoffpage : " << isOffpage << "  : " << size
@@ -534,7 +550,7 @@ void CPU6502::Branch(int &pos, int opcode) {
 
 int CPU6502::estimateCodeSize(const string &s) {
     //    std::cout << s << endl;
-
+    //   std::cout << " 1 " << s << endl;
     if (Util::trim(s) == "")
         return 0; // nada
     if (!s.starts_with("\t"))
@@ -545,15 +561,23 @@ int CPU6502::estimateCodeSize(const string &s) {
         return 0; // const
 
     string v = Util::ReplaceString(s, "\t", " ");
-    v = Util::ReplaceString(s, "  ", " ");
+    v = Util::ReplaceString(v, "  ", " ");
     vector<string> lst;
     lst = Util::split(v, ';', lst);
     v = lst[0]; // remove end comments
     lst.clear();
     lst = Util::split(v, ' ', lst);
 
+    vector<string> lst2;
+    for (auto &c : lst)
+        if (c != "")
+            lst2.push_back(c);
+    lst = lst2;
+
     int size = 0;
-    // cout << " ****** OK " << lst.size() << " : " << endl;
+    //    cout << " ****** OK " << lst.size() << " : " << endl;
+    // for (auto s : lst)
+    //   cout << "'" << s << "'" << endl;
 
     if (lst.size() == 1)
         size = 1; // single byte op
@@ -573,5 +597,6 @@ int CPU6502::estimateCodeSize(const string &s) {
     //       << endl;
     //   for (auto c : lst)
     //      cout << "  *** " << c << endl;
+    //  std::cout << " 3 " << endl;
     return size;
 }

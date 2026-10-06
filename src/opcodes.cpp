@@ -12,8 +12,6 @@ void Opcodes::ParseToBinary(vector<string> &line, vector<uint8_t> &data) {
         Error::RaiseError("Incorrect opcode on line : " + line[0]);
     }
     vector<string> &p = m_opcodeToParams[opcode];
-    bool isMulU = opcode == m_asmToOpcode["mulu"];
-    bool isDivU = opcode == m_asmToOpcode["divu"];
     bool isFirstParam = true;
 
     data.push_back(opcode);
@@ -113,7 +111,8 @@ void Opcodes::ParseToBinary(vector<string> &line, vector<uint8_t> &data) {
 
                 //              replace( a.begin(), a.end(), '*', ' ');
                 a = Util::trim(a);
-                // cout << a << " " << v[0] << " " << v[1] << endl;
+                //                cout << a << " " << v[0] << " " << v[1] <<
+                //                endl;
                 if (!m_asmToOpcode.contains(a))
                     Error::RaiseError("Unknown type: " + a);
 

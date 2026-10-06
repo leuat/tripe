@@ -31,6 +31,18 @@ class Param {
         type = t;
         typeName = tn;
         std::istringstream(str) >> hex >> ival;
+        if (str.starts_with("<")) {
+            type = 1;
+            typeName = "uint8";
+            str = clean();
+            //           cout << str << endl;
+        }
+        if (str.starts_with(">")) {
+            type = 1;
+            typeName = "uint8";
+            str = clean();
+            str += "+1";
+        }
     }
     string lo() {
         if (type == 1) {
@@ -90,7 +102,7 @@ class AbstractCPU {
     int m_tempLabel = 1;
     vector<uint8_t> m_data;
     Phopt *m_phopt = 0;
-    string m_line;
+    string m_line = "", m_comment = "";
     void Init(string opcodes);
     bool m_prevCmpWas16bit = false;
     string m_nextCompare = "";

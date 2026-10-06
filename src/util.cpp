@@ -58,6 +58,8 @@ int Util::getIntLen(string type) {
         len = 4;
     if (type == "uint16")
         len = 2;
+    if (type == "address")
+        len = 2;
     if (type == "uint8")
         len = 1;
     return len;
