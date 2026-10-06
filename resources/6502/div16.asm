@@ -1,7 +1,7 @@
-initdiv16x8_divisor = $F0
-initdiv16x8_dividend = $F2
-initdiv16x8_remainder = $F4
-initdiv16x8_result = $F2
+initdiv16x8_divisor = @ZP0
+initdiv16x8_dividend = @ZP2
+initdiv16x8_remainder = @ZP4
+initdiv16x8_result = @ZP2
 
 div_16bit:
     lda #0

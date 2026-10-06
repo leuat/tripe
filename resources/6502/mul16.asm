@@ -1,6 +1,6 @@
-mul16x8_num1Hi = $F0
-mul16x8_num1 = $F1
-mul16x8_num2 = $F2
+mul16x8_num1Hi = @ZP0
+mul16x8_num1 = @ZP1
+mul16x8_num2 = @ZP2
 
 mul_16bit:
     lda #$00

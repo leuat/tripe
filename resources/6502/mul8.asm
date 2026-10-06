@@ -1,5 +1,5 @@
-multiplier = $F0
-multiplier_a = $F1
+multiplier = @ZP0
+multiplier_a = @ZP1
 mul_8bit_:
 	cpx #$00
 	beq mul_end

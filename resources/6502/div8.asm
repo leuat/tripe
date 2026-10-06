@@ -1,6 +1,6 @@
-div8x8_c = $F0
-div8x8_d = $F1
-div8x8_e = $F2
+div8x8_c = @ZP0
+div8x8_d = @ZP1
+div8x8_e = @ZP2
 ; Normal 8 bit div
 div_8bit_:
 	lda #$00

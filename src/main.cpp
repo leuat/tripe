@@ -25,6 +25,13 @@ void print_usage() {
          << endl;
     cout << " -start_address $1000 : custom start address for the system"
          << endl;
+    cout << " -ptr_zp 0x40 : custom start of pointer zp (6052 only, default "
+            "0x02)";
+    cout << " -wh_zp 0x40 : custom start of workhorse zp (6052 only, default "
+            "0x40)";
+    cout << " -reg_zp 0x40 : custom start of register zp (6052 only, default "
+            "0x80)"
+         << endl;
 }
 
 int main(int argc, char *argv[]) {
