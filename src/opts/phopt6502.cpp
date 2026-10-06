@@ -1,5 +1,8 @@
 #include "opts/phopt6502.h"
 
+using namespace tripe;
+namespace tripe {
+
 vector<string> Phopt6502::optimize(vector<string> in) {
 
     m_src = in;
@@ -378,3 +381,4 @@ void Phopt6502::Opt(Type type, int noLinesToCheck) {
     }
     m_src = src;
 }
+} // namespace tripe

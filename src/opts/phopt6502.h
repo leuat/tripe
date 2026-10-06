@@ -5,6 +5,8 @@
 
 using namespace std;
 
+namespace tripe {
+
 class Phopt6502 : public Phopt {
   public:
     vector<string> m_bops = {"adc", "sbc", "eor", "and", "or"};
@@ -25,5 +27,6 @@ class Phopt6502 : public Phopt {
     void ldX(string cmd);
     void Opt(Type type, int noLinesToCheck);
 };
+} // namespace tripe
 
 #endif

@@ -1,5 +1,5 @@
-#ifndef UTIL_H
-#define UTIL_H
+#ifndef TRIPEUTIL_H
+#define TRIPEUTIL_H
 
 #include <algorithm>
 #include <cstdint>
@@ -9,6 +9,8 @@
 #include <string>
 #include <vector>
 using namespace std;
+
+namespace tripe {
 
 template <typename T> bool contains(vector<T> vec, const T &elem) {
     bool result = false;
@@ -53,4 +55,5 @@ class Util {
                                 const std::string &to);
 };
 
+} // namespace tripe
 #endif

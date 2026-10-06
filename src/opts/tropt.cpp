@@ -3,6 +3,9 @@
 #include <map>
 using namespace std;
 
+using namespace tripe;
+namespace tripe {
+
 void Tropt::bops() {
 
     /*
@@ -270,3 +273,4 @@ vector<string> Tropt::getLine(int i) {
 
     return ret2;
 }
+} // namespace tripe

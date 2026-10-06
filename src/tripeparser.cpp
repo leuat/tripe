@@ -1,13 +1,16 @@
-#include "parser.h"
+#include "tripeparser.h"
 #include "cpu6502.h"
 #include "error.h"
 #include "opcodes.h"
 #include "opts/phopt6502.h"
 #include "opts/tropt.h"
-#include "util.h"
+#include "tripeutil.h"
 #include <fstream>
 
-vector<uint8_t> Parser::ParseText(string inFile) {
+using namespace tripe;
+namespace tripe {
+
+vector<uint8_t> TripeParser::ParseText(string inFile) {
     m_data.clear();
     m_src = Util::read_text_code_file(inFile, true);
     m_src_org = Util::read_text_code_file(inFile, false);
@@ -17,7 +20,7 @@ vector<uint8_t> Parser::ParseText(string inFile) {
     return m_data;
 }
 
-vector<string> Parser::TripeOptimise(string inFile) {
+vector<string> TripeParser::TripeOptimise(string inFile) {
     m_data.clear();
     m_src = Util::read_text_code_file(inFile, false);
     Tropt t;
@@ -28,7 +31,7 @@ vector<string> Parser::TripeOptimise(string inFile) {
     return m_src;
 }
 
-void Parser::LoadBinary(string inFile) {
+void TripeParser::LoadBinary(string inFile) {
     m_data = Util::load_binary(inFile);
 
     string id = "";
@@ -42,7 +45,7 @@ void Parser::LoadBinary(string inFile) {
     m_src.clear();
 }
 
-void Parser::AppendExtraCode(AbstractCPU *cpu) {
+void TripeParser::AppendExtraCode(AbstractCPU *cpu) {
     int lineNumber = -1;
     for (int i = 0; i < m_src.size(); i++) {
         if (Util::trim(m_src[i]) == ".gcode") {
@@ -63,8 +66,8 @@ void Parser::AppendExtraCode(AbstractCPU *cpu) {
     }
 }
 
-vector<string> Parser::ParseBinary(string inFile, string arch,
-                                   map<string, string> params) {
+vector<string> TripeParser::ParseBinary(string inFile, string arch,
+                                        map<string, string> params) {
     LoadBinary(inFile);
 
     AbstractCPU *cpu = NULL;
@@ -103,7 +106,7 @@ vector<string> Parser::ParseBinary(string inFile, string arch,
     return m_src;
 }
 
-void Parser::ParseTextToBinary() {
+void TripeParser::ParseTextToBinary() {
 
     Opcodes op;
     m_data.push_back(m_id[0]);
@@ -144,7 +147,7 @@ void Parser::ParseTextToBinary() {
     }
 }
 
-void Parser::ParseBinary(AbstractCPU *op, int pass) {
+void TripeParser::ParseBinary(AbstractCPU *op, int pass) {
     int ln = 0;
     int pos = 0;
     op->m_data = m_data;
@@ -165,3 +168,4 @@ void Parser::ParseBinary(AbstractCPU *op, int pass) {
         op->m_curLine = m_src.size() - 1;
     }
 }
+} // namespace tripe

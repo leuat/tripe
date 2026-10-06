@@ -2,13 +2,14 @@
 #define OPCODES_H
 
 #include "abstractcpu.h"
-#include "data.h"
+#include "tripedata.h"
 #include <iostream>
 #include <map>
 #include <string>
 #include <vector>
 using namespace std;
 
+namespace tripe {
 class Opcodes : public AbstractCPU {
   public:
     void ParseToBinary(vector<string> &line, vector<uint8_t> &m_data);
@@ -19,5 +20,6 @@ class Opcodes : public AbstractCPU {
 
     Opcodes() { Init(Data::s_opcodes); }
 };
+} // namespace tripe
 
 #endif

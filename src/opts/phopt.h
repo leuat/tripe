@@ -1,9 +1,11 @@
 #ifndef PHOPT_P
 #define PHOPT_P
 
-#include "util.h"
+#include "tripeutil.h"
 #include <string>
 #include <vector>
+
+namespace tripe {
 
 class Phopt {
   public:
@@ -75,5 +77,5 @@ std::vector<std::string> &elems);
         return Util::split(s, ' ', lst);
     }
 };
-
+} // namespace tripe
 #endif

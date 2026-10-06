@@ -2,12 +2,14 @@
 #define CPU6502_H
 
 #include "abstractcpu.h"
-#include "util.h"
+#include "tripeutil.h"
 #include <iostream>
 #include <map>
 #include <string>
 #include <vector>
 using namespace std;
+
+namespace tripe {
 
 class CPU6502 : public AbstractCPU {
   public:
@@ -36,5 +38,5 @@ class CPU6502 : public AbstractCPU {
     //    void triplet(vector<uint8_t>& data, int& pos, bool isPtr, bool
     //    isLoad);
 };
-
+} // namespace tripe
 #endif

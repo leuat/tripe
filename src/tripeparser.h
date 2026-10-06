@@ -1,5 +1,5 @@
-#ifndef PARSER_H
-#define PARSER_H
+#ifndef TRIPEPARSER_H
+#define TRIPEPARSER_H
 
 #include "abstractcpu.h"
 #include <cstdint>
@@ -10,7 +10,9 @@
 
 using namespace std;
 
-class Parser {
+namespace tripe {
+
+class TripeParser {
   public:
     const char *m_id = "TRP";
     vector<uint8_t> ParseText(string inFile);
@@ -29,5 +31,5 @@ class Parser {
     vector<string> m_src, m_src_org;
     vector<uint8_t> m_data;
 };
-
+} // namespace tripe
 #endif

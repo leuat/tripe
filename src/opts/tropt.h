@@ -5,6 +5,8 @@
 #include <string>
 #include <vector>
 
+namespace tripe {
+
 class Tropt {
   private:
     CPU6502 m_cpu;
@@ -27,5 +29,5 @@ class Tropt {
 
     int m_noLines = 0;
 };
-
+} // namespace tripe
 #endif

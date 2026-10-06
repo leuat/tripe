@@ -1,7 +1,10 @@
 #include "opcodes.h"
 #include "error.h"
-#include "util.h"
+#include "tripeutil.h"
 #include <sstream>
+
+using namespace tripe;
+namespace tripe {
 
 void Opcodes::ParseToBinary(vector<string> &line, vector<uint8_t> &data) {
     if (!m_asmToOpcode.contains(line[0]))
@@ -186,3 +189,4 @@ m_opcodeToAsm[v]+":0x"+Util::ival2string(data,pos,m_opcodeToAsm[v]);
         s = "\t"+s;
     return s;*/
 }
+} // namespace tripe

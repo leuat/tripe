@@ -2,7 +2,10 @@
 
 #include "error.h"
 #include "opcodes.h"
-#include "opcodes_data.h"
+#include "resources/opcodes_data.h"
+
+using namespace tripe;
+namespace tripe {
 
 AbstractCPU::AbstractCPU() {
     m_similarBinops = {"add", "sub", "or", "and", "xor", "mulu", "shl", "shr"};
@@ -272,3 +275,4 @@ int AbstractCPU::branchSizeEstimator(const string &lbl, int pos) {
 
     return size;
 }
+} // namespace tripe

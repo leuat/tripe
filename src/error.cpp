@@ -1,5 +1,8 @@
 #include "error.h"
 
+using namespace tripe;
+namespace tripe {
+
 int Error::s_lineNumber = 0;
 string Error::s_curLine = "";
 
@@ -11,3 +14,4 @@ void Error::RaiseError(string s) {
 
     exit(1);
 }
+} // namespace tripe

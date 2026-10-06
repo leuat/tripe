@@ -2,6 +2,7 @@
 #include <iostream>
 
 using namespace std;
+using namespace tripe;
 
 void print_usage() {
     cout << "Usage: " << endl;

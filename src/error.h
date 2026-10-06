@@ -6,6 +6,8 @@
 
 using namespace std;
 
+namespace tripe {
+
 class Error {
   public:
     static int s_lineNumber;
@@ -13,4 +15,5 @@ class Error {
     static void RaiseError(string s);
 };
 
+} // namespace tripe
 #endif

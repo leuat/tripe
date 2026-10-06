@@ -1,9 +1,12 @@
-#include "util.h"
+#include "tripeutil.h"
 #include <algorithm>
 #include <iostream>
 #include <sstream>
 #include <string>
 #include <vector>
+
+using namespace tripe;
+namespace tripe {
 
 string Util::trim(const std::string &s) {
     auto wsfront = std::find_if_not(s.begin(), s.end(),
@@ -218,3 +221,4 @@ int Util::fromNumber(string s) {
         st >> val;
     return val;
 }
+} // namespace tripe

@@ -9,9 +9,11 @@
 
 #include "error.h"
 #include "opts/phopt.h"
-#include "util.h"
+#include "tripeutil.h"
 
 using namespace std;
+
+namespace tripe {
 
 class Param {
   public:
@@ -190,5 +192,5 @@ class AbstractCPU {
             Error::RaiseError("Cannot pop register from 0");
     }
 };
-
+} // namespace tripe
 #endif

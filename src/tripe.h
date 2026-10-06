@@ -8,6 +8,8 @@
 
 using namespace std;
 
+namespace tripe {
+
 class Tripe {
   public:
     vector<string> m_requireNextParam = {"i", "o", "arch", "sys"};
@@ -24,4 +26,5 @@ class Tripe {
     void RequireParameter(string p, string error);
 };
 
+} // namespace tripe
 #endif

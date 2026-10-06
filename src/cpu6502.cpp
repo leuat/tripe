@@ -1,11 +1,14 @@
 #include "cpu6502.h"
-#include "data.h"
 #include "error.h"
 #include "resources/div16_6502.h"
 #include "resources/div8_6502.h"
 #include "resources/mul16_6502.h"
 #include "resources/mul8_6502.h"
+#include "tripedata.h"
 #include <algorithm>
+
+using namespace tripe;
+namespace tripe {
 
 CPU6502::CPU6502() : AbstractCPU() {
     //    AbstractCPU();
@@ -600,3 +603,4 @@ int CPU6502::estimateCodeSize(const string &s) {
     //  std::cout << " 3 " << endl;
     return size;
 }
+} // namespace tripe

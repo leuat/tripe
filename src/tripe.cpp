@@ -1,10 +1,12 @@
 #include "tripe.h"
 #include "error.h"
-#include "parser.h"
-#include "util.h"
+#include "tripeparser.h"
+#include "tripeutil.h"
 #include <filesystem>
 #include <map>
 
+using namespace tripe;
+namespace tripe {
 Tripe::Tripe(int argc, char *argv[]) {
     for (int i = 1; i < argc; i++) {
         string arg1 = argv[i];
@@ -47,7 +49,7 @@ void Tripe::Execute() {
         if (!contains(m_supportedSystems, sys))
             Error::RaiseError("System '" + sys + "' not supported. ");
 
-    Parser p;
+    TripeParser p;
     map<string, string> params;
     if (sys != "")
         params["sys"] = sys;
@@ -72,3 +74,4 @@ void Tripe::Execute() {
 
     cout << "ok." << endl;
 }
+} // namespace tripe

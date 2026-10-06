@@ -15,15 +15,15 @@ project(
 add_executable(tripe
   src/abstractcpu.cpp
   src/cpu6502.cpp
-  src/data.cpp
+  src/tripedata.cpp
   src/error.cpp
   src/main.cpp
   src/opcodes.cpp
-  src/parser.cpp
+  src/tripeparser.cpp
   src/opts/phopt.cpp
   src/opts/tropt.cpp
   src/opts/phopt6502.cpp
-  src/util.cpp
+  src/tripeutil.cpp
   src/tripe.cpp
   
 )
