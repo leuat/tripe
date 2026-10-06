@@ -2,7 +2,8 @@
 
 
 # address: place the variable at a specific memory address. no initial value
-address,0xF7,
+address8,0xF6,
+address16,0xF7,
 # uint types
 uint8,0xF8,
 uint16,0xF9,
@@ -39,7 +40,7 @@ const,0x5,p:ival
 
 .uint8,0xF0,datastream
 .uint16,0xF1,datastream
-.incbin,0xF6,p
+.incbin,0xF5,p
 
 #end code
 .end,0x0F,0

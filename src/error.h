@@ -11,7 +11,7 @@ namespace tripe {
 class Error {
   public:
     static int s_lineNumber;
-    static string s_curLine;
+    static string s_curLine, s_error;
     static void RaiseError(string s);
 };
 

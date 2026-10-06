@@ -1,6 +1,7 @@
 #ifndef TRIPE_H
 #define TRIPE_H
 
+#include "tripedata.h"
 #include <iostream>
 #include <map>
 #include <string>
@@ -18,8 +19,10 @@ class Tripe {
     vector<string> m_supportedSystems = {"c64", "vic20"};
 
     Tripe(int argc, char *argv[]);
-
+    void setInternal(bool b);
     void Execute();
+    int m_optAsm = 0;
+    int m_optTripe = 0;
 
   private:
     map<string, string> m_args;

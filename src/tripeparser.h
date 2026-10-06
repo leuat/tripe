@@ -20,6 +20,9 @@ class TripeParser {
     vector<string> ParseBinary(string inFile, string arch,
                                map<string, string> params);
 
+    int m_noAsmLinesOpt = 0;
+    int m_noTripeLinesOpt = 0;
+
   private:
     void AppendExtraCode(AbstractCPU *cpu);
 

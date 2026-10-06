@@ -8,6 +8,7 @@ namespace tripe {
 class Data {
   public:
     static std::string s_opcodes;
+    static bool s_isInternal;
 };
 } // namespace tripe
 

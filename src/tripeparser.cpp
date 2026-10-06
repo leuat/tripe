@@ -27,7 +27,8 @@ vector<string> TripeParser::TripeOptimise(string inFile) {
     for (int i = 0; i < 4; i++)
         m_src = t.optimise(m_src);
 
-    std::cout << "Optimized " << t.m_noLines << " lines of tripe" << endl;
+    m_noTripeLinesOpt = t.m_noLines;
+    //    std::cout << "Optimized " << t.m_noLines << " lines of tripe" << endl;
     return m_src;
 }
 
@@ -100,8 +101,10 @@ vector<string> TripeParser::ParseBinary(string inFile, string arch,
     for (int i = 0; i < 4; i++)
         m_src = phOpt->optimize(m_src);
 
-    std::cout << "optimized " << Phopt::s_optLines << " native lines of asm"
-              << endl;
+    m_noAsmLinesOpt = Phopt::s_optLines;
+    //    std::cout << "optimized " << Phopt::s_optLines << " native lines of
+    //    asm"
+    //              << endl;
 
     return m_src;
 }
