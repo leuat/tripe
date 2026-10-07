@@ -35,7 +35,8 @@ class Param {
         flag = fl;
         typeName = tn;
         std::istringstream(str) >> hex >> ival;
-        str = Util::ReplaceString(str, "0x", "$");
+        if (str.starts_with("0x"))
+            str = Util::ReplaceString(str, "0x", "$");
         if (str.starts_with("<")) {
             type = 1;
             typeName = "uint8";

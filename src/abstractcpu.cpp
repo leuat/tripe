@@ -177,11 +177,14 @@ string AbstractCPU::ParseFromBinary(int &pos) {
 
             uint8_t flag = data[pos++];
             if (flag == Opcodes::DATATYPE_NUMBER) {
-                int val = data[pos];
-                //                cout << val;
+                int val = 0;
                 if (opcode == m_asmToOpcode[".uint16"]) {
-                    val |= data[++pos] << 8;
-                }
+                    val = data[pos] << 8;
+                    //                cout << val;
+                    val |= data[++pos];
+                } else
+                    val = data[pos];
+
                 pos++;
                 m_line += m_hexprefix + Util::toHex(val);
             }
