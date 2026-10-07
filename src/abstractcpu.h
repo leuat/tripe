@@ -21,6 +21,7 @@ class Param {
     string str;
     uint64_t ival;
     int type;
+    int flag;
     string typeName = "";
     Param() {
         str = "";
@@ -28,9 +29,10 @@ class Param {
         ival = 0;
         typeName = "";
     }
-    Param(string s, int t, string tn) {
+    Param(string s, int t, string tn, int fl) {
         str = s;
         type = t;
+        flag = fl;
         typeName = tn;
         std::istringstream(str) >> hex >> ival;
         str = Util::ReplaceString(str, "0x", "$");

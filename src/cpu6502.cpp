@@ -157,7 +157,7 @@ void CPU6502::LoadStore(int &pos, int opcode) {
         else
             Asm("sta " + res.str + "," + y);
 
-        if (type == "uint16") {
+        if (type == "uint16" || type == "ptr16") {
             Asm("lda " + val.hi());
             if (y == "y") {
                 Asm("iny");
@@ -165,7 +165,7 @@ void CPU6502::LoadStore(int &pos, int opcode) {
             } else
                 Asm("sta " + res.str + "+1," + y);
 
-            Asm("sta " + val.prefix() + "+1");
+            // Asm("sta " + val.prefix() + "+1");
         }
     }
     if (opcode == m_asmToOpcode["load"]) {
@@ -207,6 +207,10 @@ void CPU6502::Const(int &pos) {
 void CPU6502::Declare(int &pos) {
     auto name = getNextParam(m_data, pos);
     auto value = getNextParam(m_data, pos);
+    /*
+    cout << name.str << " '" << value.str
+         << "'   is_string: " << std::to_string(value.flag) << " at pos "
+         << Util::toHex(pos) << endl;*/
     if (isRegister(name.str)) {
         m_symtab[name.str] = m_opcodeToAsm[value.type];
         return;
