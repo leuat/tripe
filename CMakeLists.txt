@@ -5,7 +5,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -Os -fno-ident -s")
 project(
   tripe
   VERSION 1.0
-  LANGUAGES CXX)
+  LANGUAGES CXX C)
 
 #add_library(MyLibExample simple_lib.cpp simple_lib.hpp)
 
@@ -13,6 +13,7 @@ project(
 
 # Adding something we can run - Output name matches target name
 add_executable(tripe
+  src/tinyexpr.c
   src/abstractcpu.cpp
   src/cpu6502.cpp
   src/tripedata.cpp
@@ -25,6 +26,7 @@ add_executable(tripe
   src/opts/phopt6502.cpp
   src/tripeutil.cpp
   src/tripe.cpp
+  src/lorgasm.cpp
   
 )
 

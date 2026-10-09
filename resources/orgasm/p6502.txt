@@ -1,0 +1,43 @@
+# commands etc
+c:hex:$
+c:pc:org
+# data
+c:i8:dc.b
+c:i16:dc.w
+c:i32:dc.dw
+c:incbin:incbin
+
+# little endian
+c:endian:0
+
+# 6502 instructions
+i:lda #%i08:a9:2:2
+i:lda %i08:a5:2:3
+i:lda %i16:ad:3:2
+i:lda %i16,x:bd:3:4
+i:lda %i16,y:b9:3:4
+i:lda (%i08),y:b1:2:5
+
+i:sta %i08:85:2:3
+i:sta %i16:8d:3:2
+i:sta %i16,x:9d:3:4
+i:sta %i16,y:99:3:4
+i:sta (%i08),y:91:2:5
+
+
+
+i:cmp #%i08:c9:2:2
+i:cmp %i16:cd:3:4
+
+i:ldy #%i08:a0:2:2
+i:ldy %i16:ac:3:4
+i:ldy %i08:a4:2:3
+
+i:sty %i16:8c:3:4
+i:sty %i08:84:2:3
+
+i:bne %i16:d0:2:3:local
+i:beq %i16:f0:2:3:local
+i:jmp %i16:4c:3:3
+
+i:clc:18:1:2

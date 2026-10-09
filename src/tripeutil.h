@@ -26,6 +26,8 @@ class Util {
     static std::vector<std::string> &split(const std::string &s, char delim,
                                            std::vector<std::string> &elems);
 
+    static std::vector<std::string> clean_split(string s, char delim);
+
     static vector<string> read_text_code_file(string f, bool trim);
     static string load_text_file(string f);
 
