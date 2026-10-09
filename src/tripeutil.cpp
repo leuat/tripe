@@ -27,6 +27,16 @@ std::vector<std::string> &Util::split(const std::string &s, char delim,
     return elems;
 }
 
+std::vector<std::string> Util::split(const std::string &s, char delim) {
+    vector<string> elems;
+    std::stringstream ss(s);
+    std::string item;
+    while (std::getline(ss, item, delim)) {
+        elems.push_back(item);
+    }
+    return elems;
+}
+
 std::vector<std::string> Util::clean_split(string s, char delim) {
     std::string item;
     s = trim(s);
@@ -233,13 +243,17 @@ int Util::fromNumber(string s) {
     s = Util::ReplaceString(s, "$", "0x");
     s = Util::ReplaceString(s, "#", "");
     s = trim(s);
+    int base = 10;
     if (s.starts_with("0x")) {
         s = Util::ReplaceString(s, "0x", "");
-        val = stoi(s, 0, 16);
-        //        cout << "hex : " << val << "   " << s << endl;
+        base = 16;
+    }
+    if (s.starts_with("%")) {
+        s = Util::ReplaceString(s, "%", "");
+        base = 2;
+    }
 
-    } else
-        val = stoi(s, 0, 10);
+    val = stoi(s, 0, base);
 
     return val;
 }

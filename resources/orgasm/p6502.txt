@@ -5,39 +5,162 @@ c:pc:org
 c:i8:dc.b
 c:i16:dc.w
 c:i32:dc.dw
+c:string:.dc
+
 c:incbin:incbin
 
 # little endian
 c:endian:0
 
 # 6502 instructions
-i:lda #%i08:a9:2:2
-i:lda %i08:a5:2:3
-i:lda %i16:ad:3:2
-i:lda %i16,x:bd:3:4
-i:lda %i16,y:b9:3:4
-i:lda (%i08),y:b1:2:5
-
-i:sta %i08:85:2:3
-i:sta %i16:8d:3:2
-i:sta %i16,x:9d:3:4
-i:sta %i16,y:99:3:4
-i:sta (%i08),y:91:2:5
-
-
-
-i:cmp #%i08:c9:2:2
-i:cmp %i16:cd:3:4
-
-i:ldy #%i08:a0:2:2
-i:ldy %i16:ac:3:4
-i:ldy %i08:a4:2:3
-
-i:sty %i16:8c:3:4
-i:sty %i08:84:2:3
-
-i:bne %i16:d0:2:3:local
-i:beq %i16:f0:2:3:local
-i:jmp %i16:4c:3:3
-
+:brk:00:1:7
+i:ora (%i08,x):01:2:6
+i:ora %i08:05:2:3
+i:asl %i08:06:2:5
+i:php:08:1:3
+i:ora #%i08:09:2:2
+i:asl:0a:1:2
+i:ora %i16:0d:3:4
+i:asl %i16:0e:3:6
+i:bpl %i16:10:2:2:local
+i:ora (%i08),y:11:2:5
+i:ora %i08,x:15:2:4
+i:asl %i08,x:16:2:6
 i:clc:18:1:2
+i:ora %i16,y:19:3:4
+i:ora %i16,x:1d:3:4
+i:asl %i16,x:1e:3:7
+i:jsr %i16:20:3:6
+i:and (%i08,x):21:2:6
+i:bit %i08:24:2:3
+i:and %i08:25:2:3
+i:rol %i08:26:2:5
+i:plp:28:1:4
+i:and #%i08:29:2:2
+i:rol:2a:1:2
+i:bit %i16:2c:3:4
+i:and %i16:2d:3:4
+i:rol %i16:2e:3:6
+i:bmi %i16:30:2:2:local
+i:and (%i08),y:31:2:5
+i:and %i08,x:35:2:4
+i:rol %i08,x:36:2:6
+i:sec:38:1:2
+i:and %i16,y:39:3:4
+i:and %i16,x:3d:3:4
+i:rol %i16,x:3e:3:7
+i:rti:40:1:6
+i:eor (%i08,x):41:2:6
+i:eor %i08:45:2:3
+i:lsr %i08:46:2:5
+i:pha:48:1:3
+i:eor #%i08:49:2:2
+i:lsr:4a:1:2
+i:jmp %i16:4c:3:3
+i:eor %i16:4d:3:4
+i:lsr %i16:4e:3:6
+i:bvc %i16:50:2:2:local
+i:eor (%i08),y:51:2:5
+i:eor %i08,x:55:2:4
+i:lsr %i08,x:56:2:6
+i:cli:58:1:2
+i:eor %i16,y:59:3:4
+i:eor %i16,x:5d:3:4
+i:lsr %i16,x:5e:3:7
+i:rts:60:1:6
+i:adc (%i08,x):61:2:6
+i:adc %i08:65:2:3
+i:ror %i08:66:2:5
+i:pla:68:1:4
+i:adc #%i08:69:2:2
+i:ror:6a:1:2
+i:jmp (%i16):6c:3:5
+i:adc %i16:6d:3:4
+i:ror %i16:6e:3:6
+i:bvs %i16:70:2:2:local
+i:adc (%i08),y:71:2:5
+i:adc %i08,x:75:2:4
+i:ror %i08,x:76:2:6
+i:sei:78:1:2
+i:adc %i16,y:79:3:4
+i:adc %i16,x:7d:3:4
+i:ror %i16,x:7e:3:7
+i:sta (%i08,x):81:2:6
+i:sty %i08:84:2:3
+i:sta %i08:85:2:3
+i:stx %i08:86:2:3
+i:dey:88:1:2
+i:txa:8a:1:2
+i:sty %i16:8c:3:4
+i:sta %i16:8d:3:4
+i:stx %i16:8e:3:4
+i:bcc %i16:90:2:2:local
+i:sta (%i08),y:91:2:6
+i:sty %i08,x:94:2:4
+i:sta %i08,x:95:2:4
+i:stx %i08,y:96:2:4
+i:tya:98:1:2
+i:sta %i16,y:99:3:5
+i:txs:9a:1:2
+i:sta %i16,x:9d:3:5
+i:ldy #%i08:a0:2:2
+i:lda (%i08,x):a1:2:6
+i:ldx #%i08:a2:2:2
+i:ldy %i08:a4:2:3
+i:lda %i08:a5:2:3
+i:ldx %i08:a6:2:3
+i:tay:a8:1:2
+i:lda #%i08:a9:2:2
+i:tax:aa:1:2
+i:ldy %i16:ac:3:4
+i:lda %i16:ad:3:4
+i:ldx %i16:ae:3:4
+i:bcs %i16:b0:2:2:local
+i:lda (%i08),y:b1:2:5
+i:ldy %i08,x:b4:2:4
+i:lda %i08,x:b5:2:4
+i:ldx %i08,y:b6:2:4
+i:clv:b8:1:2
+i:lda %i16,y:b9:3:4
+i:tsx:ba:1:2
+i:ldy %i16,x:bc:3:4
+i:lda %i16,x:bd:3:4
+i:ldx %i16,y:be:3:4
+i:cpy #%i08:c0:2:2
+i:cmp (%i08,x):c1:2:6
+i:cpy %i08:c4:2:3
+i:cmp %i08:c5:2:3
+i:dec %i08:c6:2:5
+i:iny:c8:1:2
+i:cmp #%i08:c9:2:2
+i:dex:ca:1:2
+i:cpy %i16:cc:3:4
+i:cmp %i16:cd:3:4
+i:dec %i16:ce:3:6
+i:bne %i16:d0:2:2:local
+i:cmp (%i08),y:d1:2:5
+i:cmp %i08,x:d5:2:4
+i:dec %i08,x:d6:2:6
+i:cld:d8:1:2
+i:cmp %i16,y:d9:3:4
+i:cmp %i16,x:dd:3:4
+i:dec %i16,x:de:3:7
+i:cpx #%i08:e0:2:2
+i:sbc (%i08,x):e1:2:6
+i:cpx %i08:e4:2:3
+i:sbc %i08:e5:2:3
+i:inc %i08:e6:2:5
+i:inx:e8:1:2
+i:sbc #%i08:e9:2:2
+i:nop:ea:1:2
+i:cpx %i16:ec:3:4
+i:sbc %i16:ed:3:4
+i:inc %i16:ee:3:6
+i:beq %i16:f0:2:2:local
+i:sbc (%i08),y:f1:2:5
+i:sbc %i08,x:f5:2:4
+i:inc %i08,x:f6:2:6
+i:sed:f8:1:2
+i:sbc %i16,y:f9:3:4
+i:sbc %i16,x:fd:3:4
+i:inc %i16,x:fe:3:7

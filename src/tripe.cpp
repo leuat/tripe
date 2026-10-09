@@ -78,8 +78,10 @@ void Tripe::Execute() {
             Util::save_text(optTripe, p.TripeOptimise(inFile));
             Util::save_binary(binTripe, p.ParseText(optTripe));
             Util::save_text(outFile, p.ParseBinary(binTripe, arch, params));
-            OrgAsm orgasm(arch);
-            orgasm.Assemble(outFile, assembledFile);
+            if (m_args.contains("a")) {
+                OrgAsm orgasm(arch);
+                orgasm.Assemble(outFile, assembledFile);
+            }
 
         } else {
             if (arch == "trasm2tripe") {
