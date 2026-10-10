@@ -14,9 +14,7 @@ AbstractCPU::AbstractCPU() {
 }
 
 bool AbstractCPU::is16bit(const Param &val) {
-    return (m_symtab[val.str] == "uint16" ||
-            m_symtab[val.str].starts_with("ptr") ||
-            m_symtab[val.str].starts_with("address16")) ||
+    return (m_symtab[val.str] == "uint16" || m_symtab[val.str].starts_with("ptr") || m_symtab[val.str].starts_with("address16")) ||
            m_opcodeToAsm[val.type] == "uint16";
 }
 
@@ -41,8 +39,7 @@ void AbstractCPU::Init(string opcodes) {
         stringstream(v[1]) >> hex >> val;
         string str = Util::toLower(Util::trim(v[0]));
         if (m_opcodeToAsm.contains(val))
-            Error::RaiseError("Error when reading the opcodes list: opcode $" +
-                              Util::toHex(val) + " is taken.");
+            Error::RaiseError("Error when reading the opcodes list: opcode $" + Util::toHex(val) + " is taken.");
 
         m_asmToOpcode[str] = val;
         m_opcodeToAsm[val] = str;
@@ -151,8 +148,7 @@ string AbstractCPU::ParseFromBinary(int &pos) {
     auto data = m_data;
     uint8_t opcode = data[pos];
     if (opcode == 0) {
-        std::cout << "error parsing binary tripe : illegal opcode 0 at pos "
-                  << Util::toHex(pos) << std::endl;
+        std::cout << "error parsing binary tripe : illegal opcode 0 at pos " << Util::toHex(pos) << std::endl;
         exit(1);
         return m_line;
     }
@@ -166,8 +162,7 @@ string AbstractCPU::ParseFromBinary(int &pos) {
     if (!m_opcodeToAsm[opcode].starts_with("."))
         Asm("; " + m_opcodeToAsm[opcode]);
 
-    if (opcode == m_asmToOpcode[".uint8"] ||
-        opcode == m_asmToOpcode[".uint16"]) {
+    if (opcode == m_asmToOpcode[".uint8"] || opcode == m_asmToOpcode[".uint16"]) {
         string stype = m_opcodeToAsm[opcode];
         stype.erase(stype.begin(), stype.begin() + 1);
         m_line = "\t" + m_typeTripeToNative[stype] + "\t";

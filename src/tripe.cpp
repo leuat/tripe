@@ -102,8 +102,6 @@ void Tripe::Execute() {
         }
     }
     auto stop = std::chrono::high_resolution_clock::now();
-    m_timeMs =
-        std::chrono::duration_cast<std::chrono::milliseconds>(stop - start)
-            .count();
+    m_timeMs = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start).count();
 }
 } // namespace tripe

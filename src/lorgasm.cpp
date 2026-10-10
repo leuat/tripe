@@ -7,6 +7,8 @@ namespace tripe {
 OrgAsm::OrgAsm(string defs) {
     if (defs == "mos6502")
         LoadDefs(string((char *)resources_orgasm_p6502_txt));
+    else
+        throw string("Unknown or non-implemented system in OrgAsm: " + defs);
 }
 
 void OrgAsm::LoadDefs(string s) {
@@ -25,9 +27,7 @@ void OrgAsm::LoadDefs(string s) {
             bool isLocal = false;
             if (ops.size() >= 6)
                 isLocal = ops[5] == "local";
-            Opcode op(ops[1], Util::fromNumber("0x" + ops[2]),
-                      +Util::fromNumber(ops[3]), +Util::fromNumber(ops[4]),
-                      isLocal);
+            Opcode op(ops[1], Util::fromNumber("0x" + ops[2]), +Util::fromNumber(ops[3]), +Util::fromNumber(ops[4]), isLocal);
 
             m_opcodes[op.m_ins].push_back(op);
         }
@@ -75,7 +75,6 @@ void OrgAsm::LoadData(string type, vector<string> &l, string org) {
     for (int i = 1; i < l.size(); i++) {
         auto lst = Util::split(l[i], ',');
         for (auto d : lst) {
-            // String handling
             if (d.starts_with("\"")) {
                 if ((scount & 0x1) == 1) {
                     vector<string> slst;
@@ -89,7 +88,6 @@ void OrgAsm::LoadData(string type, vector<string> &l, string org) {
             } else {
 
                 uint64_t ival = Util::fromNumber(d);
-                //            cout << ival << endl;
                 if (m_isLittleEndian) {
                     if (itype >= 1)
                         m_data.push_back((uint8_t)(ival & 0xff));
@@ -101,12 +99,8 @@ void OrgAsm::LoadData(string type, vector<string> &l, string org) {
 
                 m_pc += itype;
             }
-            // cout << "Done" << endl;
         }
     }
-    //    cout << Util::toHex(m_pc) << " : " <<
-    //    (Util::toHex((int)m_data.back()))
-    //         << endl;
 }
 void OrgAsm::IncBin(string s) {
     s.erase(0, 1);
@@ -189,8 +183,7 @@ void OrgAsm::Parse(string s) {
     if (ProgramCounter(l))
         return;
 
-    if (l[0] == m_cmd["i8"] || l[0] == m_cmd["i16"] ||
-        l[0] == m_cmd["string"]) {
+    if (l[0] == m_cmd["i8"] || l[0] == m_cmd["i16"] || l[0] == m_cmd["string"]) {
         LoadData(l[0], l, s);
         return;
     }
@@ -216,16 +209,9 @@ void OrgAsm::HandleInstruction(vector<string> &l, string s) {
                     opcode = o;
             addInstructionData(opcode, 0, varg);
         } else if (l.size() > 1) {
-
-            string args = "";
-            for (int i = 1; i < l.size(); i++) {
-                if (l[i] != "")
-                    args += l[i];
-                if (i != l.size() - 1)
-                    args += " ";
-            }
+            string args = Util::concatStringList(l, 1, " ");
             int ival = 0x1000;
-            auto opcode = matchPattern(l[0], args, var, varg, ival);
+            auto opcode = matchPattern(l[0], args, varg, ival);
             args = Util::trim(var);
 
             addInstructionData(opcode, ival, varg);
@@ -237,6 +223,7 @@ void OrgAsm::HandleInstruction(vector<string> &l, string s) {
 }
 
 void OrgAsm::addInstructionData(const Opcode &op, int ival, string varg) {
+    // add opcode to data
     if (addData())
         m_data.push_back((uint8_t)op.m_opcode);
 
@@ -254,17 +241,16 @@ void OrgAsm::addInstructionData(const Opcode &op, int ival, string varg) {
         varg = Util::ReplaceString(varg, "$", "0x");
         int error = 0;
         //        cout << varg << " :  $" << Util::toHex(ival) << endl;
+        // Evaluate argument.
         ival += te_interp(varg.data(), &error);
         //      cout << "after" << " :  $" << Util::toHex(ival) << endl;
         if (error != 0) {
-            throw string("Error in expression : " + std::to_string(ival) + " " +
-                         varg);
+            throw string("Error in expression : " + std::to_string(ival) + " " + varg);
         }
     }
     // Local branch or whatever
     if (op.m_isLocal) {
         ival -= m_pc;
-        //        cout << "Branch size: " << Util::toHex(ival) << endl;
         if (ival >= 128 || ival <= -127)
             throw string("Local branch out of range");
     }
@@ -278,17 +264,13 @@ void OrgAsm::addInstructionData(const Opcode &op, int ival, string varg) {
         throw string(err() + "Big endian not supported yet!");
 }
 
-Opcode OrgAsm::matchPattern(string op, string s, string &var, string &varg,
-                            int &ival) {
+Opcode OrgAsm::matchPattern(string op, string s, string &varg, int &ival) {
     //   cout << "Pattern: " << s << endl;
     bool found = false;
     if (m_opcodes.contains("op"))
         throw string("Unknown opcode: " + op);
     ival = 0x1000;
     for (auto opcode : m_opcodes[op]) {
-        //        cout << "compare : " << op << "   - " << s << " to " <<
-        //        opcode.m_arg
-        //           << endl;
         int posInData = 0;
         int posInArg = 0;
         string arg = opcode.m_arg;
@@ -301,7 +283,7 @@ Opcode OrgAsm::matchPattern(string op, string s, string &var, string &varg,
                 char first = s[posInData];
                 // Get stuff like #$10, i, ptr etc
 
-                var = getVariable(alNum, s, posInData);
+                string var = getVariable(alNum, s, posInData);
                 if (var.starts_with("<"))
                     var = "#" + var;
                 if (var.starts_with(">"))
@@ -322,8 +304,7 @@ Opcode OrgAsm::matchPattern(string op, string s, string &var, string &varg,
                 posInArg += 3;
                 continue;
             }
-            if (posInData >= s.size() || posInArg >= arg.size() ||
-                (s[posInData] != arg[posInArg]))
+            if (posInData >= s.size() || posInArg >= arg.size() || (s[posInData] != arg[posInArg]))
                 found = false;
 
             posInArg++;
@@ -334,10 +315,7 @@ Opcode OrgAsm::matchPattern(string op, string s, string &var, string &varg,
         }
     }
 
-    throw string(
-        err() +
-        "OrgAsm::MatchPattern - Unknown or non-impmented instruction pattern " +
-        op + " " + s);
+    throw string(err() + "OrgAsm::MatchPattern - Unknown or non-impmented instruction pattern " + op + " " + s);
     return Opcode("NONE", 0, 0, 0, false);
 }
 
@@ -348,23 +326,17 @@ int OrgAsm::getValue(string var) {
         return m_pc;
     }
 
-    if (var.starts_with("#<") || var.starts_with("#>")) {
-        bool isLo = var.starts_with("#<");
-        var = Util::ReplaceString(var, "#<", "");
-        var = Util::ReplaceString(var, "#>", "");
-        if (m_symtab.contains(var)) {
-            if (isLo)
-                return (m_symtab[var]) & 0xff;
-            else
-                return (m_symtab[var] >> 8) & 0xff;
+    if (m_pass >= 2)
+        if (var.starts_with("#<") || var.starts_with("#>")) {
+            bool isLo = var.starts_with("#<");
+            var = Util::ReplaceString(var, "#<", "");
+            var = Util::ReplaceString(var, "#>", "");
+            if (m_symtab.contains(var))
+                return Util::getLoHi(m_symtab[var], isLo);
 
             ival = Util::fromNumber(var);
-            if (isLo)
-                return ival & 0xff;
-            else
-                return (ival >> 8) & 0xff;
+            return Util::getLoHi(ival, isLo);
         }
-    }
 
     if (Util::isPureNumber(var))
         ival = Util::fromNumber(var);
