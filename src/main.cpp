@@ -22,13 +22,11 @@ void print_usage() {
     cout << " -a : combined with -c, will assemble the out target platform .asm to binary .prg" << endl;
     cout << " -sym : ouputs symbols when assembling with -c"<<endl;
     cout << " -start_address $1000 : custom start address for the system" << endl;
-    cout << " -ptr_zp 0x40 : custom start of pointer zp (6052 only, default "
-            "0x02)";
-    cout << " -wh_zp 0x40 : custom start of workhorse zp (6052 only, default "
-            "0x40)";
-    cout << " -reg_zp 0x40 : custom start of register zp (6052 only, default "
-            "0x80)"
-         << endl;
+    cout << " -ptr_zp 0x40 : custom start of pointer zp (6052 only, default 0x02)" << endl;
+    cout << " -wh_zp 0x40 : custom start of workhorse zp (6052 only, default 0x40)" << endl;
+    cout << " -reg_zp 0x40 : custom start of register zp (6052 only, default 0x80)" <<endl;
+    cout << " -guts will execute a 6502 code until brk is called, and dump memory to disk. "<<endl;
+    cout << " tripe -arch mos6502 -guts -i file.prg " << endl;
 }
 
 int main(int argc, char *argv[]) {
