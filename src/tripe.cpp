@@ -38,43 +38,46 @@ void Tripe::Execute() {
     RequireParameter("i", "input file required (-i)");
     RequireParameter("o", "output file required (-o)");
     RequireParameter("arch", "architecture required (-arch)");
+    auto start = chrono::system_clock::now();
     string inFile = m_args["i"];
     string outFile = m_args["o"];
     string arch = Util::toLower(m_args["arch"]);
     string sys = m_args["sys"];
     Error::s_error = "";
     //    cout << inFile << endl;
-
-    if (!std::filesystem::exists(inFile))
-        Error::RaiseError("Could not find input file: " + inFile);
-
-    if (!contains(m_supportedArchitectures, arch))
-        Error::RaiseError("Architecture '" + arch + "' not supported. ");
-
-    if (sys != "")
-        if (!contains(m_supportedSystems, sys))
-            Error::RaiseError("System '" + sys + "' not supported. ");
-
-    TripeParser p;
-    map<string, string> params;
-    if (sys != "")
-        params["sys"] = sys;
-
-    if (m_args.contains("ptr_zp"))
-        Data::d.ptrZp = Util::fromNumber(m_args["ptr_zp"]);
-    if (m_args.contains("reg_zp"))
-        Data::d.regZp = Util::fromNumber(m_args["reg_zp"]);
-    if (m_args.contains("wh_zp"))
-        Data::d.whZp = Util::fromNumber(m_args["wh_zp"]);
-
-    auto start = chrono::system_clock::now();
     try {
+
+        if (!std::filesystem::exists(inFile))
+            Error::RaiseError("Could not find input file: " + inFile);
+
+        if (!contains(m_supportedArchitectures, arch))
+            Error::RaiseError("Architecture '" + arch + "' not supported. ");
+
+        if (sys != "")
+            if (!contains(m_supportedSystems, sys))
+                Error::RaiseError("System '" + sys + "' not supported. ");
+
+        TripeParser p;
+        map<string, string> params;
+        if (sys != "")
+            params["sys"] = sys;
+
+        if (m_args.contains("ptr_zp"))
+            Data::d.ptrZp = Util::fromNumber(m_args["ptr_zp"]);
+        if (m_args.contains("reg_zp"))
+            Data::d.regZp = Util::fromNumber(m_args["reg_zp"]);
+        if (m_args.contains("wh_zp"))
+            Data::d.whZp = Util::fromNumber(m_args["wh_zp"]);
+
+        string binEnding = "bin";
+        if (sys == "c64" || sys == "vic20")
+            binEnding = "prg";
 
         if (m_args.contains("c")) {
             // Do all in a row
             auto optTripe = Util::insertInFilename(inFile, "_opt");
             auto binTripe = Util::getFilenameAlone(inFile) + ".trp";
-            auto assembledFile = Util::getFilenameAlone(outFile) + ".bin";
+            auto assembledFile = Util::getFilenameAlone(outFile) + "." + binEnding;
             Util::save_text(optTripe, p.TripeOptimise(inFile));
             Util::save_binary(binTripe, p.ParseText(optTripe));
             Util::save_text(outFile, p.ParseBinary(binTripe, arch, params));
@@ -96,12 +99,14 @@ void Tripe::Execute() {
         if (!Data::d.isInternal)
             cout << "ok." << endl;
     } catch (string error) {
+        Error::s_error += error;
         if (!Data::d.isInternal) {
             cout << error << endl;
             exit(1);
         }
     }
     auto stop = std::chrono::high_resolution_clock::now();
-    m_timeMs = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start).count();
+
+    m_timeMs = 0; // Crashes on windowsstd::chrono::duration_cast<std::chrono::milliseconds>(stop - start).count();
 }
 } // namespace tripe

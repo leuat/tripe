@@ -19,7 +19,7 @@ void print_usage() {
     cout << " -c : performs a full compile and optimization for the current "
             "system"
          << endl;
-    cout << " -a : combined with c, will assemble the end .asm to binary .prg" << endl;
+    cout << " -a : combined with -c, will assemble the out target platform .asm to binary .prg" << endl;
     cout << " -start_address $1000 : custom start address for the system" << endl;
     cout << " -ptr_zp 0x40 : custom start of pointer zp (6052 only, default "
             "0x02)";

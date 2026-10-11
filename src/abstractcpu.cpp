@@ -66,12 +66,10 @@ Param AbstractCPU::getNextParam(vector<uint8_t> &data, int &pos) {
         pos += 1;
         flag = data[pos++];
         if (flag == Opcodes::DATATYPE_STRING) {
-            while (data[pos] != 0) {
+            while (data[pos] != 0)
                 s += data[pos++];
-            }
+
             pos++;
-            //             cout << "Found string: " << s << "   : "
-            //                << std::to_string(data[pos]) << endl;
 
         } else {
 
@@ -82,21 +80,17 @@ Param AbstractCPU::getNextParam(vector<uint8_t> &data, int &pos) {
         typeName = m_opcodeToAsm[type];
     } else // Some text
     {
-        while (data[pos] != 0) {
+        while (data[pos] != 0)
             s += data[pos++];
-        }
         pos++;
         type = Param::VAR;
         typeName = m_symtab[s];
     }
-    if (s.starts_with("_r")) {
-        bool ok = true;
-        for (auto v : m_registersUsed)
-            if (s == v)
-                ok = false;
-        if (ok)
+
+    if (s.starts_with("_r"))
+        if (!contains(m_registersUsed, s))
             m_registersUsed.push_back(s);
-    }
+
     return Param(s, type, typeName, flag);
 }
 
@@ -143,15 +137,14 @@ std::string AbstractCPU::ParseInlineAsm(vector<uint8_t> &data, int &pos) {
     return "";
 }
 
+// void HandleDataStream(int& pos, string )
+
 string AbstractCPU::ParseFromBinary(int &pos) {
     m_line = "";
     auto data = m_data;
     uint8_t opcode = data[pos];
-    if (opcode == 0) {
-        std::cout << "error parsing binary tripe : illegal opcode 0 at pos " << Util::toHex(pos) << std::endl;
-        exit(1);
-        return m_line;
-    }
+    if (opcode == 0)
+        throw string("AbstractCPU::ParseFromBinary: Error parsing binary tripe, illegal opcode 0 at pos " + Util::toHex(pos));
 
     int type = 0;
     auto as = ParseInlineAsm(data, pos);

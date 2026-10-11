@@ -26,7 +26,7 @@ class Opcode {
     bool m_isLocal = false;
 
     Opcode(string instruction, uint16_t opcode, uint16_t size, uint16_t cycles, bool isLocal)
-        : m_org(instruction), m_opcode(opcode), m_size(size), m_cycles(cycles), m_isLocal(isLocal) {
+        : m_opcode(opcode), m_org(instruction), m_size(size), m_cycles(cycles), m_isLocal(isLocal) {
         auto l = Util::clean_split(m_org, ' ');
         m_ins = l[0];
         if (l.size() >= 2)
@@ -59,10 +59,13 @@ class OrgAsm {
     // Opcodes and commands
     map<string, vector<Opcode>> m_opcodes;
     map<string, string> m_cmd;
+    map<string, vector<string>> m_dataDefs;
 
     // Current file (for error output)
     string m_curFile = "";
+    string m_sys = "";
 
+    bool m_ignoreConstErrors = true;
     bool m_isLittleEndian = true;
     // Current pass
     int m_pass = 0;
@@ -80,7 +83,7 @@ class OrgAsm {
     int m_curLine = 0;
     // First org will write to a .prg
     bool m_firstOrg = true;
-    const string alNum = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVXYZ$0123456789_$<>%*";
+    const string alNum = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ$0123456789_$<>%*";
     const string alNumOrExpr = alNum + "#+-*/ ";
 
   private:
@@ -105,17 +108,20 @@ class OrgAsm {
     // lda #$10
     // matches
     // lda #%i08(true) or lda %i08 or lda (%i08),y   or lda %i16etc
-    Opcode matchPattern(string op, string s, string &varArg, int &ival);
+    Opcode matchPattern(string op, string s, int &ival);
 
     // Only adds data on pass 2
     bool addData() { return m_pass >= 2; }
 
     // Writes the finished instruction opcodes + data to m_data
     // Also evalutes potential additional paramters, like "sta p+1"
-    void addInstructionData(const Opcode &op, int ival, string varg);
-
+    void addInstructionData(const Opcode &op, int ival);
+    int evaluate(string s, bool ignoreError = false);
     // Gets a almin substring
     string getVariable(const string &tst, string s, int &pos);
+
+    string HandleLoHiInExpression(const string &s);
+    string ConvertBinary(const string &s);
 
     // Handy error message
     string err() { return "\nOrgAsm error in " + m_curFile + " on line " + std::to_string(m_curLine) + ":\n"; }

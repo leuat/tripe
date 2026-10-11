@@ -27,6 +27,9 @@ class Util {
 
     static std::vector<std::string> split(const std::string &s, char delim);
 
+    static vector<string> multi_split(const string &s, const string &delim);
+    static void ReplaceWord(std::string &subject, const std::string &search, const std::string &replace);
+
     static std::vector<std::string> clean_split(string s, char delim);
 
     static vector<string> read_text_code_file(string f, bool trim);

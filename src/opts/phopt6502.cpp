@@ -246,12 +246,12 @@ void Phopt6502::incdec(vector<vector<string>> &line, vector<string> &l, int &cur
     */
     if (line[0].size() == 2 && line[2].size() == 2 && line[3].size() == 2)
         if (line[0][0] == "lda" && line[3][0] == "sta" && line[0][1] == line[3][1]) {
-            if (line[2][0] == "sbc" && (line[2][1] == "#1" || line[2][1] == "#$1" && line[0][1].find("(") == string::npos) && !is16bit(line[0][1])) {
+            if (line[2][0] == "sbc" && ((line[2][1] == "#1" || line[2][1] == "#$1") && line[0][1].find("(") == string::npos) && !is16bit(line[0][1])) {
                 cur = m_curLine;
                 src.push_back(tab + "dec" + tab + line[0][1] + ";incdec opt");
                 s_optLines += 4;
             }
-            if (line[2][0] == "adc" && (line[2][1] == "#1" || line[2][1] == "#$1" && line[0][1].find("(") == string::npos) && !is16bit(line[0][1])) {
+            if (line[2][0] == "adc" && ((line[2][1] == "#1" || line[2][1] == "#$1") && line[0][1].find("(") == string::npos) && !is16bit(line[0][1])) {
                 cur = m_curLine;
                 src.push_back(tab + "inc" + tab + line[0][1] + ";incdec opt");
                 s_optLines += 4;
