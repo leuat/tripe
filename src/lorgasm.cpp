@@ -290,20 +290,23 @@ Opcode OrgAsm::matchPattern(string op, string s, int &ival) {
     ival = 0x1000;
     op = Util::toLower(op);
     s = Util::trim(s);
+    string var = "";
     for (auto opcode : m_opcodes[op]) {
         int posInData = 0;
         int posInArg = 0;
         string arg = opcode.m_arg;
 
         bool found = true;
-
         while (posInData < s.size() || posInArg < arg.size()) {
             if (arg[posInArg] == '%') {
                 posInArg++;
                 char first = s[posInData];
                 // Get stuff like #$10, i, ptr etc
+                bool hasHash = first=='#';
+                if (s[posInData-1]=='#')
+                    hasHash = true;
 
-                string var = getVariable(alNum, s, posInData);
+                    var = getVariable(alNum, s, posInData);
                 if (var.starts_with("<"))
                     var = "#" + var;
                 if (var.starts_with(">"))
@@ -315,10 +318,16 @@ Opcode OrgAsm::matchPattern(string op, string s, int &ival) {
 
                 ival = getValue(var);
                 // We have arguments like p+1+3*20 etc
-                if (varg != "" && m_pass)
+                if (varg != "" && m_pass>=2)
                     ival += evaluate(Util::trim(varg));
 
-                // Get symbol value of var
+                // check whether someone did something stupid like lda #$120
+                if (ival>=0x100) {
+                    if (hasHash && opcode.m_arg.starts_with("#")) {
+                        ival &=0xff;
+                    }
+                }
+
 
                 // Reject if wrong type
                 if (ival <= 0xff && opcode.m_type == "i16")
@@ -336,6 +345,15 @@ Opcode OrgAsm::matchPattern(string op, string s, int &ival) {
             posInData++;
         }
         if (found) {
+            if (m_pass>=2) {
+                // check for symbol, clean up
+                var = Util::ReplaceString(var,"<","");
+                var = Util::ReplaceString(var,">","");
+                var = Util::ReplaceString(var,"#","");
+                if (!m_symtab.contains(var) && !Util::isPureNumber(var) && var.find("*")==string::npos) {
+                    throw string(err() + "Could not find variable: "+var);
+                }
+                }
             return opcode;
         }
     }
