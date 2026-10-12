@@ -1,0 +1,24 @@
+Program UnitTests6502;
+@use "unittests/unittests"
+
+@addmonitorcommand "command 1  \"save \\\"$DIR/results.bin\\\" 0 8000 8000  ; quit \"  "
+//9971
+
+begin
+	disableciainterrupts();
+	preventirq();
+	setmemoryconfig(1,0,0);
+	Unittests::Exec();
+	@ifdef __CI
+	addbreakpoint();
+	@endif
+	@ifndef __CI
+	moveto(5,24,04);
+	if (peek(^$8000,0)=0) then
+		printstring("COMPLETE AND UTTER SUCCESS!",0,40)
+	else
+		printstring("TOTAL FAILURE!",0,40);
+		asm(" brk ");
+	loop();
+	@endif
+end.
