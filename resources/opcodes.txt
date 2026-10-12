@@ -4,11 +4,13 @@
 # address: place the variable at a specific memory address. no initial value
 address8,0xF6,
 address16,0xF7,
+
 # uint types
 uint8,0xF8,
 uint16,0xF9,
 uint32,0xFA,
 uint64,0xFB,
+
 # pointer types: *uint8, *uint16 or *uint32
 ptr8,0xFC,
 ptr16,0xFD,

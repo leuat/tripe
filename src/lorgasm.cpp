@@ -483,14 +483,15 @@ string OrgAsm::HandleLoHiInExpression(const string &s) {
         res = Util::ReplaceString(res, ">" + m[1].str(), rep);
     }
 */
-    std::regex relo(R"(<\$?(\d+))");
-    if (std::regex_search(s, m, relo)) {
+    string s2 = Util::ReplaceString(s,"#","");
+    std::regex relo(R"(<\$?([0-9A-Fa-f]+))");
+    if (std::regex_search(s2, m, relo)) {
         string rep = m_hex + Util::toHex(Util::getLoHi(Util::fromNumber(m_hex + m[1].str()), true));
         res = Util::ReplaceString(res, "<$" + m[1].str(), rep);
     }
 
-    std::regex rehi(R"(>\$?(\d+))");
-    if (std::regex_search(s, m, rehi)) {
+    std::regex rehi(R"(>\$?([0-9A-Fa-f]+))");
+    if (std::regex_search(s2, m, rehi)) {
         string rep = m_hex + Util::toHex(Util::getLoHi(Util::fromNumber(m_hex + m[1].str()), false));
         res = Util::ReplaceString(res, ">$" + m[1].str(), rep);
     }

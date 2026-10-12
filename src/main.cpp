@@ -25,8 +25,11 @@ void print_usage() {
     cout << " -ptr_zp 0x40 : custom start of pointer zp (6052 only, default 0x02)" << endl;
     cout << " -wh_zp 0x40 : custom start of workhorse zp (6052 only, default 0x40)" << endl;
     cout << " -reg_zp 0x40 : custom start of register zp (6052 only, default 0x80)" <<endl;
+    cout << "\nGuts"<<endl;
     cout << " -guts will execute a 6502 code until brk is called, and dump memory to disk. "<<endl;
-    cout << " tripe -arch mos6502 -guts -i file.prg " << endl;
+    cout << " -exit_mem will set the return value of Tripe to the value located in the given memory address " << endl;
+    cout << " -guts_ouput will output all instructions the cpu is executing"<<endl;
+    cout << "example: tripe -arch mos6502 -guts -i file.prg -exit_mem 0x8000" << endl;
 }
 
 int main(int argc, char *argv[]) {

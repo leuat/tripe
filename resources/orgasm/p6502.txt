@@ -2,10 +2,10 @@
 c:hex:$
 c:pc:org
 # data
-c:i8:dc.b
-c:i16:dc.w
-c:i32:dc.dw
-c:string:.dc
+d:i8:dc.b,.byte
+d:i16:dc.w,.word
+d:i32:dc.dw,.dword
+d:string:.dc
 
 c:incbin:incbin
 
@@ -13,7 +13,7 @@ c:incbin:incbin
 c:endian:0
 
 # 6502 instructions
-:brk:00:1:7
+i:brk:00:1:7
 i:ora (%i08,x):01:2:6
 i:ora %i08:05:2:3
 i:asl %i08:06:2:5
@@ -74,7 +74,7 @@ i:ror %i08:66:2:5
 i:pla:68:1:4
 i:adc #%i08:69:2:2
 i:ror:6a:1:2
-i:jmp (%i16):6c:3:5
+i:jmp (%i08):6c:3:5
 i:adc %i16:6d:3:4
 i:ror %i16:6e:3:6
 i:bvs %i16:70:2:2:local
