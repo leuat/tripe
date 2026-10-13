@@ -167,7 +167,7 @@ void CPU6502::LoadStore(int &pos, int opcode) {
         else
             Asm("sta " + res.str + "," + y);
 
-        if (type == "uint16" || type == "ptr16") {
+        if (is16bitArray(res)) {
             Asm("lda " + val.hi());
             if (y == "y") {
                 Asm("iny");
@@ -193,7 +193,7 @@ void CPU6502::LoadStore(int &pos, int opcode) {
         // If store type is 16 bit
         if (is16bit(val)) {
             // if load type is 16 bit
-            if (is16bit(res)) {
+            if (is16bitArray(res)) {
                 if (y == "y") {
                     Asm("iny");
                     Asm("lda (" + res.str + ")," + y);

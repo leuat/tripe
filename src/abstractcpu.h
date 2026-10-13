@@ -184,6 +184,7 @@ class AbstractCPU {
     bool isSingleParamOpcode(int code);
 
     bool is16bit(const Param &val);
+    bool is16bitArray(const Param &val);
 
     int m_currentRegister;
 
