@@ -20,15 +20,15 @@ void print_usage() {
             "system"
          << endl;
     cout << " -a : combined with -c, will assemble the out target platform .asm to binary .prg" << endl;
-    cout << " -sym : ouputs symbols when assembling with -c"<<endl;
+    cout << " -sym : ouputs symbols when assembling with -c" << endl;
     cout << " -start_address $1000 : custom start address for the system" << endl;
     cout << " -ptr_zp 0x40 : custom start of pointer zp (6052 only, default 0x02)" << endl;
     cout << " -wh_zp 0x40 : custom start of workhorse zp (6052 only, default 0x40)" << endl;
-    cout << " -reg_zp 0x40 : custom start of register zp (6052 only, default 0x80)" <<endl;
-    cout << "\nGuts"<<endl;
-    cout << " -guts will execute a 6502 code until brk is called, and dump memory to disk. "<<endl;
+    cout << " -reg_zp 0x40 : custom start of register zp (6052 only, default 0x80)" << endl;
+    cout << "\nGuts" << endl;
+    cout << " -guts will execute a 6502 code until brk is called, and dump memory to disk. " << endl;
     cout << " -exit_mem will set the return value of Tripe to the value located in the given memory address " << endl;
-    cout << " -guts_ouput will output all instructions the cpu is executing"<<endl;
+    cout << " -guts_ouput will output all instructions the cpu is executing" << endl;
     cout << "example: tripe -arch mos6502 -guts -i file.prg -exit_mem 0x8000" << endl;
 }
 

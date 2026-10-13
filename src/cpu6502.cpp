@@ -210,7 +210,7 @@ void CPU6502::LoadStore(int &pos, int opcode) {
 void CPU6502::Const(int &pos) {
     auto name = getNextParam(m_data, pos);
     auto value = getNextParam(m_data, pos);
-    Asm(name.str + " = " + m_hexprefix+ Util::toHex(value.ival));
+    Asm(name.str + " = " + m_hexprefix + Util::toHex(value.ival));
     m_symtab[name.str] = m_opcodeToAsm[value.type];
 }
 
@@ -244,7 +244,7 @@ void CPU6502::Declare(int &pos) {
     }
     if (m_decltab.contains(name.str)) {
 
-        Error::RaiseError("6502 codegen: symbol "+name.str + " already defined");
+        Error::RaiseError("6502 codegen: symbol " + name.str + " already defined");
     }
     m_decltab[name.str] = name.str;
     m_symtab[name.str] = m_opcodeToAsm[value.type];

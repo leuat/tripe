@@ -16,8 +16,39 @@ vector<string> Phopt6502::optimize(vector<string> in) {
     ldX("y");
     ldX("x");
     ldA();
-//    cmp();
+    cmp();
+    ldAtaX("x");
+    ldAtaX("y");
     return m_src;
+}
+
+void Phopt6502::ldAtaX(string cmd) {
+    string curVal = "";
+    bool isDone = false;
+    vector<string> src{};
+    string tax = "ta" + cmd;
+    for (int i = 0; i < m_src.size(); i++) {
+
+        bool remove = false;
+        string l1 = "";
+        auto line1 = getLine(i);
+        auto line2 = getLine(i + 1);
+
+        if (line1.size() == 2 && line2.size() == 1) {
+            auto op1 = Util::toLower(line1[0]);
+ //           cout << op1 << " " << line2[0] << endl;
+            if (op1 == "lda" && (line2[0] == tax)) {
+                src.push_back(tab+"ld" + cmd + " " + line1[1]+ " ; opt lda9 [blah] "+tax);
+                i++;
+                remove = true;
+                s_optLines += 1;
+            }
+        }
+        if (!remove)
+            src.push_back(m_src[i]);
+    }
+
+    m_src = src;
 }
 
 void Phopt6502::ldX(string cmd) {
@@ -116,21 +147,12 @@ void Phopt6502::cmp() {
             auto op1 = Util::toLower(line1[0]);
 
             if (op1 == "cmp" && (line1[1] == "#0" || line1[1] == "#$0") && m_src[i].find(";keep") == string::npos) {
-                bool found = false;
-                int j = i + 1;
-                string prev = "";
-                while (!found && j >= 0 && j < m_src.size()) {
-                    string t = Util::trim(m_src[j++]);
-                    if (!t.starts_with(";")) {
-                        vector<string> lst;
-                        lst = Util::split(t, ' ', lst);
-                        if (lst.size() >= 1) {
-                            prev = lst[0];
-                            found = true;
-                        }
-                    }
-                }
-                if (prev == "beq" || prev == "bne") {
+                auto next = findPrevNext(i+1, 1);
+                auto prev = findPrevNext(i-1, -1);
+                // if prev is a changing and next is beq/bne, replace
+                cout << prev << endl;
+                if (contains(m_aChangingOpsForCmp, prev))
+                if (next == "beq" || next == "bne") {
                     src.push_back("\t;cmpopt " + m_src[i]);
                     remove = true;
                     s_optLines += 1;

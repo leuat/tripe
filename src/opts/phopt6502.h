@@ -15,6 +15,8 @@ class Phopt6502 : public Phopt {
     vector<string> m_aChangingOps = {"ora", "and", "eor", "beq", "bcc", "bcs", "bne", "adc", "sbc",
                                      "asl", "ror", "lsr", "rol", "jsr", "inc", "dec", "tya", "txa"};
 
+    vector<string> m_aChangingOpsForCmp = {"ora", "and", "eor", "beq", "bcc", "bcs", "bne", "adc", "sbc", "asl", "ror", "lsr", "rol", "jsr", "tya", "txa", "lda"};
+
     enum Type { BOP1, BOP2, LDASTA, LDALDXLDA, LDASTA2, LDA, INCDEC, LDXSTA };
 
     bool is16bit(string v) {
@@ -37,6 +39,8 @@ class Phopt6502 : public Phopt {
     void ldX(string cmd);
     void ldA();
     void cmp();
+    void ldAtaX(string cmd);
+
     void Opt(Type type, int noLinesToCheck);
 };
 } // namespace tripe
