@@ -19,8 +19,61 @@ vector<string> Phopt6502::optimize(vector<string> in) {
     cmp();
     ldAtaX("x");
     ldAtaX("y");
+//    ldxAlone("x");
     return m_src;
 }
+
+void Phopt6502::ldxAlone(string cmd) {
+    string curVal = "";
+    bool isDone = false;
+    vector<string> src{};
+    string comm = "," + cmd;
+    string ldx = "ld" + cmd;
+    for (int i = 0; i < m_src.size(); i++) {
+
+        bool remove = false;
+        string l1 = "";
+        auto line1 = getLine(i);
+
+        if (line1.size() == 2 && Util::toLower(line1[0])==ldx) {
+
+            bool done = false;
+            int j=i+1;
+            bool used = false;
+
+            while (!done) {
+                auto lst = getLine(j++);
+                if (lst.size()>0) {
+                    auto op = Util::toLower(Util::trim(lst[0]));
+                    if (op=="in"+cmd || op=="de"+cmd || op=="st"+cmd) {
+                        used = true;
+                    }
+                    if (op==cmd) {
+                        done = true;
+                    }
+                }
+                if (lst.size()>1)
+                if (lst[1].find(comm)!=string::npos) {
+                    used = true;
+                    done = true;
+                }
+                auto line = m_src[j];
+                if (!(line.starts_with(" ") || line.starts_with("\t") || line.find(":")==string::npos))
+                    done = true;
+            }
+            if (!used) {
+                src.push_back("; remove opt8 ."+ldx);
+                remove = true;
+                s_optLines += 1;
+            }
+        }
+        if (!remove)
+            src.push_back(m_src[i]);
+    }
+
+    m_src = src;
+}
+
 
 void Phopt6502::ldAtaX(string cmd) {
     string curVal = "";
@@ -150,7 +203,7 @@ void Phopt6502::cmp() {
                 auto next = findPrevNext(i+1, 1);
                 auto prev = findPrevNext(i-1, -1);
                 // if prev is a changing and next is beq/bne, replace
-                cout << prev << endl;
+                //cout << prev << endl;
                 if (contains(m_aChangingOpsForCmp, prev))
                 if (next == "beq" || next == "bne") {
                     src.push_back("\t;cmpopt " + m_src[i]);
