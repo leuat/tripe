@@ -122,7 +122,7 @@ class AbstractCPU {
 
     map<string, string> m_code;
     vector<string> m_usedCode;
-    map<string, string> m_symtab;
+    map<string, string> m_symtab, m_decltab;
 
     AbstractCPU();
 

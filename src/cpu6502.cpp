@@ -242,6 +242,11 @@ void CPU6502::Declare(int &pos) {
     } else {
         Label(name.str, m_typeTripeToNative[m_opcodeToAsm[value.type]] + "\t" + hex + value.str);
     }
+    if (m_decltab.contains(name.str)) {
+
+        Error::RaiseError("6502 codegen: symbol "+name.str + " already defined");
+    }
+    m_decltab[name.str] = name.str;
     m_symtab[name.str] = m_opcodeToAsm[value.type];
 }
 
