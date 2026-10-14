@@ -4,11 +4,6 @@ using namespace tripe;
 namespace tripe {
 
 
-
-
-
-
-
 vector<string> Phopt6502::optimize(vector<string> in) {
 
     m_src = in;
@@ -29,48 +24,6 @@ vector<string> Phopt6502::optimize(vector<string> in) {
 //    ldxAlone("x");
     return m_src;
 }
-
-
-void Phopt6502::cmp2(vector<vector<string>> &line, vector<string> &l, int &cur, vector<string> &src) {
-    /*
-    sta _r8_1
-    ; jneq
-    lda s
-    cmp _r8_1
-    bne 
-
-    to
-
-    cmp s
-    */
-
-    auto line3 = line[3];
-    auto line2 = line[2];
-    auto line1 = line[1];
-    auto line0 = line[0];
-    auto l0 = l[0];
-    auto l1 = l[1];
-    auto l2 = l[2];
-    auto l3 = l[3];
-
-    if (line0.size() == 2 && line1.size() == 2 && line2.size()==2 &&line3.size()==2) {
-
-        auto op0 = Util::toLower(line0[0]);
-        auto op1 = Util::toLower(line1[0]);
-        auto op2 = Util::toLower(line2[0]);
-        auto op3 = Util::toLower(line3[0]);
-        //      std::cout <<Util::toLower(line1[0])  << " "
-        //<<Util::toLower(line2[0]) << endl;
-        if (op0 == "sta" && op1=="lda" && op2     //              cout
-                s_optLines += 2;
-                src.push_back(tab+"cmp "+line[1][1] + " ; optcmp2");
-                src.push_back(l3);
-                cur = m_curLine;
-
-        }
-    }
-}
-
 
 void Phopt6502::ldxAlone(string cmd) {
     string curVal = "";
@@ -123,6 +76,46 @@ void Phopt6502::ldxAlone(string cmd) {
     m_src = src;
 }
 
+
+void Phopt6502::cmp2(vector<vector<string>> &line, vector<string> &l, int &cur, vector<string> &src) {
+    /*
+    sta _r8_1
+    ; jneq
+    lda s
+    cmp _r8_1
+    bne 
+
+    to
+
+    cmp s
+    */
+
+    auto line3 = line[3];
+    auto line2 = line[2];
+    auto line1 = line[1];
+    auto line0 = line[0];
+    auto l0 = l[0];
+    auto l1 = l[1];
+    auto l2 = l[2];
+    auto l3 = l[3];
+
+    if (line0.size() == 2 && line1.size() == 2 && line2.size()==2 &&line3.size()==2) {
+
+        auto op0 = Util::toLower(line0[0]);
+        auto op1 = Util::toLower(line1[0]);
+        auto op2 = Util::toLower(line2[0]);
+        auto op3 = Util::toLower(line3[0]);
+        //      std::cout <<Util::toLower(line1[0])  << " "
+        //<<Util::toLower(line2[0]) << endl;
+        if (op0 == "sta" && op1=="lda" && op2=="cmp" && (op3=="bne" || op3=="beq") && isTemp8(line0[1]) && line0[1]==line2[1]) {
+                s_optLines += 2;
+                src.push_back(tab+"cmp "+line[1][1] + " ; optcmp2");
+                src.push_back(l3);
+                cur = m_curLine;
+
+        }
+    }
+}
 
 void Phopt6502::ldAtaX(string cmd) {
     string curVal = "";
