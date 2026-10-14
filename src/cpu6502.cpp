@@ -546,10 +546,14 @@ void CPU6502::Branch(int &pos, int opcode) {
         //        if (printCmp(b.prefix()))
         Asm("cmp " + b.prefix());
 
+        // perform offpage opt here for jeq/jneq
+        string jeq = isOffpage?"bne ":"beq "; // flip if offpage
+        string jneq = isOffpage?"beq ":"bne "; // flip if offpage
+
         if (opcode == m_asmToOpcode["jeq"])
-            Asm("beq " + lbl.str);
+            Asm(jeq + lbl.str);
         if (opcode == m_asmToOpcode["jneq"])
-            Asm("bne " + lbl.str);
+            Asm(jneq + lbl.str);
 
         if (opcode == m_asmToOpcode["jgt"]) {
             auto lblOK = getTempLabel();
@@ -624,12 +628,21 @@ void CPU6502::Branch(int &pos, int opcode) {
     }
 
     if (isOffpage) {
-        string cont = getTempLabel();
-        Asm("; branch is offpage");
-        Asm("jmp " + cont);
-        Label(lbl.str);
-        Asm("jmp " + lblKeep);
-        Label(cont);
+        if (opcode==m_asmToOpcode["jeq"] || opcode==m_asmToOpcode["jneq"]) {
+            Asm("; branch is offpage optbranch1");
+            Asm("jmp " + lblKeep);
+            Label(lbl.str);
+
+
+        } 
+        else {
+            string cont = getTempLabel();
+            Asm("; branch is offpage");
+            Asm("jmp " + cont);
+            Label(lbl.str);
+            Asm("jmp " + lblKeep);
+            Label(cont);
+        }
     }
     m_curBranch++;
 
