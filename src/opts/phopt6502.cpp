@@ -3,6 +3,12 @@
 using namespace tripe;
 namespace tripe {
 
+
+
+
+
+
+
 vector<string> Phopt6502::optimize(vector<string> in) {
 
     m_src = in;
@@ -17,11 +23,54 @@ vector<string> Phopt6502::optimize(vector<string> in) {
     ldX("x");
     ldA();
     cmp();
+    Opt(CMP2, 4);
     ldAtaX("x");
     ldAtaX("y");
 //    ldxAlone("x");
     return m_src;
 }
+
+
+void Phopt6502::cmp2(vector<vector<string>> &line, vector<string> &l, int &cur, vector<string> &src) {
+    /*
+    sta _r8_1
+    ; jneq
+    lda s
+    cmp _r8_1
+    bne 
+
+    to
+
+    cmp s
+    */
+
+    auto line3 = line[3];
+    auto line2 = line[2];
+    auto line1 = line[1];
+    auto line0 = line[0];
+    auto l0 = l[0];
+    auto l1 = l[1];
+    auto l2 = l[2];
+    auto l3 = l[3];
+
+    if (line0.size() == 2 && line1.size() == 2 && line2.size()==2 &&line3.size()==2) {
+
+        auto op0 = Util::toLower(line0[0]);
+        auto op1 = Util::toLower(line1[0]);
+        auto op2 = Util::toLower(line2[0]);
+        auto op3 = Util::toLower(line3[0]);
+        //      std::cout <<Util::toLower(line1[0])  << " "
+        //<<Util::toLower(line2[0]) << endl;
+        if (op0 == "sta" && op1=="lda" && op2     //              cout
+                s_optLines += 2;
+                src.push_back(tab+"cmp "+line[1][1] + " ; optcmp2");
+                src.push_back(l3);
+                cur = m_curLine;
+
+        }
+    }
+}
+
 
 void Phopt6502::ldxAlone(string cmd) {
     string curVal = "";
@@ -439,6 +488,15 @@ void Phopt6502::Bop2(vector<vector<string>> &line, vector<string> &l, int &cur, 
     lda _r8_3
     adc _r8_4
 
+
+    also this:
+
+    stx _r8_2
+    lda curx
+    clc
+    adc _r8_2
+
+
     */
 
     if (!(line[0].size() == 2 && line[1].size() == 2))
@@ -452,9 +510,11 @@ void Phopt6502::Bop2(vector<vector<string>> &line, vector<string> &l, int &cur, 
         l.push_back(ll);
         line.erase(line.begin() + 2);
     }
-
-    if (!(line[0][0] == "sta" && line[1][0] == "lda" && isTemp8(line[0][1]) && isTemp8(line[1][1])))
+    if (!(line[0][0].starts_with( "st" )  && line[1][0] == "lda" && isTemp8(line[0][1])))
         return;
+
+    // get stx/sty/sta
+    string xy {line[0][0][2]};
 
     if (!(line[0][1] == line[2][1]))
         return;
@@ -474,6 +534,8 @@ void Phopt6502::Bop2(vector<vector<string>> &line, vector<string> &l, int &cur, 
     cur = m_curLine;
     s_optLines += 2;
     // do the opt:
+    if (xy!="a") // needs a "txa" before
+        src.push_back(tab+"t"+xy+"a");
     if (sec != "")
         src.push_back(sec);
     src.push_back(tab + cmd + " " + line[1][1] + " ; bop2 opt ");
@@ -504,6 +566,7 @@ void Phopt6502::Bop1(vector<vector<string>> &line, vector<string> &l, int &cur, 
     lda t_uint8_load1
     clc
     adc t_uint8_load2
+
 
 
 
@@ -590,6 +653,8 @@ void Phopt6502::Opt(Type type, int noLinesToCheck) {
             Bop1(line, l, cur, src);
         else if (type == BOP2)
             Bop2(line, l, cur, src);
+        else if (type == CMP2)
+            cmp2(line, l, cur, src);
         else {
             cout << "Phopt6502 " << endl;
             exit(1);

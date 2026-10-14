@@ -18,7 +18,7 @@ class Phopt6502 : public Phopt {
     vector<string> m_aChangingOpsForCmp = {"ora", "and", "eor", "beq", "bcc", "bcs", "bne", "adc", "sbc", "asl", "ror", "lsr", "rol", "jsr", "tya", "txa", "lda"};
 //    vector<string> m_xChangingOps = {"inx", "dex"};
 
-    enum Type { BOP1, BOP2, LDASTA, LDALDXLDA, LDASTA2, LDA, INCDEC, LDXSTA };
+    enum Type { BOP1, BOP2, LDASTA, LDALDXLDA, LDASTA2, LDA, INCDEC, LDXSTA, CMP2 };
 
     bool is16bit(string v) {
         vector<string> lst;
@@ -37,6 +37,7 @@ class Phopt6502 : public Phopt {
     void ldasta(vector<vector<string>> &line, vector<string> &l, int &cur, vector<string> &src);
     void ldasta2(vector<vector<string>> &line, vector<string> &l, int &cur, vector<string> &src);
     void ldaldxlda(vector<vector<string>> &line, vector<string> &l, int &cur, vector<string> &src);
+    void cmp2(vector<vector<string>> &line, vector<string> &l, int &cur, vector<string> &src);
     void ldX(string cmd);
     void ldA();
     void cmp();
