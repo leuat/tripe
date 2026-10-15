@@ -205,7 +205,7 @@ void Phopt6502::ldAtaX(string cmd) {
         if (line1.size() == 2 && line2.size() == 1) {
             auto op1 = Util::toLower(line1[0]);
             //           cout << op1 << " " << line2[0] << endl;
-            if (op1 == "lda" && (line2[0] == tax)) {
+            if (op1 == "lda" && (line2[0] == tax) && line1[1].find(",")==string::npos) {
                 src.push_back(tab + "ld" + cmd + " " + line1[1] + " ; opt lda9 [blah] " + tax);
                 i++;
                 remove = true;
