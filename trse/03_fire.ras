@@ -23,9 +23,9 @@ var
 	// Shiftx shifts random values
 	shiftx: byte;
 
-	rands : array[256] of byte= buildtable("Math.random()*256");
+	rands : array[256] of byte;
 
-	colorzp, p: ^byte;
+	colorzp, p, p1,p2,p3,p4: ^byte;
 
 // Remove this line to use unoptimized version
 
@@ -43,16 +43,57 @@ begin
 
 	shiftx:=shiftx+31;
 	ystart:=3;
-	colorzp:=#screen_col_loc+120;// +ystart*Screen::width;
-	p:=#Screen::screen0+120;// + ystart*Screen::width;
+	colorzp:=#screen_col_loc +ystart*Screen::width;
+	p:=#Screen::screen0 + ystart*Screen::width;
 	for y:=0 to 5 offpage do begin // 160*4
 	//	 Original code
+@if OPTIMIZED = 0
+		p1:=p+39;
+		p2:=p+40;
+		p3:=p+41;
+		p4:=p+80;
 		for x:=0 to 160 do begin
 			// This is the main method for calculating "fire" : current neighbouring values+ lower value
-			val:=(p[x+39]+p[x+40]+p[x+41] + p[x+80])/4;
+			val:=(p1[x]+p2[x]+p3[x]+p4[x])/4;
 			p[x]:=val;
 			colorzp[x]:=color[val];
 		end;
+@endif
+@if OPTIMIZED=1
+			
+//			for x:=0 to 160 do 
+			// Unrolled
+			asm("
+			
+				repeat 160
+			
+				lda #[i]							
+				adc #38
+				tay
+				lda (p),y
+				iny
+				adc (p),y
+				iny
+				adc (p),y
+				pha
+				tya
+				adc #39
+				tay
+				pla
+				adc (p),y
+				
+				lsr
+				lsr
+
+				ldy #[i]							
+				sta (p),y		
+				tax
+				lda color,x
+				sta (colorzp),y
+
+				repend
+			");		
+@endif
 		p+=160;
 		colorzp+=160;
 	end;
@@ -67,7 +108,7 @@ end;
 procedure InitRandom();
 begin
 	for i:=0 to 256 do
-		rands[i]:=rands[i]/18;
+		rands[i]:=Random()/18;
 
 end;
 
@@ -85,7 +126,7 @@ begin
 	Screen::SetCharsetLocation(#charLoc);
 	
 	Memory::Copy(#charLoc+fireChar*8,#charLoc,0);
-	Memory::Fill(#charLoc+^8*^8,$FF,128);
+	Memory::Fill(#charLoc+8*8,$FF,128);
 	
 	while (true) do 
 		Fire();

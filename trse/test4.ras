@@ -65,6 +65,10 @@ end;
 */
 procedure RenderMatrix();
 begin
+	i:=10;
+	asm(" nop");
+	sp:=saddr[i]+i;
+	sp[0]:=0;
 	// Look through 80 columns
 	for i:=0 to screen_width offpage do 
 	begin
@@ -106,13 +110,14 @@ begin
 	// Clear screens	
 	Screen::Clear(#Screen::screen0,key_space);
 	Screen::Clear(#Screen::color,black);
+	Screen::Clear(#Screen::color,white);
 	// Initialize tables	
 	InitTables();
-	
+
 	// Loop effect
 	while(true) do
 	begin
-		waitforverticalblank();
+//		waitforverticalblank();
 		RenderMatrix();
 
 	end;

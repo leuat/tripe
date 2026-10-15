@@ -3,14 +3,13 @@ program PlasmaProgram;
 @use "system/memory"
 var
 
-
+// opt: $c49  vs $c85 noopt
 
 // set to "0" to get the unoptimized version
 @define OPTIMIZED 0
 
 	// some plasma variables
-	val,c2x, c2y,ax, ay : byte;
-	i,x,y,c : byte;
+	val,c2x, c2y,ax, ay, i,xx,yy,c : byte at $40;
 	colorP: ^byte; // same as "pointer" or "pointer of byte";	
 
 // charset will be placed at $2000 in bank 1	
@@ -52,17 +51,20 @@ begin
 	c2x:=ax;
 	c2y:=ay;
 	// Set up y-sine table
-	for x:=0 to Screen::height do begin 
-		siny[x]:=  sin[c2x] + sin[c2y] - sin[c2x-c2y];
+	
+	for xx:=0 to Screen::height do begin 
+		asm(" nop");
+		siny[xx]:=  sin[c2x] + sin[c2y] - sin[c2x-c2y];
 		c2x:=c2x+4;
 		c2y:=c2y+9;
 	end;
+	
 
 	ax:=ax+3;
 	ay:=ay-5;
 	// Set up x-sine table
-	for x:=0 to Screen::width do begin 
-		sinx[x] := sin[c2x] + sin[c2y];
+	for xx:=0 to Screen::width do begin 
+		sinx[xx] := sin[c2x] + sin[c2y];
 		c2x:=c2x+3;
 		c2y:=c2y+7;
 
@@ -73,9 +75,9 @@ begin
 	// moveto could also be replaced with : screenmemory:=$0400 + @y_start*40;
 	
 	colorP:=#Screen::color + Screen::tab40[yStart];
-	for y:=yStart to yEnd offpage do 
+	for yy:=yStart to yEnd offpage do 
 	begin
-		val:=siny[y];
+		val:=siny[yy];
 		for i:=xStart to xEnd do 
 		begin
 			c:=lookupDiv16[ (sinx[i] +val) ];
@@ -95,6 +97,7 @@ begin
 	// Set color background
 	Screen::background:=black;
 	Screen::border:=black;
+	
 	// Set charmap location at $2000
 //	ip[0]:=0;
 	Screen::SetCharsetLocation(#charsetLocation);

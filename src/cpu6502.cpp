@@ -97,9 +97,8 @@ string CPU6502::loadIndex(string &s, Param &idx, string type, bool &indexIsConst
             // Evaluate argument.
             int ival = te_interp((idx.str + "*2").data(), &error);
             idx.str = std::to_string(ival);
-        }
-        else
-            idx.str = "$"+idx.str;
+        } else
+            idx.str = "$" + idx.str;
         return xy;
     }
 
