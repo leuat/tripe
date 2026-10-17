@@ -147,6 +147,11 @@ void TripeParser::ParseTextToBinary() {
         op.ParseToBinary(v, m_data);
         cnt++;
     }
+    // Insert all symbols at 3
+    int pos = 3;
+    for (auto &v : op.m_symData) {
+        m_data.insert(m_data.begin() + pos++, v);
+    }
 }
 
 void TripeParser::ParseBinary(AbstractCPU *op, int pass) {

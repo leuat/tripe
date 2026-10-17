@@ -215,7 +215,7 @@ bool OrgAsm::Repeat(vector<string> &l) {
         if (m_curLine == m_src.size())
             throw string(err() + "Repeat needs repend.");
 
-        // go through i,j 
+        // go through i,j
         for (int i = 0; i < repeats[0]; i++) {
             for (int j = 0; j < repeats[1]; j++) {
 
@@ -233,7 +233,7 @@ bool OrgAsm::Repeat(vector<string> &l) {
                         for (int ips = 0; ips < ps.size(); ips++)
                             // if found "i" or "j" in hit
                             if (hit.find(ps[ips]) != string::npos) {
-                                // rep replaces i in  [i*10] 
+                                // rep replaces i in  [i*10]
                                 string rep = Util::ReplaceString(hit, ps[ips], std::to_string(*ptrs[ips]));
                                 // replace []
                                 rep.erase(rep.begin());
@@ -248,9 +248,9 @@ bool OrgAsm::Repeat(vector<string> &l) {
             }
         }
         // insert into source
-        for (auto &s : src) 
+        for (auto &s : src)
             m_src.insert(m_src.begin() + m_curLine++, s);
-        
+
         m_isInRepeat = false;
         return true;
     }
