@@ -1,6 +1,7 @@
 #include "lorgasm.h"
 #include "resources/p6502.h"
 #include "tinyexpr.h"
+#include "tripedata.h"
 #include <regex>
 
 namespace tripe {
@@ -72,7 +73,7 @@ void OrgAsm::Assemble(string in, string out) {
     //    cout << " *** pass 3: assemble" << endl;
     Pass(3);
 
-    cout << "\nOrgAsm done." << endl;
+//    cout << "\nOrgAsm done." << endl;
 
     // Util::save_text("test.asm", m_src);
     Util::save_binary(out, m_data);
@@ -533,6 +534,7 @@ void OrgAsm::Pass(int pass) {
         }
         Parse(s);
     }
+    Data::d.Tick();
 }
 
 string OrgAsm::ConvertBinary(const string &s) {
