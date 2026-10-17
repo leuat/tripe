@@ -167,6 +167,105 @@ bool OrgAsm::Label(string s) {
     }
     return true;
 }
+
+bool OrgAsm::Repeat(vector<string> &l) {
+    if (Util::toLower(l[0]) == "repeat") {
+        // Get repend
+
+        if (m_isInRepeat)
+            throw string(err() + "Alread in a repeat block.");
+
+        if (l.size() == 1)
+            throw string(err() + "Repeat needs at least one parameter");
+
+        vector<string> ps{"i", "j"};
+
+        m_isInRepeat = true;
+        vector<string> repeatBlock;
+        vector<int> repeats;
+        for (int i = 0; i < ps.size(); i++) {
+            if (i + 1 < l.size())
+                repeats.push_back(Util::fromNumber(l[i + 1]));
+            else
+                repeats.push_back(1);
+        }
+
+
+
+        string end = "";
+
+        while (end != "repend" && m_curLine < m_src.size()) {
+            string s = m_src[m_curLine];
+            cout << s << endl;
+            m_src.erase(m_src.begin()+m_curLine);
+            auto lst = Util::clean_split(s, ' ');
+            if (lst.size() != 0)
+                end = lst[0];
+
+            repeatBlock.push_back(s);
+        }
+        repeatBlock.erase(repeatBlock.begin());
+        repeatBlock.erase(repeatBlock.end());
+
+        vector<string> src;
+
+
+        string rePattern = "\\[(.*?)\\]";                
+        std::regex re(rePattern);
+        std::sregex_iterator rend;
+
+        if (m_curLine == m_src.size())
+            throw string(err() + "Repeat needs repend.");
+            for (int i = 0; i < repeats[0]; i++) {
+                for (int j = 0; j < repeats[1]; j++) {
+
+                         for (auto s : repeatBlock) {
+                            //s = "hello [ugh] [123] [i]";
+                            std::sregex_iterator it(s.begin(), s.end(), re);
+                            // only work on the copy
+                            string line = s;
+                            vector<int*> ptrs {&i, &j};
+                            while (it != rend) {
+
+                                string hit = it->str();
+                                for (int ips=0;ips<ps.size();ips++)
+                                if (hit.find(ps[ips]) != string::npos) {
+                                    string rep = Util::ReplaceString(hit, ps[ips], std::to_string(*ptrs[ips]));
+
+                                    rep.erase(rep.begin());
+                                    rep.erase(rep.end()-1);
+                                    line = Util::ReplaceString(line,hit,rep);
+                                    int error = 0;
+                                }
+                                it++;
+                            }
+                            src.push_back(line);
+               
+                         }
+   
+                }
+            }
+        for (auto &s : src) {
+            m_src.insert(m_src.begin()+m_curLine++,s);
+
+//               cout <<s << endl;
+        }
+        /*
+        cout << "DONE"<<endl;
+
+        for (auto s:m_src) {
+            cout << s << endl;
+        }
+*/
+
+        // Move forward
+//        m_curLine = cl - 1;
+        m_isInRepeat = false;
+        return true;
+    }
+    return false;
+}
+
 bool OrgAsm::ProgramCounter(vector<string> &l) {
     if (l[0] != m_cmd["pc"])
         return false;
@@ -207,6 +306,9 @@ void OrgAsm::Parse(string s) {
     auto l = Util::clean_split(s, ' ');
 
     if (l.size() == 0)
+        return;
+
+    if (Repeat(l))
         return;
 
     if (ProgramCounter(l))
@@ -429,16 +531,13 @@ void OrgAsm::Pass(int pass) {
     m_pc = 0;
     m_data.clear();
     m_firstOrg = true;
-    m_curLine = 0;
-    for (auto s : m_src) {
+    for (m_curLine = 0; m_curLine < m_src.size(); m_curLine++) {
+        auto s = m_src[m_curLine];
         string cl = Util::trim(s);
         if (cl == "" || cl.starts_with(";") || cl.starts_with("//")) {
-            m_curLine++;
-
             continue;
         }
         Parse(s);
-        m_curLine++;
     }
 }
 
