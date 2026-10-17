@@ -109,7 +109,6 @@ vector<string> TripeParser::ParseBinary(string inFile, string arch, map<string, 
 }
 
 void TripeParser::ParseTextToBinary() {
-
     Opcodes op;
     m_data.push_back(m_id[0]);
     m_data.push_back(m_id[1]);
@@ -161,6 +160,8 @@ void TripeParser::ParseBinary(AbstractCPU *op, int pass) {
     op->m_pass = pass;
     op->m_curBranch = 0;
     op->m_decltab.clear();
+        cout << " ParseTextFromBin" << endl;
+
     while (pos < m_data.size()) {
         string s = op->ParseFromBinary(pos);
         auto sp = Util::split(s, '\n');
@@ -177,4 +178,5 @@ void TripeParser::ParseBinary(AbstractCPU *op, int pass) {
         op->m_curLine = m_src.size() - 1;
     }
 }
+
 } // namespace tripe

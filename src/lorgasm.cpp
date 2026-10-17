@@ -287,7 +287,7 @@ void OrgAsm::Parse(string s) {
     // Remove all comments
     if (s.find(";") != string::npos)
         s = Util::split(s, ';')[0];
-    if (s.find("/") != string::npos)
+    if (s.find("//") != string::npos && s.find("\"")==string::npos)
         s = Util::split(s, '/')[0];
 
     if (Consts(s))
@@ -524,6 +524,7 @@ void OrgAsm::Pass(int pass) {
     m_pc = 0;
     m_data.clear();
     m_firstOrg = true;
+    m_src.push_back("");
     for (m_curLine = 0; m_curLine < m_src.size(); m_curLine++) {
         auto s = m_src[m_curLine];
         string cl = Util::trim(s);
@@ -532,6 +533,7 @@ void OrgAsm::Pass(int pass) {
         }
         Parse(s);
     }
+
 }
 
 string OrgAsm::ConvertBinary(const string &s) {
