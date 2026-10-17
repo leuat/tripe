@@ -10,11 +10,15 @@ uint8,0xF8,
 uint16,0xF9,
 uint32,0xFA,
 uint64,0xFB,
+int8,0xFC,
+int16,0xFD,
+int32,0xFE,
+int64,0xFF,
 
 # pointer types: *uint8, *uint16 or *uint32
-ptr8,0xFC,
-ptr16,0xFD,
-ptr32,0xFE,
+ptr8,0xE0,
+ptr16,0xE1,
+ptr32,0xE2,
 
 # section markers
 .tripe,0x01,ival
@@ -38,10 +42,15 @@ const,0x5,p:ival
 # where to place tripe generated code (mul/div code etc)
 .gcode,0xA,0
 
+# binary symbol table
+.symbol,0xB,0
+
 # block data stream
 
 .uint8,0xF0,datastream
 .uint16,0xF1,datastream
+.int8,0xF2,datastream
+.int16,0xF3,datastream
 .incbin,0xF5,p
 
 #end code
@@ -76,6 +85,11 @@ jgt,0x42,p:p:p
 jlt,0x43,p:p:p
 jgte,0x44,p:p:p
 jlte,0x45,p:p:p
+# signed versions
+jgts,0x46,p:p:p
+jlts,0x47,p:p:p
+jgtes,0x48,p:p:p
+jltes,0x49,p:p:p
 
 # jumps
 
