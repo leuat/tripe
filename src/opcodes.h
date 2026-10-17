@@ -17,7 +17,7 @@ class Opcodes : public AbstractCPU {
     bool m_inRawAsm = false;
     static const int DATATYPE_STRING = 1;
     static const int DATATYPE_NUMBER = 0;
-    symType m_curSymVal = 1;
+    symType m_curSymVal = 0;
     vector<uint8_t> m_symData;
 
     symType getSymbol(const string sym);

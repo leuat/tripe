@@ -85,14 +85,14 @@ Param AbstractCPU::getNextParam(vector<uint8_t> &data, int &pos) {
         typeName = m_opcodeToAsm[type];
     } else // Some text
     {
-//                symType val = getSymbolValue(pos);
+        //                symType val = getSymbolValue(pos);
 
         symType val = getSymbolValue(pos);
-        if (!m_binToSym.contains(val)) 
-            throw string("Error parsing binary, symbol id not found: "+std::to_string(val));
-        
+        if (!m_binToSym.contains(val))
+            throw string("Error parsing binary data, symbol id not found: $" + Util::toHex(val) + " in position $" + Util::toHex(pos));
+
         s = m_binToSym[val];
-//        cout << "Recovering symbol: "<< s << endl;
+        //        cout << "Recovering symbol: "<< s << endl;
         type = Param::VAR;
         typeName = m_symtab[s];
     }
@@ -149,14 +149,13 @@ std::string AbstractCPU::ParseInlineAsm(vector<uint8_t> &data, int &pos) {
 
 // void HandleDataStream(int& pos, string )
 
-AbstractCPU::symType AbstractCPU::getSymbolValue(int& pos) {
+AbstractCPU::symType AbstractCPU::getSymbolValue(int &pos) {
     symType val = 0;
-    for (int i=0;i<sizeof(symType);i++)
-        val |= m_data[pos+i]<<(i*8);
-    pos+= sizeof(symType);
+    for (int i = 0; i < sizeof(symType); i++)
+        val |= m_data[pos + i] << (i * 8);
+    pos += sizeof(symType);
     return val;
 }
-
 
 string AbstractCPU::ParseFromBinary(int &pos) {
     m_line = "";
@@ -174,17 +173,16 @@ string AbstractCPU::ParseFromBinary(int &pos) {
     if (!m_opcodeToAsm[opcode].starts_with("."))
         Asm("; " + m_opcodeToAsm[opcode]);
 
-
     if (opcode == m_asmToOpcode[".symbol"]) {
         // Add bin symbol
         symType val = getSymbolValue(pos);
         string sym = "";
-        while (m_data[pos]!=0)
-            sym+=(char)m_data[pos++];
+        while (m_data[pos] != 0)
+            sym += (char)m_data[pos++];
         // get symbol value
-        pos++; 
+        pos++;
         m_binToSym[val] = sym;
-//        cout << "Symbol value: " <<val<< " " <<sym  << "   pos:" << (int)m_data[pos]<< endl;
+        //        cout << "Symbol value: " <<val<< " " <<sym  << "   pos:" << (int)m_data[pos]<< endl;
         return m_line;
     }
 

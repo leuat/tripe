@@ -132,7 +132,7 @@ class AbstractCPU {
     AbstractCPU();
 
     bool isRegister(string &s) { return s.starts_with("_r"); }
-    symType getSymbolValue(int& pos);
+    symType getSymbolValue(int &pos);
     void addCode(string s) {
         int cnt = count(m_usedCode.begin(), m_usedCode.end(), s);
         if (cnt == 0)

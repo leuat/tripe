@@ -72,7 +72,7 @@ void OrgAsm::Assemble(string in, string out) {
     //    cout << " *** pass 3: assemble" << endl;
     Pass(3);
 
-    cout << "OrgAsm done." << endl;
+    cout << "\nOrgAsm done." << endl;
 
     // Util::save_text("test.asm", m_src);
     Util::save_binary(out, m_data);
@@ -287,7 +287,7 @@ void OrgAsm::Parse(string s) {
     // Remove all comments
     if (s.find(";") != string::npos)
         s = Util::split(s, ';')[0];
-    if (s.find("//") != string::npos && s.find("\"")==string::npos)
+    if (s.find("//") != string::npos && s.find("\"") == string::npos)
         s = Util::split(s, '/')[0];
 
     if (Consts(s))
@@ -533,7 +533,6 @@ void OrgAsm::Pass(int pass) {
         }
         Parse(s);
     }
-
 }
 
 string OrgAsm::ConvertBinary(const string &s) {

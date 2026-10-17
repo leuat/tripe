@@ -250,12 +250,12 @@ void CPU6502::Const(int &pos) {
 void CPU6502::Declare(int &pos) {
     auto name = getNextParam(m_data, pos);
     auto value = getNextParam(m_data, pos);
-/*
-    cout << "DECLARE '";
-    cout << name.str << "'   '" << value.str
-         << "'   is_string: " << std::to_string(value.flag) << " at pos "
-         << Util::toHex(pos) << endl;
-         */
+    /*
+        cout << "DECLARE '";
+        cout << name.str << "'   '" << value.str
+             << "'   is_string: " << std::to_string(value.flag) << " at pos "
+             << Util::toHex(pos) << endl;
+             */
     bool isString = value.flag == Opcodes::DATATYPE_STRING;
     string hex = m_hexprefix;
     if (isString)
