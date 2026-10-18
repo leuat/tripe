@@ -16,6 +16,7 @@ add_executable(tripe
   src/tinyexpr.c
   src/abstractcpu.cpp
   src/cpu6502.cpp
+  src/cpuz80.cpp
   src/tripedata.cpp
   src/error.cpp
   src/main.cpp
