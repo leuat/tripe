@@ -53,10 +53,34 @@ class Param {
     bool isPureNumber() {
         if (str.starts_with("0x") || str.starts_with("$"))
             return true;
-        if (std::isdigit(str[0]))
+        if (std::isxdigit(str[0]))
             return true;
         return false;
     }
+    string z80() {
+        if (isPureNumber())
+            return "$"+str;
+        if (isRef())
+            return clean();
+        return "["+str+"]"; 
+    }
+
+    string z80lo() {
+        if (isPureNumber())
+            return "$"+Util::toHex(Util::fromNumber("$"+str)&0xff);
+        if (isRef())
+            return clean();
+        return "["+str+"]"; 
+    }
+    string z80hi() {
+        if (isPureNumber())
+            return "$"+Util::toHex((Util::fromNumber("$"+str)>>8&0xff));
+        if (isRef())
+            return clean()+"+1";
+        return "["+str+"+1"+"]"; 
+    }
+
+
     string lo() {
         if (type == 1) {
             if (isRef())
@@ -102,6 +126,8 @@ class Param {
     bool isRef() { return str.starts_with("#"); }
 
     string clean() {
+        if (!str.starts_with("#"))
+            return str;
         string s = str;
         return s.erase(0, 1);
     }
@@ -189,6 +215,7 @@ class AbstractCPU {
     bool isSingleParamOpcode(int code);
 
     bool is16bit(const Param &val);
+    bool isPointer(const Param &val);
     bool isSigned(const Param &val);
     bool is16bitArray(const Param &val);
 

@@ -13,9 +13,13 @@ AbstractCPU::AbstractCPU() {
     m_branchOpcodes = {"jeq", "jneq", "jgt", "jlt", "jgte", "jlte", "jgts", "jlts", "jgtes", "jltes"};
 }
 
+bool AbstractCPU::isPointer(const Param &val) {
+    return ( m_symtab[val.str].starts_with("ptr")); 
+}
+
 bool AbstractCPU::is16bit(const Param &val) {
     return (m_symtab[val.str] == "int16" || m_symtab[val.str] == "uint16" || m_symtab[val.str].starts_with("ptr") || m_symtab[val.str].starts_with("address16")) ||
-           m_opcodeToAsm[val.type] == "uint16";
+           m_opcodeToAsm[val.type] == "uint16" || val.str.starts_with("#");
 }
 
 bool AbstractCPU::isSigned(const Param &val) {
