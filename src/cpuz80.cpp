@@ -253,6 +253,7 @@ void CPUZ80::Binop(int &pos, int opcode) {
 
    string op = m_typeTripeToNative[m_opcodeToAsm[opcode]];
     bool isAdc = op=="adc" || op=="sbc";    
+
     if (!is16bit(b) && !is16bit(res) && !(is16bit(a))) {
         Asm("ld a,"+a.z80());
         if (b.isPureNumber()) {
@@ -271,22 +272,42 @@ void CPUZ80::Binop(int &pos, int opcode) {
             
         }
         Asm("ld "+res.z80()+",a");
-
     }
 
 
 
-    if (!is16bit(res)) {
+    if (is16bit(res)) {
+        Asm("ld hl,"+b.z80());
+        if (!is16bit(b))
+            Asm("ld h,0");
+        Asm("push hl");
+        Asm("ld hl,"+a.z80());
+        if (!is16bit(a))
+            Asm("ld h,0");
+        Asm("pop de");
+        if (op=="adc") {
+            Asm("add hl,de");
+        }
+        else if (op=="sbc") {
+            Asm("xor a ; clear carry");
+            Asm("sbc hl,de");
+        }
+//        Asm("ex de,hl");
+        Asm("ld "+res.z80()+",hl");
     }
 
 }
+/*
+void CPUZ80::LoadHL(const Param& p) {
 
+}
+*/
 void CPUZ80::Mov(int &pos) {
     auto res = getNextParam(m_data, pos);
     auto val = getNextParam(m_data, pos);
 
 
-//    cout << res.str << " " << is16bit(res)<< " " << res.typeName<<endl;
+    cout << res.str << " " << is16bit(res)<< " " << res.typeName<<endl;
     if (!is16bit(res) && !is16bit(val)) {
         Asm("ld a,"+val.z80());
         Asm("ld "+res.z80()+",a");
@@ -303,7 +324,7 @@ void CPUZ80::Mov(int &pos) {
     }
     if (!is16bit(res) && is16bit(val)) {
         Asm("ld hl,"+val.z80());
-        Asm("ld a,h");
+        Asm("ld a,l");
         Asm("ld "+res.z80()+",a");
     }
 
@@ -321,6 +342,90 @@ void CPUZ80::Branch(int &pos, int opcode) {
     auto a = getNextParam(m_data, pos);
     auto b = getNextParam(m_data, pos);
     auto lbl = getNextParam(m_data, pos);
+
+    int size = 0;
+    bool isOffpage = false;
+    if (m_pass == 1) {
+        size = branchSizeEstimator(lbl.str, m_curBranch);
+        isOffpage = size > 120;
+    }
+    string lblKeep = lbl.str;
+    if (isOffpage)
+        lbl.str = getTempLabel();
+
+    bool is16 = is16bit(a) || is16bit(b);
+
+    if (m_symtab.contains(a.str) && !is16bit(a))
+        is16 = false;
+
+    string p = "r";
+    if (isOffpage)
+        p = "p";
+
+    if (!is16) {
+        if (a.str != m_nada)
+            Asm("ld a," + a.z80());
+
+        //        if (printCmp(b.prefix()))
+        Asm("cp " + b.z80());
+
+        string bcs ="bcs ";
+        string bcc ="bcc ";
+
+       if (m_opcodeToAsm[opcode].back()=='s') {
+            bcs = "bpl ";
+            bcc = "bmi ";
+        }
+
+
+        // perform offpage opt here for jeq/jneq
+        string jeq = "j"+p+" z,";//isOffpage ? "bne " : "beq ";  // flip if offpage
+        string jneq = "j"+p+" nz,";//isOffpage ? "beq " : "bne "; // flip if offpage
+
+        if (opcode == m_asmToOpcode["jeq"])
+            Asm(jeq + lbl.str);
+        if (opcode == m_asmToOpcode["jneq"])
+            Asm(jneq + lbl.str);
+
+        if (opcode == m_asmToOpcode["jgt"] || opcode == m_asmToOpcode["jgts"]) {
+            auto lblOK = getTempLabel();
+            Asm("beq " + lblOK);
+            Asm(bcs + lbl.str);
+            Label(lblOK);
+        }
+        if (opcode == m_asmToOpcode["jgte"] || opcode == m_asmToOpcode["jgtes"]) {
+            Asm(bcs + lbl.str);
+        }
+        if (opcode == m_asmToOpcode["jlt"] || opcode == m_asmToOpcode["jlts"])
+            Asm(bcc + lbl.str);
+        if (opcode == m_asmToOpcode["jlte"] || opcode == m_asmToOpcode["jltes"]) {
+            Asm(bcc + lbl.str);
+            Asm("beq " + lbl.str);
+        }
+
+    } 
+
+    if (m_pass == 0) {
+        vector<string> lst;
+        m_branches.push_back(m_curLine + Util::split(m_line, '\n', lst).size() + 1);
+    }
+
+/*    if (isOffpage) {
+        if (opcode == m_asmToOpcode["jeq"] || opcode == m_asmToOpcode["jneq"]) {
+            Asm("; branch is offpage optbranch1");
+            Asm("jmp " + lblKeep);
+            Label(lbl.str);
+
+        } else {
+            string cont = getTempLabel();
+            Asm("; branch is offpage");
+            Asm("jmp " + cont);
+            Label(lbl.str);
+            Asm("jmp " + lblKeep);
+            Label(cont);
+        }
+    }*/
+    m_curBranch++;
 
 }
 
