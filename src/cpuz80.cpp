@@ -35,8 +35,8 @@ CPUZ80::CPUZ80() : AbstractCPU() {
         m_typeTripeToNative["bgtu"] = "bcc";
         m_typeTripeToNative["bltu"] = "bcs";
         */
-    m_typeTripeToNative["shr"] = "lsr";
-    m_typeTripeToNative["shl"] = "asl";
+    m_typeTripeToNative["shr"] = "shr";
+    m_typeTripeToNative["shl"] = "shl";
 
     m_typeTripeToNative["jump"] = "jp";
     m_typeTripeToNative["call"] = "call";
@@ -65,33 +65,6 @@ void CPUZ80::InsertTempValues(vector<string> &lst, int pos) {
     }
 }
 
-string CPUZ80::loadIndex(string &s, Param &idx, string type) {
-    string xy = "x";
-    if (type.starts_with("ptr"))
-        xy = "y";
-    if (type.starts_with("address"))
-        xy = "x";
-    if (Util::isPureNumber(idx.str) && xy == "x") {
-        if (type == "ptr16" || type == "uint16") {
-            int error = 0;
-            // Evaluate argument.
-            int ival = te_interp((idx.str + "*2").data(), &error);
-            idx.str = std::to_string(ival);
-        } else
-            idx.str = "$" + idx.str;
-        return xy;
-    }
-
-    if (type == "ptr16" || type == "uint16") {
-        /*
-        Asm("lda " + idx.prefix());
-        Asm("asl");
-        Asm("ta" + xy);
-        */
-    } //else
-       // Asm("ld" + xy + " " + idx.prefix());
-    return xy;
-}
 
 /*
 string CPUZ80::ParseFromBinary(vector<uint8_t>& data, int& pos) {
@@ -114,30 +87,13 @@ vector<string> CPUZ80::stub(map<string, string> params) {
         if (params["sys"] == "c64" || params["sys"] == "vic20") {
             if (startAddress == "")
                 istart = m_foundStartPos;
-            print = true;
 
-            if (params["sys"] == "vic20") {
-                basicStart = "$" + Util::toHex(m_foundStartPos - 15);
-                if (m_foundStartPos == 0x2000)
-                    basicStart = "$1201";
-            }
-
-            string s = Util::toDec(istart);
-            for (auto c : s) {
-                printAddress += "$" + Util::toHex(c) + ",";
-            }
-            // add missing spaces
-            while (printAddress.size() < 4)
-                printAddress += "$20, ";
         }
-
-    if (print) {
-        src.push_back("\torg " + basicStart);
-        src.push_back("\tdc.b $b, $8, $a, $0, $9e, $20," + printAddress + " $0, $0, $0");
-    }
 
     return src;
 }
+
+
 
 void CPUZ80::LoadStore(int &pos, int opcode) {
     string s = "";
@@ -254,6 +210,26 @@ void CPUZ80::Binop(int &pos, int opcode) {
    string op = m_typeTripeToNative[m_opcodeToAsm[opcode]];
     bool isAdc = op=="adc" || op=="sbc";    
 
+
+    if (op=="shr" || op=="shl") {
+        if (is16bit(a) || is16bit(res))
+            Error::RaiseError("z80 codegen: 16 bit shift not implemented yet");
+
+        if (b.isPureNumber()) {
+            Asm("ld a,"+a.z80());
+            for (int i=0;i<Util::fromNumber("$"+b.str);i++) {
+                if (op=="shr")
+                    Asm("rlca");
+                else
+                    Asm("rrca");
+
+            }
+            Asm("ld "+res.z80()+",a");
+        }
+        return;
+    }
+
+
     if (!is16bit(b) && !is16bit(res) && !(is16bit(a))) {
         Asm("ld a,"+a.z80());
         if (b.isPureNumber()) {
@@ -292,6 +268,7 @@ void CPUZ80::Binop(int &pos, int opcode) {
             Asm("xor a ; clear carry");
             Asm("sbc hl,de");
         }
+        else Error::RaiseError("z80 codegen: 16 bit operation not implemented yet :"+op);
 //        Asm("ex de,hl");
         Asm("ld "+res.z80()+",hl");
     }
@@ -307,7 +284,7 @@ void CPUZ80::Mov(int &pos) {
     auto val = getNextParam(m_data, pos);
 
 
-    cout << res.str << " " << is16bit(res)<< " " << res.typeName<<endl;
+//    cout << res.str << " " << is16bit(res)<< " " << res.typeName<<endl;
     if (!is16bit(res) && !is16bit(val)) {
         Asm("ld a,"+val.z80());
         Asm("ld "+res.z80()+",a");
@@ -369,8 +346,8 @@ void CPUZ80::Branch(int &pos, int opcode) {
         //        if (printCmp(b.prefix()))
         Asm("cp " + b.z80());
 
-        string bcs ="bcs ";
-        string bcc ="bcc ";
+        string bcs ="j"+p+" c,";
+        string bcc ="j"+p+" nc,";
 
        if (m_opcodeToAsm[opcode].back()=='s') {
             bcs = "bpl ";
@@ -389,7 +366,7 @@ void CPUZ80::Branch(int &pos, int opcode) {
 
         if (opcode == m_asmToOpcode["jgt"] || opcode == m_asmToOpcode["jgts"]) {
             auto lblOK = getTempLabel();
-            Asm("beq " + lblOK);
+            Asm(jeq + lblOK);
             Asm(bcs + lbl.str);
             Label(lblOK);
         }
@@ -400,10 +377,13 @@ void CPUZ80::Branch(int &pos, int opcode) {
             Asm(bcc + lbl.str);
         if (opcode == m_asmToOpcode["jlte"] || opcode == m_asmToOpcode["jltes"]) {
             Asm(bcc + lbl.str);
-            Asm("beq " + lbl.str);
+            Asm(jeq + lbl.str);
         }
 
     } 
+    else 
+        Error::RaiseError("Z80 codegen: 16 bit branching not implemented yet");
+
 
     if (m_pass == 0) {
         vector<string> lst;

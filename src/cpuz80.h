@@ -17,7 +17,6 @@ class CPUZ80 : public AbstractCPU {
 
     //    string ParseFromBinary(vector<uint8_t>& m_data, int& pos) override;
     void InsertTempValues(vector<string> &lst, int pos) override;
-    string loadIndex(string &s, Param &idx, string type);
     vector<string> stub(map<string, string> params) override;
     map<string, string> m_zpUsed;
 
