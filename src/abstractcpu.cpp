@@ -140,6 +140,10 @@ bool AbstractCPU::isSingleParamOpcode(int code) {
     return false;
 }
 
+
+
+
+
 std::string AbstractCPU::ParseInlineAsm(vector<uint8_t> &data, int &pos) {
     string s = "";
     uint8_t opcode = data[pos];

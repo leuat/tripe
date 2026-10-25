@@ -130,7 +130,7 @@ class Param {
     bool isRef() { return str.starts_with("#"); }
 
     string clean() {
-        if (!str.starts_with("#"))
+        if (!str.starts_with("#") && !str.starts_with("<") && !str.starts_with(">"))
             return str;
         string s = str;
         return s.erase(0, 1);
@@ -205,10 +205,13 @@ class AbstractCPU {
     virtual void Declare(int &pos) {}
     virtual void Mulu(int &pos) {}
     virtual void Divu(int &pos) {}
-    virtual void Binop(int &pos, int opcode) {}
     virtual void Mov(int &pos) {}
     virtual void Branch(int &pos, int cmd) {}
     virtual void Const(int &pos) {}
+    virtual void Binop(int &pos, int opcode) {}
+
+    virtual void shrshl(const string& op, Param& res, Param& a, Param& b) {};
+
 
     virtual int estimateCodeSize(const string &s) { return 0; }
     int branchSizeEstimator(const string &lbl, int pos);

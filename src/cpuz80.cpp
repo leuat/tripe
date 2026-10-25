@@ -5,8 +5,10 @@
 #include "resources/div16_Z80.h"
 #include "resources/div8_Z80.h"
 #include "resources/mul16_Z80.h"
-#include "resources/mul8_Z80.h"
 */
+
+#include "resources/mul8_z80.h"
+
 #include "tinyexpr.h"
 #include "tripedata.h"
 #include <algorithm>
@@ -45,8 +47,9 @@ CPUZ80::CPUZ80() : AbstractCPU() {
     m_typeTripeToNative["return"] = "ret";
     m_typeTripeToNative["rti"] = "reti";
 
+    m_code["mul8"] = string((char *)resources_z80_mul8_asm);
+
 /*
-    m_code["mul8"] = insertWhZp(string((char *)resources_Z80_mul8_asm));
     m_code["div8"] = insertWhZp(string((char *)resources_Z80_div8_asm));
     m_code["mul16"] = insertWhZp(string((char *)resources_Z80_mul16_asm));
     m_code["div16"] = insertWhZp(string((char *)resources_Z80_div16_asm));
@@ -192,6 +195,16 @@ void CPUZ80::Mulu(int &pos) {
     auto a = getNextParam(m_data, pos);
     auto b = getNextParam(m_data, pos);
 
+
+    if (is16bit(ret) || is16bit(a) || is16bit(b)) {
+
+    }
+    else {
+        addCode("mul8");
+
+    }
+
+
 }
 
 void CPUZ80::Divu(int &pos) {
@@ -259,9 +272,9 @@ void CPUZ80::Binop(int &pos, int opcode) {
                 Asm("ld a,"+a.z80());
                 for (int i=0;i<Util::fromNumber("$"+b.str);i++) {
                     if (op=="shr")
-                        Asm("rlca");
-                    else
                         Asm("rrca");
+                    else
+                        Asm("rlca");
 
                 }
                 Asm("ld "+res.z80()+",a");
@@ -273,9 +286,9 @@ void CPUZ80::Binop(int &pos, int opcode) {
                 string lbl = getTempLabel();
                 Label(lbl);
                 if (op=="shr")
-                    Asm("rlca");
-                else
                     Asm("rrca");
+                else
+                    Asm("rlca");
                 Asm("dec c");
                 Asm("jr nz,"+lbl);
                 Asm("ld "+res.z80()+",a");
@@ -335,6 +348,8 @@ void CPUZ80::Binop(int &pos, int opcode) {
     }
 
 }
+
+
 /*
 void CPUZ80::LoadHL(const Param& p) {
 
