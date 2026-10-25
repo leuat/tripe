@@ -196,11 +196,25 @@ void CPUZ80::Mulu(int &pos) {
     auto b = getNextParam(m_data, pos);
 
 
-    if (is16bit(ret) || is16bit(a) || is16bit(b)) {
+    if (is16bit(a) || is16bit(b)) {
 
     }
     else {
         addCode("mul8");
+        // 8x8 mul
+        Asm("ld a,"+a.z80());
+        Asm("ld e,a");
+        Asm("ld d,0");
+        Asm("ld a,"+b.z80());
+        Asm("ld h,a");
+        Asm("ld l,0");
+        Asm("call mul_8bit_");
+        Asm("ld a,l");
+        Asm("ld "+ret.z80()+",a");
+        if (is16bit(ret)) {
+            Asm("ld a,h");
+            Asm("ld "+ret.z80hi()+",a");
+        }
 
     }
 
@@ -225,79 +239,10 @@ void CPUZ80::Binop(int &pos, int opcode) {
 
 
     if (op=="shr" || op=="shl") {
-        if (is16bit(a) || is16bit(res)) {
-//            Error::RaiseError("z80 codegen: 16 bit shift not implemented yet");
-            Asm("ld hl,"+a.z80());
-            if (!is16bit(a))
-                Asm("ld h,0"); // if a is 8 bit
-            if (b.isPureNumber()) {
-                for (int i=0;i<Util::fromNumber("$"+b.str);i++) {
-                    if (op=="shr") {
-                        Asm("srl h");
-                        Asm("rr l");
-                    }
-                    else
-                        Asm("add hl,hl");
-
-                }
-            }
-            else {
-                Asm("ld a,"+b.z80());
-                Asm("ld c,a");
-                string lbl = getTempLabel();
-                Label(lbl);
-                if (op=="shr") {
-                    Asm("srl h");
-                    Asm("rr l");
-                }
-                else
-                    Asm("add hl,hl");
-            Asm("dec c");
-            Asm("jr nz,"+lbl);
-
-
-            }
-            if (is16bit(res)) 
-                Asm("ld "+res.z80()+",hl");
-            else {
-                Asm("ld a,l");
-                Asm("ld "+res.z80()+",a");
-            }
-
-
-        }
-        else 
-        {
-            if (b.isPureNumber()) {
-                Asm("ld a,"+a.z80());
-                for (int i=0;i<Util::fromNumber("$"+b.str);i++) {
-                    if (op=="shr")
-                        Asm("rrca");
-                    else
-                        Asm("rlca");
-
-                }
-                Asm("ld "+res.z80()+",a");
-            }
-            else {
-                Asm("ld a,"+b.z80());
-                Asm("ld c,a");
-                Asm("ld a,"+a.z80());
-                string lbl = getTempLabel();
-                Label(lbl);
-                if (op=="shr")
-                    Asm("rrca");
-                else
-                    Asm("rlca");
-                Asm("dec c");
-                Asm("jr nz,"+lbl);
-                Asm("ld "+res.z80()+",a");
-
-            }
-        }
+        shrshl(op,res,a,b);
         return;
     }
-
+ 
 
     if (!is16bit(b) && !is16bit(res) && !(is16bit(a))) {
         if (isAdc) {
@@ -346,6 +291,80 @@ void CPUZ80::Binop(int &pos, int opcode) {
 //        Asm("ex de,hl");
         Asm("ld "+res.z80()+",hl");
     }
+
+}
+void CPUZ80::shrshl(const string& op, Param& res, Param& a, Param& b) {
+   if (is16bit(a) || is16bit(res)) {
+//            Error::RaiseError("z80 codegen: 16 bit shift not implemented yet");
+        Asm("ld hl,"+a.z80());
+        if (!is16bit(a))
+            Asm("ld h,0"); // if a is 8 bit
+        if (b.isPureNumber()) {
+            for (int i=0;i<Util::fromNumber("$"+b.str);i++) {
+                if (op=="shr") {
+                    Asm("srl h");
+                    Asm("rr l");
+                }
+                else
+                    Asm("add hl,hl");
+
+            }
+        }
+        else {
+            Asm("ld a,"+b.z80());
+            Asm("ld c,a");
+            string lbl = getTempLabel();
+            Label(lbl);
+            if (op=="shr") {
+                Asm("srl h");
+                Asm("rr l");
+            }
+            else
+                Asm("add hl,hl");
+        Asm("dec c");
+        Asm("jr nz,"+lbl);
+
+
+        }
+        if (is16bit(res)) 
+            Asm("ld "+res.z80()+",hl");
+        else {
+            Asm("ld a,l");
+            Asm("ld "+res.z80()+",a");
+        }
+
+
+    }
+    else 
+    {
+        if (b.isPureNumber()) {
+            Asm("ld a,"+a.z80());
+            for (int i=0;i<Util::fromNumber("$"+b.str);i++) {
+                if (op=="shr")
+                    Asm("rrca");
+                else
+                    Asm("rlca");
+
+            }
+            Asm("ld "+res.z80()+",a");
+        }
+        else {
+            Asm("ld a,"+b.z80());
+            Asm("ld c,a");
+            Asm("ld a,"+a.z80());
+            string lbl = getTempLabel();
+            Label(lbl);
+            if (op=="shr")
+                Asm("rrca");
+            else
+                Asm("rlca");
+            Asm("dec c");
+            Asm("jr nz,"+lbl);
+            Asm("ld "+res.z80()+",a");
+
+        }
+    }
+    return;
 
 }
 
