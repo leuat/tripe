@@ -8,6 +8,7 @@
 */
 
 #include "resources/mul8_z80.h"
+#include "resources/mul16_z80.h"
 
 #include "tinyexpr.h"
 #include "tripedata.h"
@@ -48,6 +49,7 @@ CPUZ80::CPUZ80() : AbstractCPU() {
     m_typeTripeToNative["rti"] = "reti";
 
     m_code["mul8"] = string((char *)resources_z80_mul8_asm);
+    m_code["mul16"] = string((char *)resources_z80_mul16_asm);
 
 /*
     m_code["div8"] = insertWhZp(string((char *)resources_Z80_div8_asm));
@@ -197,6 +199,16 @@ void CPUZ80::Mulu(int &pos) {
 
 
     if (is16bit(a) || is16bit(b)) {
+        addCode("mul16");
+        if (is16bit(b) && !is16bit(a))
+            swap(a,b);
+
+        Asm("ld de,"+a.z80());
+        Asm("ld a,"+b.z80());
+        Asm("ld hl,0");
+        Asm("ld c,0");
+        Asm("call mul_16bit_");
+        Asm("ld "+ret.z80()+",hl");
 
     }
     else {

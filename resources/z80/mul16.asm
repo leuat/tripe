@@ -1,26 +1,60 @@
-mul16x8_num1Hi = @ZP0
-mul16x8_num1 = @ZP1
-mul16x8_num2 = @ZP2
 
-mul_16bit:
-    lda #$00
-    ldy #$00
-    beq mul16x8_enterLoop
-mul16x8_doAdd:
-    clc
-    adc mul16x8_num1
-    tax
+mul_16bit_:
 
-    tya
-    adc mul16x8_num1Hi
-    tay
-    txa
+    add a,a  ; optimised 1st iteration
+    jr nc,mul_16x8_s1
+    ld h,d
+    ld l,e
+mul_16x8_s1:
 
-mul16x8_loop:
-    asl mul16x8_num1
-    rol mul16x8_num1Hi
-mul16x8_enterLoop:
-    lsr mul16x8_num2
-    bcs mul16x8_doAdd
-    bne mul16x8_loop
-    rts
+    add hl,hl
+    rla
+    jr nc,mul_16x8_s2
+    add hl,de
+    adc a,c
+mul_16x8_s2:
+
+
+    add hl,hl
+    rla
+    jr nc,mul_16x8_s3
+    add hl,de
+    adc a,c
+mul_16x8_s3:
+
+    add hl,hl
+    rla
+    jr nc,mul_16x8_s4
+    add hl,de
+    adc a,c
+mul_16x8_s4:
+
+    add hl,hl
+    rla
+    jr nc,mul_16x8_s5
+    add hl,de
+    adc a,c
+mul_16x8_s5:
+
+    add hl,hl
+    rla
+    jr nc,mul_16x8_s6
+    add hl,de
+    adc a,c
+mul_16x8_s6:
+
+    add hl,hl
+    rla
+    jr nc,mul_16x8_s7
+    add hl,de
+    adc a,c
+mul_16x8_s7:
+
+    add hl,hl
+    rla
+    jr nc,mul_16x8_s8
+    add hl,de
+    adc a,c
+mul_16x8_s8:
+    ret
+
