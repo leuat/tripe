@@ -1,32 +1,49 @@
-initdiv16x8_divisor = @ZP0
-initdiv16x8_dividend = @ZP2
-initdiv16x8_remainder = @ZP4
-initdiv16x8_result = @ZP2
+div_16bit_:
+   ld   hl, 0
+   ld   b, 16
 
-div_16bit:
-    lda #0
-    sta initdiv16x8_remainder
-    sta initdiv16x8_remainder+1
-    ldx #16
+_loop16:
+   sll  c
+   rla
+   adc  hl, hl
+   sbc  hl, de
+   jr   nc, $+4
+   add  hl, de
+   dec  c
 
-divloop16:	
-	asl initdiv16x8_dividend
-    rol initdiv16x8_dividend+1
-    rol initdiv16x8_remainder
-    rol initdiv16x8_remainder+1
-    lda initdiv16x8_remainder
-    sec
-    sbc initdiv16x8_divisor
-    tay
-    lda initdiv16x8_remainder+1
-    sbc initdiv16x8_divisor+1
-    bcc skip16
+   djnz _loop16
 
-    sta initdiv16x8_remainder+1	
-    sty initdiv16x8_remainder
-    inc initdiv16x8_result	
-skip16:
-    dex
-    bne divloop16
-    rts
+   ret
 
+
+_Mod_16:
+    ld hl,0
+    ld a,b
+    ld b,8
+_Mod_Loop1:
+    rla
+    adc hl,hl
+    sbc hl,de
+    jr nc,_Mod_NoAdd1
+    add hl,de
+_Mod_NoAdd1:
+    djnz _Mod_Loop1
+    rla
+    cpl
+    ld b,a
+    ld a,c
+    ld c,b
+    ld b,8
+_Mod_Loop2:
+    rla
+    adc hl,hl
+    sbc hl,de
+    jr nc,_Mod_NoAdd2
+    add hl,de
+_Mod_NoAdd2:
+    djnz _Mod_Loop2
+    rla
+    cpl
+    ld b,c
+    ld c,a
+    ret

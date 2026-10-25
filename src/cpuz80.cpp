@@ -9,6 +9,8 @@
 
 #include "resources/mul8_z80.h"
 #include "resources/mul16_z80.h"
+#include "resources/div8_z80.h"
+#include "resources/div16_z80.h"
 
 #include "tinyexpr.h"
 #include "tripedata.h"
@@ -50,12 +52,9 @@ CPUZ80::CPUZ80() : AbstractCPU() {
 
     m_code["mul8"] = string((char *)resources_z80_mul8_asm);
     m_code["mul16"] = string((char *)resources_z80_mul16_asm);
+    m_code["div8"] = string((char *)resources_z80_div8_asm);
+    m_code["div16"] = string((char *)resources_z80_div16_asm);
 
-/*
-    m_code["div8"] = insertWhZp(string((char *)resources_Z80_div8_asm));
-    m_code["mul16"] = insertWhZp(string((char *)resources_Z80_mul16_asm));
-    m_code["div16"] = insertWhZp(string((char *)resources_Z80_div16_asm));
-    */
 }
 
 
@@ -237,6 +236,44 @@ void CPUZ80::Divu(int &pos) {
     auto ret = getNextParam(m_data, pos);
     auto a = getNextParam(m_data, pos);
     auto b = getNextParam(m_data, pos);
+
+    if (is16bit(a) && is16bit(b)) {
+        addCode("div16");
+       Asm("ld de,"+b.z80());
+        Asm("ld hl,"+a.z80());
+        Asm("ld a,h");
+        Asm("ld c,l");
+        Asm("call div_16bit_");
+        Asm("ld h,a");
+        Asm("ld l,c");
+        if (is16bit(ret))
+            Asm("ld "+ret.z80()+",hl");
+        else {
+            Asm("ld a,l");
+            Asm("ld "+ret.z80lo()+",a");
+        }
+
+
+    }
+    else {
+        addCode("div8");
+        // 8x8 mul
+        Asm("ld a,"+b.z80());
+        Asm("ld c,a");
+        Asm("ld hl,"+a.z80());
+        if (!is16bit(a))
+            Asm("ld h,0");
+        Asm("call div_8bit_");
+        if (is16bit(ret)) 
+            Asm("ld "+ret.z80()+",hl");
+        else {
+            Asm("ld a,l");
+            Asm("ld "+ret.z80()+",a");
+        }
+
+    }
+
+
 }
 
 
