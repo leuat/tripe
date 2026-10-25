@@ -226,6 +226,21 @@ void CPUZ80::Binop(int &pos, int opcode) {
             }
             Asm("ld "+res.z80()+",a");
         }
+        else {
+            Asm("ld a,"+b.z80());
+            Asm("ld c,a");
+            Asm("ld a,"+a.z80());
+            string lbl = getTempLabel();
+            Label(lbl);
+            if (op=="shr")
+                Asm("rlca");
+            else
+                Asm("rrca");
+            Asm("dec c");
+            Asm("jr nz,"+lbl);
+            Asm("ld "+res.z80()+",a");
+
+        }
         return;
     }
 
