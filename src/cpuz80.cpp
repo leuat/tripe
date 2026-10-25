@@ -34,12 +34,6 @@ CPUZ80::CPUZ80() : AbstractCPU() {
     m_typeTripeToNative["and"] = "and";
     m_typeTripeToNative["xor"] = "xor";
 
-    /*
-        m_typeTripeToNative["bne"] = "bne";
-        m_typeTripeToNative["beq"] = "beq";
-        m_typeTripeToNative["bgtu"] = "bcc";
-        m_typeTripeToNative["bltu"] = "bcs";
-        */
     m_typeTripeToNative["shr"] = "shr";
     m_typeTripeToNative["shl"] = "shl";
 
@@ -85,7 +79,6 @@ vector<string> CPUZ80::stub(map<string, string> params) {
     if (params.contains("start_address"))
         startAddress = params["start_address"];
 
-    string basicStart = "$801";
 
     if (params.contains("sys"))
         if (params["sys"] == "c64" || params["sys"] == "vic20") {
@@ -139,11 +132,14 @@ void CPUZ80::LoadStore(int &pos, int opcode) {
             Asm("ld "+val.z80()+",a");
         }
         else {
+//            Asm("ld de,[hl]");
+  //          Asm("ld "+val.z80()+",de");
+            
             Asm("ld [hl],a");
-            Asm("ld "+val.z80lo());
+            Asm("ld "+val.z80lo()+",a");
             Asm("inc hl");
             Asm("ld [hl],a");
-            Asm("ld "+val.z80hi());
+            Asm("ld "+val.z80hi()+",a");
         }
     }
 }
@@ -158,28 +154,16 @@ void CPUZ80::Const(int &pos) {
 void CPUZ80::Declare(int &pos) {
     auto name = getNextParam(m_data, pos);
     auto value = getNextParam(m_data, pos);
-    /*
-        cout << "DECLARE '";
-        cout << name.str << "'   '" << value.str
-             << "'   is_string: " << std::to_string(value.flag) << " at pos "
-             << Util::toHex(pos) << endl;
-             */
     bool isString = value.flag == Opcodes::DATATYPE_STRING;
     string hex = m_hexprefix;
     if (isString)
         hex = "";
 
-/*    if (isRegister(name.str)) {
-        m_symtab[name.str] = m_opcodeToAsm[value.type];
-        return;
-    }*/
     if (m_opcodeToAsm[value.type].starts_with("address")) {
         Asm(name.str + "\t=\t" + hex + value.str);
-//        verifyZp(name.str, hex + value.str);
 
     } else if (m_symtab[name.str].starts_with("ptr")) {
         Label(name.str, m_typeTripeToNative["uint16"] + "\t" + hex + value.str);
-  //      verifyZp(name.str, hex + Util::toHex(m_ptrZp));
  
     } else {
         Label(name.str, m_typeTripeToNative[m_opcodeToAsm[value.type]] + "\t" + hex + value.str);
@@ -384,7 +368,7 @@ void CPUZ80::shrshl(const string& op, Param& res, Param& a, Param& b) {
 
 
     }
-    else 
+    else // 8 bit 
     {
         if (b.isPureNumber()) {
             Asm("ld a,"+a.z80());
@@ -438,14 +422,14 @@ void CPUZ80::Mov(int &pos) {
         Asm("ld "+res.z80()+",hl");
     }
     if (is16bit(res) && !is16bit(val)) {
-        Asm("ld a,"+val.z80());
-        Asm("ld l,a");
+        Asm("ld hl,"+val.z80());
         Asm("ld h,0");
         Asm("ld "+res.z80()+",hl");
     }
     if (!is16bit(res) && is16bit(val)) {
-        Asm("ld hl,"+val.z80());
-        Asm("ld a,l");
+//        Asm("ld hl,"+val.z80());
+//        Asm("ld a,l");
+        Asm("ld a,"+val.z80lo());
         Asm("ld "+res.z80()+",a");
     }
 
@@ -483,54 +467,65 @@ void CPUZ80::Branch(int &pos, int opcode) {
     if (isOffpage)
         p = "p";
 
+    string bcs ="j"+p+" c,";
+    string bcc ="j"+p+" nc,";
+
     if (!is16) {
+
+        string cmp = b.z80();
+        if (!b.isPureNumber()) {
+            Asm("ld a,"+b.z80());
+            Asm("ld b,a");
+            cmp = "b";
+        }
+
         if (a.str != m_nada)
             Asm("ld a," + a.z80());
 
         //        if (printCmp(b.prefix()))
-        Asm("cp " + b.z80());
 
-        string bcs ="j"+p+" c,";
-        string bcc ="j"+p+" nc,";
+        Asm("cp " + cmp);
+    }
+    else {
+        Asm("ld hl,"+a.z80());        
+        if (!is16bit(a))
+            Asm("ld h,0");
 
-       if (m_opcodeToAsm[opcode].back()=='s') {
-            bcs = "bpl ";
-            bcc = "bmi ";
-        }
+        Asm("ld de,"+b.z80());        
+        if (!is16bit(b))
+            Asm("ld d,0");
+        Asm("xor a");
+        Asm("sbc hl,de");
+
+    }
 
 
-        // perform offpage opt here for jeq/jneq
-        /*
-        string jeq = "j"+p+" z,";//isOffpage ? "bne " : "beq ";  // flip if offpage
-        string jneq = "j"+p+" nz,";//isOffpage ? "beq " : "bne "; // flip if offpage
-*/
-        string jneq = isOffpage?"j"+p+" z,":"j"+p+" nz,";
-        string jeq = isOffpage?"j"+p+" nz,":"j"+p+" z,";
+    string jneq = isOffpage?"j"+p+" z,":"j"+p+" nz,";
+    string jeq = isOffpage?"j"+p+" nz,":"j"+p+" z,";
 
-        if (opcode == m_asmToOpcode["jeq"])
-            Asm(jeq + lbl.str);
-        if (opcode == m_asmToOpcode["jneq"])
-            Asm(jneq + lbl.str);
+    if (opcode == m_asmToOpcode["jeq"])
+        Asm(jeq + lbl.str);
+    if (opcode == m_asmToOpcode["jneq"])
+        Asm(jneq + lbl.str);
 
-        if (opcode == m_asmToOpcode["jgt"] || opcode == m_asmToOpcode["jgts"]) {
-            auto lblOK = getTempLabel();
-            Asm(jeq + lblOK);
-            Asm(bcs + lbl.str);
-            Label(lblOK);
-        }
-        if (opcode == m_asmToOpcode["jgte"] || opcode == m_asmToOpcode["jgtes"]) {
-            Asm(bcs + lbl.str);
-        }
-        if (opcode == m_asmToOpcode["jlt"] || opcode == m_asmToOpcode["jlts"])
-            Asm(bcc + lbl.str);
-        if (opcode == m_asmToOpcode["jlte"] || opcode == m_asmToOpcode["jltes"]) {
-            Asm(bcc + lbl.str);
-            Asm(jeq + lbl.str);
-        }
+    if (opcode == m_asmToOpcode["jgt"] || opcode == m_asmToOpcode["jgts"]) {
+        auto lblOK = getTempLabel();
+        Asm(jeq + lblOK);
+        Asm(bcc + lbl.str);
+        Label(lblOK);
+    }
+    if (opcode == m_asmToOpcode["jgte"] || opcode == m_asmToOpcode["jgtes"]) {
+        Asm(bcc + lbl.str);
+    }
+    if (opcode == m_asmToOpcode["jlt"] || opcode == m_asmToOpcode["jlts"]) {
+        Asm(bcs + lbl.str);
 
-    } 
-    else 
-        Error::RaiseError("Z80 codegen: 16 bit branching not implemented yet");
+    }
+    if (opcode == m_asmToOpcode["jlte"] || opcode == m_asmToOpcode["jltes"]) {
+        Asm(bcs + lbl.str);
+        Asm(jeq + lbl.str);
+    }
+
 
 
     if (m_pass == 0) {
