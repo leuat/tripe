@@ -20,6 +20,7 @@ class Param {
     static const int VAR = 1;
     string str;
     uint64_t ival;
+    bool isVariable = false;
     int type;
     int flag;
     string typeName = "";
@@ -29,11 +30,12 @@ class Param {
         ival = 0;
         typeName = "";
     }
-    Param(string s, int t, string tn, int fl) {
+    Param(string s, int t, string tn, int fl, bool isVar) {
         str = s;
         type = t;
         flag = fl;
         typeName = tn;
+        isVariable = isVar;
         std::istringstream(str) >> hex >> ival;
         if (str.starts_with("0x"))
             str = Util::ReplaceString(str, "0x", "$");
@@ -51,6 +53,8 @@ class Param {
         }
     }
     bool isPureNumber() {
+        if (isVariable)
+            return false;
         if (str.starts_with("0x") || str.starts_with("$"))
             return true;
         if (std::isxdigit(str[0]))

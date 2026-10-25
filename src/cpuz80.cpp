@@ -287,16 +287,21 @@ void CPUZ80::Binop(int &pos, int opcode) {
 
 
     if (!is16bit(b) && !is16bit(res) && !(is16bit(a))) {
-        Asm("ld a,"+a.z80());
+        if (isAdc) {
+            Asm("xor a");
+        }
         if (b.isPureNumber()) {
+            Asm("ld a,"+a.z80());
             if (isAdc)
                 Asm(op + " a,"+b.z80());
             else
                 Asm(op + " "+b.z80());
         }
         else {
-            Asm("ld b,a");
             Asm("ld a,"+b.z80());
+
+            Asm("ld b,a");
+            Asm("ld a,"+a.z80());
             if (isAdc)
                Asm(op + " a,b");
            else
@@ -412,8 +417,12 @@ void CPUZ80::Branch(int &pos, int opcode) {
 
 
         // perform offpage opt here for jeq/jneq
+        /*
         string jeq = "j"+p+" z,";//isOffpage ? "bne " : "beq ";  // flip if offpage
         string jneq = "j"+p+" nz,";//isOffpage ? "beq " : "bne "; // flip if offpage
+*/
+        string jneq = isOffpage?"j"+p+" z,":"j"+p+" nz,";
+        string jeq = isOffpage?"j"+p+" nz,":"j"+p+" z,";
 
         if (opcode == m_asmToOpcode["jeq"])
             Asm(jeq + lbl.str);
@@ -446,21 +455,21 @@ void CPUZ80::Branch(int &pos, int opcode) {
         m_branches.push_back(m_curLine + Util::split(m_line, '\n', lst).size() + 1);
     }
 
-/*    if (isOffpage) {
+    if (isOffpage) {
         if (opcode == m_asmToOpcode["jeq"] || opcode == m_asmToOpcode["jneq"]) {
             Asm("; branch is offpage optbranch1");
-            Asm("jmp " + lblKeep);
+            Asm("jp " + lblKeep);
             Label(lbl.str);
 
         } else {
             string cont = getTempLabel();
             Asm("; branch is offpage");
-            Asm("jmp " + cont);
+            Asm("jp " + cont);
             Label(lbl.str);
-            Asm("jmp " + lblKeep);
+            Asm("jp " + lblKeep);
             Label(cont);
         }
-    }*/
+    }
     m_curBranch++;
 
 }
