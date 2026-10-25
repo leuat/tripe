@@ -112,6 +112,9 @@ void CPUZ80::LoadStore(int &pos, int opcode) {
 
     }
     Asm("Add hl,de");
+    if (is16bitArray(res))
+        Asm("Add hl,de ; 16 bit array");
+
     if (opcode == m_asmToOpcode["store"]) {
         if (!is16bitArray(res)) {
             Asm("ld a,"+val.z80());
@@ -135,10 +138,10 @@ void CPUZ80::LoadStore(int &pos, int opcode) {
 //            Asm("ld de,[hl]");
   //          Asm("ld "+val.z80()+",de");
             
-            Asm("ld [hl],a");
+            Asm("ld a,[hl]");
             Asm("ld "+val.z80lo()+",a");
             Asm("inc hl");
-            Asm("ld [hl],a");
+            Asm("ld a,[hl]");
             Asm("ld "+val.z80hi()+",a");
         }
     }
