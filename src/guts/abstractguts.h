@@ -18,7 +18,7 @@ public:
 
 
 	virtual void Run(bool output) = 0;	
-	
+
 	void LoadSymbols(string inFile) {
 		string s = Util::load_text_file(inFile);
 		auto lst = Util::split(s,'\n');
@@ -32,13 +32,21 @@ public:
 		}		
 	}
 
-	void injectBin(string inFile) {
+	void injectBin(string inFile, uint16_t adr) {
 		auto data = tripe::Util::load_binary(inFile);
 		uint16_t addr = (data[0]) | (data[1]<<8);
-		data.erase(data.begin(),data.begin()+2);
 		int start = addr;
+		if (inFile.ends_with(".prg")) {
+			data.erase(data.begin(),data.begin()+2);
+		}
+		else {
+			start = adr;
+			addr = adr;
+
+		}
 		for (auto& d: data) 
 			m_memory[addr++] = d;
+		
 		cout << "Loaded "<<data.size()<<" bytes to address "<< Util::toHex(start)<<endl;
 
 		string symf = Util::split(inFile,'.')[0];
