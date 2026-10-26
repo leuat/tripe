@@ -365,18 +365,21 @@ void CPU6502::shrshl(const string& op, Param& res, Param& a, Param& b) {
             res.str = "$F0";
             res.typeName = "uint16";
         }
+        if (a.str!=res.str) {
+            Asm("lda " + a.lo());
+            Asm("sta " + res.lo());
+            Asm("lda " + a.lhi());
+            Asm("sta " + res.hi());
+        }
 
-        Asm("lda " + a.lo());
-        Asm("sta " + res.lo());
-        Asm("lda " + a.lhi());
-        Asm("sta " + res.hi());
+
         string one = "asl " + res.lo();
         string two = "rol " + res.hi();
         if (op == "lsr") {
             one = "lsr " + res.hi();
             two = "ror " + res.lo();
         }
-        //            cout << b.ival << endl;
+
         if (b.ival != 0) // fixed number, unroll
             for (int i = 0; i < b.ival; i++) {
                 Asm(one);
