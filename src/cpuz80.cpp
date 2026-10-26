@@ -19,12 +19,11 @@
 using namespace tripe;
 namespace tripe {
 
-CPUZ80::CPUZ80() : AbstractCPU() {
+CPUZ80::CPUZ80(string cpu) : AbstractCPU(cpu) {
     //    AbstractCPU();
     Init(Data::d.opcodes);
     m_symtab.clear();
     m_hexprefix = "$";
-    m_registeredProcessor ="z80";
     m_typeTripeToNative["uint8"] = "dc.b";
     m_typeTripeToNative["uint16"] = "dc.w";
     m_typeTripeToNative["int8"] = "dc.b";
