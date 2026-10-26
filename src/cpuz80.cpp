@@ -54,23 +54,13 @@ CPUZ80::CPUZ80() : AbstractCPU() {
 
 void CPUZ80::InsertTempValues(vector<string> &lst, int pos) {
     for (auto s : m_registersUsed) {
-        /*
-        lst.insert(lst.begin() + pos, s + " = " + "$" + Util::toHex(m_regZp));
-        verifyZp(s, "$" + Util::toHex(m_regZp));
-        pos += 1;
-        m_regZp += m_symtab[s] == "uint8" ? 1 : 2;
-        */
     }
 }
 
 
-/*
-string CPUZ80::ParseFromBinary(vector<uint8_t>& data, int& pos) {
-}
-*/
-
 vector<string> CPUZ80::stub(map<string, string> params) {
     vector<string> src;
+    /*
     string startAddress = "";
     string printAddress = "";
 
@@ -86,7 +76,7 @@ vector<string> CPUZ80::stub(map<string, string> params) {
                 istart = m_foundStartPos;
 
         }
-
+    */
     return src;
 }
 
@@ -493,8 +483,6 @@ void CPUZ80::Branch(int &pos, int opcode) {
 
         if (a.str != m_nada)
             Asm("ld a," + a.z80());
-
-        //        if (printCmp(b.prefix()))
 
         Asm("cp " + cmp);
     }

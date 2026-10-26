@@ -66,6 +66,9 @@ class Param {
             return "$"+str;
         if (isRef())
             return clean();
+        if (str.starts_with(">"))
+            return "["+str+"+1]"; 
+
         return "["+str+"]"; 
     }
 
