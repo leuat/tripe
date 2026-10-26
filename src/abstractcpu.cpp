@@ -262,7 +262,7 @@ string AbstractCPU::ParseFromBinary(int &pos) {
             m_curPos = p1.ival;
             if (m_foundStartPos == -1)
                 m_foundStartPos = m_curPos;
-            if (m_curPos >= 0x200) {
+            if (m_curPos >= 0x100) {
                 Asm("org " + p1.prefix() + name);
             }
         }

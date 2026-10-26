@@ -28,8 +28,10 @@ add_executable(tripe
   src/tripeutil.cpp
   src/tripe.cpp
   src/lorgasm.cpp
+  src/guts/abstractguts.cpp
   src/guts/guts6502.cpp
   src/guts/gcpu6502.cpp
+  src/guts/gutsz80.cpp
 )
 
 
