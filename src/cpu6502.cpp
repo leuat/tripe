@@ -19,6 +19,7 @@ CPU6502::CPU6502() : AbstractCPU() {
     m_regZp = Data::d.regZp;
     m_symtab.clear();
     m_hexprefix = "$";
+    m_registeredProcessor ="mos6502";
     m_typeTripeToNative["uint8"] = "dc.b";
     m_typeTripeToNative["uint16"] = "dc.w";
     m_typeTripeToNative["int8"] = "dc.b";
