@@ -347,7 +347,10 @@ void CPUZ80::shrshl(const string& op, Param& res, Param& a, Param& b) {
             }
         }
         else {
+            string lblSkip = getTempLabel();
             Asm("ld a,"+b.z80());
+            Asm("cp $0");
+            Asm("jr z,"+lblSkip);
             Asm("ld c,a");
             string lbl = getTempLabel();
             Label(lbl);
@@ -357,8 +360,10 @@ void CPUZ80::shrshl(const string& op, Param& res, Param& a, Param& b) {
             }
             else
                 Asm("add hl,hl");
-        Asm("dec c");
-        Asm("jr nz,"+lbl);
+
+            Asm("dec c");
+            Asm("jr nz,"+lbl);
+            Label(lblSkip);
 
 
         }
@@ -385,7 +390,10 @@ void CPUZ80::shrshl(const string& op, Param& res, Param& a, Param& b) {
             Asm("ld "+res.z80()+",a");
         }
         else {
+            string lblSkip = getTempLabel();
             Asm("ld a,"+b.z80());
+            Asm("cp $0");
+            Asm("jr z,"+lblSkip);
             Asm("ld c,a");
             Asm("ld a,"+a.z80());
             string lbl = getTempLabel();
@@ -397,6 +405,7 @@ void CPUZ80::shrshl(const string& op, Param& res, Param& a, Param& b) {
             Asm("dec c");
             Asm("jr nz,"+lbl);
             Asm("ld "+res.z80()+",a");
+            Label(lblSkip);
 
         }
     }
