@@ -1,0 +1,474 @@
+# commands etc
+c:hex:$
+c:pc:org
+# data
+
+d:i8:dc.b,.byte
+d:i16:dc.w,.word
+d:i32:dc.dw,.dword
+d:string:.dc
+
+c:incbin:incbin
+
+# little endian
+c:endian:0
+
+i:nop:00:1:4
+i:ld bc,%i16:01:3:10
+i:ld (bc),a:02:1:7
+i:inc bc:03:1:6
+i:inc b:04:1:4
+i:dec b:05:1:4
+i:ld b,%i08:06:2:7
+i:rlca:07:1:4
+i:ex af,af':08:1:4
+i:add hl,bc:09:1:11
+i:ld a,(bc):0a:1:7
+i:dec bc:0b:1:6
+i:inc c:0c:1:4
+i:dec c:0d:1:4
+i:ld c,%i08:0e:2:7
+i:rrca:0f:1:4
+i:djnz %i08:10:2:13:local
+i:ld de,%i16:11:3:10
+i:ld (de),a:12:1:7
+i:inc de:13:1:6
+i:inc d:14:1:4
+i:dec d:15:1:4
+i:ld d,%i08:16:2:7
+i:rla:17:1:4
+i:jr %i08:18:2:12:local
+i:add hl,de:19:1:11
+i:ld a,(de):1a:1:7
+i:dec de:1b:1:6
+i:inc e:1c:1:4
+i:dec e:1d:1:4
+i:ld e,%i08:1e:2:7
+i:rra:1f:1:4
+i:jr nz,%i08:20:2:12:local
+i:ld hl,%i16:21:3:10
+i:ld.lil hl,%i16:5b21:4:10
+i:ld (%i16),hl:22:3:16
+i:ld.lil (%i16),hl:5b22:4:16
+i:inc hl:23:1:6
+i:inc h:24:1:4
+i:dec h:25:1:4
+i:ld h,%i08:26:2:7
+i:daa:27:1:4
+i:jr z,%i08:28:2:12:local
+i:add hl,hl:29:1:11
+i:ld hl,(%i16):2a:3:16
+i:ld.lil hl,(%i16):05b2a:4:16
+i:dec hl:2b:1:6
+i:inc l:2c:1:4
+i:dec l:2d:1:4
+i:ld l,%i08:2e:2:7
+i:cpl:2f:1:4
+i:jr nc,%i08:30:2:12:local
+i:ld sp,%i16:31:3:10
+i:ld (%i16),a:32:3:13
+i:inc sp:33:1:6
+i:inc (hl):34:1:11
+i:dec (hl):35:1:11
+i:ld (hl),%i08:36:2:10
+i:scf:37:1:4
+i:jr c,%i08:38:2:12:local
+i:add hl,sp:39:1:11
+i:ld a,(%i16):3a:3:13
+i:dec sp:3b:1:6
+i:inc a:3c:1:4
+i:dec a:3d:1:4
+i:ld a,%i08:3e:2:7
+i:ccf:3f:1:4
+i:ld b,b:40:1:4
+i:ld b,c:41:1:4
+i:ld b,d:42:1:4
+i:ld b,e:43:1:4
+i:ld b,h:44:1:4
+i:ld b,l:45:1:4
+i:ld b,(hl):46:1:7
+i:ld b,a:47:1:4
+i:ld c,b:48:1:4
+i:ld c,c:49:1:4
+i:ld c,d:4a:1:4
+i:ld c,e:4b:1:4
+i:ld c,h:4c:1:4
+i:ld c,l:4d:1:4
+i:ld c,(hl):4e:1:7
+i:ld c,a:4f:1:4
+i:ld d,b:50:1:4
+i:ld d,c:51:1:4
+i:ld d,d:52:1:4
+i:ld d,e:53:1:4
+i:ld d,h:54:1:4
+i:ld d,l:55:1:4
+i:ld d,(hl):56:1:7
+i:ld d,a:57:1:4
+i:ld e,b:58:1:4
+i:ld e,c:59:1:4
+i:ld e,d:5a:1:4
+i:ld e,e:5b:1:4
+i:ld e,h:5c:1:4
+i:ld e,l:5d:1:4
+i:ld e,(hl):5e:1:7
+i:ld e,a:5f:1:4
+i:ld h,b:60:1:4
+i:ld h,c:61:1:4
+i:ld h,d:62:1:4
+i:ld h,e:63:1:4
+i:ld h,h:64:1:4
+i:ld h,l:65:1:4
+i:ld h,(hl):66:1:7
+i:ld h,a:67:1:4
+i:ld l,b:68:1:4
+i:ld l,c:69:1:4
+i:ld l,d:6a:1:4
+i:ld l,e:6b:1:4
+i:ld l,h:6c:1:4
+i:ld l,l:6d:1:4
+i:ld l,(hl):6e:1:7
+i:ld l,a:6f:1:4
+i:ld (hl),b:70:1:7
+i:ld (hl),c:71:1:7
+i:ld (hl),d:72:1:7
+i:ld (hl),e:73:1:7
+i:ld (hl),h:74:1:7
+i:ld (hl),l:75:1:7
+i:halt:76:1:4
+i:ld (hl),a:77:1:7
+i:ld a,b:78:1:4
+i:ld a,c:79:1:4
+i:ld a,d:7a:1:4
+i:ld a,e:7b:1:4
+i:ld a,h:7c:1:4
+i:ld a,l:7d:1:4
+i:ld a,(hl):7e:1:7
+i:ld a,a:7f:1:4
+i:add a,b:80:1:4
+i:add a,c:81:1:4
+i:add a,d:82:1:4
+i:add a,e:83:1:4
+i:add a,h:84:1:4
+i:add a,l:85:1:4
+i:add a,(hl):86:1:7
+i:add a,a:87:1:4
+i:adc a,b:88:1:4
+i:adc a,c:89:1:4
+i:adc a,d:8a:1:4
+i:adc a,e:8b:1:4
+i:adc a,h:8c:1:4
+i:adc a,l:8d:1:4
+i:adc a,(hl):8e:1:7
+i:adc a,a:8f:1:4
+i:sub b:90:1:4
+i:sub c:91:1:4
+i:sub d:92:1:4
+i:sub e:93:1:4
+i:sub h:94:1:4
+i:sub l:95:1:4
+i:sub (hl):96:1:7
+i:sub a:97:1:4
+i:sbc a,b:98:1:4
+i:sbc a,c:99:1:4
+i:sbc a,d:9a:1:4
+i:sbc a,e:9b:1:4
+i:sbc a,h:9c:1:4
+i:sbc a,l:9d:1:4
+i:sbc a,(hl):9e:1:7
+i:sbc a,a:9f:1:4
+i:and b:a0:1:4
+i:and c:a1:1:4
+i:and d:a2:1:4
+i:and e:a3:1:4
+i:and h:a4:1:4
+i:and l:a5:1:4
+i:and (hl):a6:1:7
+i:and a:a7:1:4
+i:xor b:a8:1:4
+i:xor c:a9:1:4
+i:xor d:aa:1:4
+i:xor e:ab:1:4
+i:xor h:ac:1:4
+i:xor l:ad:1:4
+i:xor (hl):ae:1:7
+i:xor a:af:1:4
+i:or b:b0:1:4
+i:or c:b1:1:4
+i:or d:b2:1:4
+i:or e:b3:1:4
+i:or h:b4:1:4
+i:or l:b5:1:4
+i:or (hl):b6:1:7
+i:or a:b7:1:4
+i:cp b:b8:1:4
+i:cp c:b9:1:4
+i:cp d:ba:1:4
+i:cp e:bb:1:4
+i:cp h:bc:1:4
+i:cp l:bd:1:4
+i:cp (hl):be:1:7
+i:cp a:bf:1:4
+i:ret nz:c0:1:5
+i:pop bc:c1:1:10
+i:jp nz,%i16:c2:3:10
+i:jp %i16:c3:3:10
+i:call nz,%i16:c4:3:10
+i:push bc:c5:1:11
+i:add a,%i08:c6:2:7
+i:rst 00h:c7:1:11
+i:rst.lil 00h:5bc7:2:11
+i:ret z:c8:1:5
+i:ret:c9:1:10
+i:jp z,%i16:ca:3:10
+i:call z,%i16:cc:3:10
+i:call %i16:cd:3:17
+i:adc a,%i08:ce:2:7
+i:rst 08h:cf:1:11
+i:rst.lil 08h:5bcf:2:11
+i:ret nc:d0:1:5
+i:pop de:d1:1:10
+i:jp nc,%i16:d2:3:10
+i:out (%i08),a:d3:2:11
+i:call nc,%i16:d4:3:10
+i:push de:d5:1:11
+i:sub %i08:d6:2:7
+i:rst 10h:d7:1:11
+i:rst.lil 10h:5bd7:2:11
+i:ret c:d8:1:5
+i:exx:d9:1:4
+i:jp c,%i16:da:3:10
+i:in a,(%i08):db:2:11
+i:call c,%i16:dc:3:10
+i:sbc a,%i08:de:2:7
+i:rst 18h:df:1:11
+i:rst.lil 18h:5bdf:2:11
+i:ret po:e0:1:5
+i:pop hl:e1:1:10
+i:jp po,%i16:e2:3:10
+i:ex (sp),hl:e3:1:19
+i:call po,%i16:e4:3:10
+i:push hl:e5:1:11
+i:and %i08:e6:2:7
+i:rst 20h:e7:1:11
+i:rst.lil 20h:5be7:2:11
+i:ret pe:e8:1:5
+i:jp (hl):e9:1:4
+i:jp pe,%i16:ea:3:10
+i:ex de,hl:eb:1:4
+i:call pe,%i16:ec:3:10
+i:xor %i08:ee:2:7
+i:rst 28h:ef:1:11
+i:rst.lil 28h:5bef:2:11
+i:ret p:f0:1:5
+i:pop af:f1:1:10
+i:jp p,%i16:f2:3:10
+i:di:f3:1:4
+i:call p,%i16:f4:3:10
+i:push af:f5:1:11
+i:or %i08:f6:2:7
+i:rst 30h:f7:1:11
+i:rst.lil 30h:5bf7:2:11
+i:ret m:f8:1:5
+i:ld sp,hl:f9:1:6
+i:jp m,%i16:fa:3:10
+i:ei:fb:1:4
+i:call m,%i16:fc:3:10
+i:cp %i08:fe:2:7
+i:rst 38h:ff:1:11
+i:rst.lil 38h:5bff:2:11
+
+# --- ED prefix ---
+i:in b,(c):ed40:2:12
+i:out (c),b:ed41:2:12
+i:sbc hl,bc:ed42:2:15
+i:ld (%i16),bc:ed43:4:20
+i:neg:ed44:2:8
+i:retn:ed45:2:14
+i:im 0:ed46:2:8
+i:ld i,a:ed47:2:9
+i:in c,(c):ed48:2:12
+i:out (c),c:ed49:2:12
+i:adc hl,bc:ed4a:2:15
+i:ld bc,(%i16):ed4b:4:20
+i:reti:ed4d:2:14
+i:im 0/1:ed4e:2:8
+i:ld r,a:ed4f:2:9
+i:in d,(c):ed50:2:12
+i:out (c),d:ed51:2:12
+i:sbc hl,de:ed52:2:15
+i:ld (%i16),de:ed53:4:20
+i:im 1:ed56:2:8
+i:ld a,i:ed57:2:9
+i:in e,(c):ed58:2:12
+i:out (c),e:ed59:2:12
+i:adc hl,de:ed5a:2:15
+i:ld de,(%i16):ed5b:4:20
+i:im 2:ed5e:2:8
+i:ld a,r:ed5f:2:9
+i:in h,(c):ed60:2:12
+i:out (c),h:ed61:2:12
+i:sbc hl,hl:ed62:2:15
+i:rrd:ed67:2:18
+i:in l,(c):ed68:2:12
+i:out (c),l:ed69:2:12
+i:adc hl,hl:ed6a:2:15
+i:rld:ed6f:2:18
+i:in (c):ed70:2:12
+i:out (c),0:ed71:2:12
+i:sbc hl,sp:ed72:2:15
+i:ld (%i16),sp:ed73:4:20
+i:in a,(c):ed78:2:12
+i:out (c),a:ed79:2:12
+i:adc hl,sp:ed7a:2:15
+i:ld sp,(%i16):ed7b:4:20
+i:ldi:eda0:2:16
+i:cpi:eda1:2:16
+i:ini:eda2:2:16
+i:outi:eda3:2:16
+i:ldd:eda8:2:16
+i:cpd:eda9:2:16
+i:ind:edaa:2:16
+i:outd:edab:2:16
+i:ldir:edb0:2:21
+i:cpir:edb1:2:21
+i:inir:edb2:2:21
+i:otir:edb3:2:21
+i:lddr:edb8:2:21
+i:cpdr:edb9:2:21
+i:indr:edba:2:21
+i:otdr:edbb:2:21
+
+# --- CB prefix ---
+i:rlc b:cb00:2:8
+i:rlc c:cb01:2:8
+i:rlc d:cb02:2:8
+i:rlc e:cb03:2:8
+i:rlc h:cb04:2:8
+i:rlc l:cb05:2:8
+i:rlc (hl):cb06:2:15
+i:rlc a:cb07:2:8
+i:rrc b:cb08:2:8
+i:rrc c:cb09:2:8
+i:rrc d:cb0a:2:8
+i:rrc e:cb0b:2:8
+i:rrc h:cb0c:2:8
+i:rrc l:cb0d:2:8
+i:rrc (hl):cb0e:2:15
+i:rrc a:cb0f:2:8
+i:rl b:cb10:2:8
+i:rl c:cb11:2:8
+i:rl d:cb12:2:8
+i:rl e:cb13:2:8
+i:rl h:cb14:2:8
+i:rl l:cb15:2:8
+i:rl (hl):cb16:2:15
+i:rl a:cb17:2:8
+i:rr b:cb18:2:8
+i:rr c:cb19:2:8
+i:rr d:cb1a:2:8
+i:rr e:cb1b:2:8
+i:rr h:cb1c:2:8
+i:rr l:cb1d:2:8
+i:rr (hl):cb1e:2:15
+i:rr a:cb1f:2:8
+i:sla b:cb20:2:8
+i:sla c:cb21:2:8
+i:sla d:cb22:2:8
+i:sla e:cb23:2:8
+i:sla h:cb24:2:8
+i:sla l:cb25:2:8
+i:sla (hl):cb26:2:15
+i:sla a:cb27:2:8
+i:sra b:cb28:2:8
+i:sra c:cb29:2:8
+i:sra d:cb2a:2:8
+i:sra e:cb2b:2:8
+i:sra h:cb2c:2:8
+i:sra l:cb2d:2:8
+i:sra (hl):cb2e:2:15
+i:sra a:cb2f:2:8
+i:sll b:cb30:2:8
+i:sll c:cb31:2:8
+i:sll d:cb32:2:8
+i:sll e:cb33:2:8
+i:sll h:cb34:2:8
+i:sll l:cb35:2:8
+i:sll (hl):cb36:2:15
+i:sll a:cb37:2:8
+i:srl b:cb38:2:8
+i:srl c:cb39:2:8
+i:srl d:cb3a:2:8
+i:srl e:cb3b:2:8
+i:srl h:cb3c:2:8
+i:srl l:cb3d:2:8
+i:srl (hl):cb3e:2:15
+i:srl a:cb3f:2:8
+# ... bit/res/set b..a: cb40..cbff, pattern op<<6 | bit<<3 | reg
+# (kept as-is below; pattern is regular so you can collapse these if you want)
+
+i:bit 0,b:cb40:2:8
+i:bit 0,c:cb41:2:8
+i:bit 0,d:cb42:2:8
+i:bit 0,e:cb43:2:8
+i:bit 0,h:cb44:2:8
+i:bit 0,l:cb45:2:8
+i:bit 0,(hl):cb46:2:12
+i:bit 0,a:cb47:2:8
+i:bit 1,b:cb48:2:8
+i:bit 1,c:cb49:2:8
+i:bit 1,d:cb4a:2:8
+i:bit 1,e:cb4b:2:8
+i:bit 1,h:cb4c:2:8
+i:bit 1,l:cb4d:2:8
+i:bit 1,(hl):cb4e:2:12
+i:bit 1,a:cb4f:2:8
+i:bit 2,b:cb50:2:8
+i:bit 2,c:cb51:2:8
+i:bit 2,d:cb52:2:8
+i:bit 2,e:cb53:2:8
+i:bit 2,h:cb54:2:8
+i:bit 2,l:cb55:2:8
+i:bit 2,(hl):cb56:2:12
+i:bit 2,a:cb57:2:8
+i:bit 3,b:cb58:2:8
+i:bit 3,c:cb59:2:8
+i:bit 3,d:cb5a:2:8
+i:bit 3,e:cb5b:2:8
+i:bit 3,h:cb5c:2:8
+i:bit 3,l:cb5d:2:8
+i:bit 3,(hl):cb5e:2:12
+i:bit 3,a:cb5f:2:8
+i:bit 4,b:cb60:2:8
+i:bit 4,c:cb61:2:8
+i:bit 4,d:cb62:2:8
+i:bit 4,e:cb63:2:8
+i:bit 4,h:cb64:2:8
+i:bit 4,l:cb65:2:8
+i:bit 4,(hl):cb66:2:12
+i:bit 4,a:cb67:2:8
+i:bit 5,b:cb68:2:8
+i:bit 5,c:cb69:2:8
+i:bit 5,d:cb6a:2:8
+i:bit 5,e:cb6b:2:8
+i:bit 5,h:cb6c:2:8
+i:bit 5,l:cb6d:2:8
+i:bit 5,(hl):cb6e:2:12
+i:bit 5,a:cb6f:2:8
+i:bit 6,b:cb70:2:8
+i:bit 6,c:cb71:2:8
+i:bit 6,d:cb72:2:8
+i:bit 6,e:cb73:2:8
+i:bit 6,h:cb74:2:8
+i:bit 6,l:cb75:2:8
+i:bit 6,(hl):cb76:2:12
+i:bit 6,a:cb77:2:8
+i:bit 7,b:cb78:2:8
+i:bit 7,c:cb79:2:8
+i:bit 7,d:cb7a:2:8
+i:bit 7,e:cb7b:2:8
+i:bit 7,h:cb7c:2:8
+i:bit 7,l:cb7d:2:8
+i:bit 7,(hl):cb7e:2:12
+i:bit 7,a:cb7f:2:8
+#   res N,r  -> cb(0x80 | N<<3 | reg)
+#   set N,r  -> cb(0xC0 | N<<3 | reg)
