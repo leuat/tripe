@@ -5,10 +5,6 @@
 .label UnitTestsAmstradCPC
 	; LineNumber: 25
 	jump block1
-	; LineNumber: 3
-  decl  Format_i  uint16:0
-	; LineNumber: 5
-	decl 	Format_s 	ptr8:0
 	; LineNumber: 8
 	decl 	Text_p 	ptr8:0
 	; LineNumber: 4
@@ -63,19 +59,19 @@
   .uint8 $01 $02 $03 $04 $05 $06 $07
   .uint8 $08 $09
 	; LineNumber: 40
-  decl  Vars_strLst  uint16:tmp_898537_string0
-  .uint16 tmp_575198_string1 tmp_594324_string2 tmp_798315_string3
+  decl  Vars_strLst  uint16:tmp_703135_string0
+  .uint16 tmp_513929_string1 tmp_979802_string2 tmp_634022_string3
 	; LineNumber: 39
-  decl  tmp_898537_string0  uint8:$53
+  decl  tmp_703135_string0  uint8:$53
   .uint8 $31 0
 	; LineNumber: 39
-  decl  tmp_575198_string1  uint8:$53
+  decl  tmp_513929_string1  uint8:$53
   .uint8 $32 0
 	; LineNumber: 39
-  decl  tmp_594324_string2  uint8:$4a
+  decl  tmp_979802_string2  uint8:$4a
   .uint8 75 0
 	; LineNumber: 39
-  decl  tmp_798315_string3  uint8:$53
+  decl  tmp_634022_string3  uint8:$53
   .uint8 $33 0
 	; LineNumber: 51
 	decl 	Vars_Mini_this 	ptr8:0
@@ -102,84 +98,6 @@
   decl  Unittests_currentTest  uint8:0
 	; LineNumber: 31
   decl  Unittests_isDone  uint8:0
-	;*
-; //	Format the 16 bits unsigned integer i as a string in decimal and put the result in the buffer in s.
-; //	You must plan for at least 6 chars in s. The resulting string is null-terminated.
-; //	Returns the number of non-null bytes written (between 1 and 5).
-; 
-
-	; NodeProcedureDecl -1
-	; ***********  Defining procedure : Format_Itos
-	;    Procedure type : User-defined procedure
-	; LineNumber: 61
-	; LineNumber: 59
-  decl  Format_itos_e  uint8:0
-	; LineNumber: 60
-  decl  Format_itos_l  uint8:0
-.label Format_Itos_block2
-.label Format_Itos
-	; LineNumber: 62
-	.asm
-		ld hl, [Format_i]
-		ld de, [Format_s]
-		ld a, 0
-		ld [Format_itos_e], a
-		ld bc, -10000
-		call	 format_itos_digit
-		ld bc,-1000
-		call format_itos_digit
-		ld bc,-100
-		call format_itos_digit
-		ld c,-10
-		call format_itos_digit
-		ld a, 1
-		ld [Format_itos_e], a
-		ld c,-1
-		call format_itos_digit
-		; Null terminate the string
-		ld a, 0
-		ld (de), a
-		; Substract the address of the 0 from the start of the string to get # of bytes written
-		ld hl, [Format_s]
-		ex de, hl
-		sbc hl, de
-		ld a, l
-		ld [Format_itos_l], a		; The result necessarily fits on one byte
-		jp format_itos_finished
-format_itos_digit
-		ld a,'0'-1
-format_itos_inc
-		inc a
-		add hl, bc
-		jr c, format_itos_inc
-		sbc hl, bc
-		; Do not skip 0 if they are not leading or if it's the last one
-		ld ixh, a
-		ld a, [Format_itos_e]
-		cp 1
-		ld a, ixh
-		jp z, format_itos_do_not_skip
-		; Do not print leading 0
-		cp '0'
-		jp z,format_itos_skip
-		ld ixh, a
-		ld a, 1
-		ld [Format_itos_e], a
-		ld a, ixh
-format_itos_do_not_skip
-		ld (de), a
-		inc de
-format_itos_skip
-		ret
-format_itos_finished
-	
-	.endasm
-	; LineNumber: 117
-	; LineNumber: 117
-	; Setting function return value
-	mov 	Format_Itos_fret 	Format_itos_l
-	return
-.label end_procedure_Format_Itos
 	
 ; // Prints the string pointed to by p at the current cursor position.
 ; // Control chars are obeyed, not printed.
@@ -187,7 +105,7 @@ format_itos_finished
 	; ***********  Defining procedure : Text_Print
 	;    Procedure type : User-defined procedure
 	; LineNumber: 81
-.label Text_Print_block3
+.label Text_Print_block2
 .label Text_Print
 	; LineNumber: 82
 	.asm
@@ -211,7 +129,7 @@ text_print_finished
 	; LineNumber: 102
 	; LineNumber: 99
   decl  Vars_ir_p1  uint8:0
-.label Vars_IntegerReturn_block4
+.label Vars_IntegerReturn_block3
 .label Vars_IntegerReturn
 	; LineNumber: 103
 	; push
@@ -227,7 +145,7 @@ text_print_finished
 	; ***********  Defining procedure : Vars_ByteReturn
 	;    Procedure type : User-defined procedure
 	; LineNumber: 110
-.label Vars_ByteReturn_block5
+.label Vars_ByteReturn_block4
 .label Vars_ByteReturn
 	; LineNumber: 111
 	; push
@@ -265,22 +183,22 @@ text_print_finished
 	; LineNumber: 30
 	; LineNumber: 29
 	decl 	Common_zp 	ptr8:0
-.label Common_Initialise_block8
+.label Common_Initialise_block7
 .label Common_Initialise
 	; LineNumber: 31
 	; Assigning a string : Text_p
-	mov 	Text_p 	#Common_Initialise_stringassignstr9
+	mov 	Text_p 	#Common_Initialise_stringassignstr8
 	call Text_Print
 	; LineNumber: 32
 	mov 	Text_p 	Common_zp
 	call Text_Print
 	; LineNumber: 33
 	; Assigning a string : Text_p
-	mov 	Text_p 	#Common_Initialise_stringassignstr10
+	mov 	Text_p 	#Common_Initialise_stringassignstr9
 	call Text_Print
 	; LineNumber: 34
 	; Assigning a string : Text_p
-	mov 	Text_p 	#Common_Initialise_stringassignstr11
+	mov 	Text_p 	#Common_Initialise_stringassignstr10
 	call Text_Print
 	; LineNumber: 35
 	return
@@ -308,7 +226,7 @@ text_print_finished
 	call Text_Print
 	; LineNumber: 46
 	; Assigning a string : Text_p
-	mov 	Text_p 	#Common_PASS_stringassignstr14
+	mov 	Text_p 	#Common_PASS_stringassignstr13
 	call Text_Print
 	; LineNumber: 47
 	return
@@ -325,7 +243,7 @@ text_print_finished
 	call Text_Print
 	; LineNumber: 53
 	; Assigning a string : Text_p
-	mov 	Text_p 	#Common_FAIL_stringassignstr16
+	mov 	Text_p 	#Common_FAIL_stringassignstr15
 	call Text_Print
 	; LineNumber: 54
 	mov 	Common_cpc_unittests_status 	uint8:0x01
@@ -350,15 +268,12 @@ text_print_finished
 	; LineNumber: 64
 	; LineNumber: 63
   decl  Common_v  uint16:0
-.label Common_DebugValue_block18
+.label Common_DebugValue_block17
 .label Common_DebugValue
-	; LineNumber: 66
+	; LineNumber: 67
 	
 ; // TODO(ColinPitrat): Print value to screen
-	mov 	Format_i 	Common_v
-	mov 	Format_s 	#Common_cpc_unittests_common_string
-	call Format_Itos
-	; LineNumber: 67
+; //Format::Itos(v, #cpc_unittests_common_string);
 	mov 	Text_p 	#Common_cpc_unittests_common_string
 	call Text_Print
 	; LineNumber: 68
@@ -374,42 +289,42 @@ text_print_finished
 	; LineNumber: 7
 	mov 	Vars_i 	uint8:0x00
 	; LineNumber: 8
-	jneq 	Vars_j 	uint8:0x04 	CaseTest_Test1_casenext21
+	jneq 	Vars_j 	uint8:0x04 	CaseTest_Test1_casenext20
 	; LineNumber: 8
 	mov 	Vars_i 	uint8:0x05
-	jump CaseTest_Test1_caseend20
-.label CaseTest_Test1_casenext21
-	jneq 	Vars_j 	uint8:0x0f 	CaseTest_Test1_casenext23
+	jump CaseTest_Test1_caseend19
+.label CaseTest_Test1_casenext20
+	jneq 	Vars_j 	uint8:0x0f 	CaseTest_Test1_casenext22
 	; LineNumber: 9
 	mov 	Vars_i 	uint8:0x0a
-	jump CaseTest_Test1_caseend20
-.label CaseTest_Test1_casenext23
-	jneq 	Vars_j 	uint8:0x18 	CaseTest_Test1_casenext25
+	jump CaseTest_Test1_caseend19
+.label CaseTest_Test1_casenext22
+	jneq 	Vars_j 	uint8:0x18 	CaseTest_Test1_casenext24
 	; LineNumber: 10
 	mov 	Vars_i 	uint8:0x00
-.label CaseTest_Test1_casenext25
-.label CaseTest_Test1_caseend20
+.label CaseTest_Test1_casenext24
+.label CaseTest_Test1_caseend19
 	; LineNumber: 15
 	; Assigning a string : Vars_text
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label CaseTest_Test1_stringassigncpy28
-	load 	CaseTest_Test1_stringassignstr27 	_r8_2 	_r8_1
+.label CaseTest_Test1_stringassigncpy27
+	load 	CaseTest_Test1_stringassignstr26 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	CaseTest_Test1_stringassigncpy28
+	jneq 	_r8_1 	uint8:0x00 	CaseTest_Test1_stringassigncpy27
 	; LineNumber: 16
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_i 	uint8:0x0a 	CaseTest_Test1_eblock31
-.label CaseTest_Test1_ctb30 ;Main true block ;keep 
+	jneq 	Vars_i 	uint8:0x0a 	CaseTest_Test1_eblock30
+.label CaseTest_Test1_ctb29 ;Main true block ;keep 
 	; LineNumber: 15
 	call Common_PASS
-	jump CaseTest_Test1_edblock32
-.label CaseTest_Test1_eblock31
+	jump CaseTest_Test1_edblock31
+.label CaseTest_Test1_eblock30
 	; LineNumber: 15
 	call Common_FAIL
-.label CaseTest_Test1_edblock32
+.label CaseTest_Test1_edblock31
 	; LineNumber: 17
 	return
 .label end_procedure_CaseTest_Test1
@@ -428,43 +343,43 @@ text_print_finished
 	; push
 	mulu  	_r8_2 	Vars_j 	uint8:0x03
 	add  	_r8_1 	_r8_2 	uint8:0x01
-	mov 	_temp_var_casefb72 	_r8_1
-	jneq 	_temp_var_casefb72 	uint8:0x04 	CaseTest_Test3_casenext39
+	mov 	_temp_var_case5a12 	_r8_1
+	jneq 	_temp_var_case5a12 	uint8:0x04 	CaseTest_Test3_casenext38
 	; LineNumber: 38
 	mov 	Vars_i 	uint8:0x05
-	jump CaseTest_Test3_caseend38
-.label CaseTest_Test3_casenext39
-	jneq 	_temp_var_casefb72 	uint8:0x2e 	CaseTest_Test3_casenext41
+	jump CaseTest_Test3_caseend37
+.label CaseTest_Test3_casenext38
+	jneq 	_temp_var_case5a12 	uint8:0x2e 	CaseTest_Test3_casenext40
 	; LineNumber: 39
 	mov 	Vars_i 	uint8:0x0a
-	jump CaseTest_Test3_caseend38
-.label CaseTest_Test3_casenext41
-	jneq 	_temp_var_casefb72 	uint8:0x18 	CaseTest_Test3_casenext43
+	jump CaseTest_Test3_caseend37
+.label CaseTest_Test3_casenext40
+	jneq 	_temp_var_case5a12 	uint8:0x18 	CaseTest_Test3_casenext42
 	; LineNumber: 40
 	mov 	Vars_i 	uint8:0x00
-.label CaseTest_Test3_casenext43
-.label CaseTest_Test3_caseend38
+.label CaseTest_Test3_casenext42
+.label CaseTest_Test3_caseend37
 	; LineNumber: 44
 	; Assigning a string : Vars_text
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label CaseTest_Test3_stringassigncpy46
-	load 	CaseTest_Test3_stringassignstr45 	_r8_2 	_r8_1
+.label CaseTest_Test3_stringassigncpy45
+	load 	CaseTest_Test3_stringassignstr44 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	CaseTest_Test3_stringassigncpy46
+	jneq 	_r8_1 	uint8:0x00 	CaseTest_Test3_stringassigncpy45
 	; LineNumber: 45
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_i 	uint8:0x0a 	CaseTest_Test3_eblock49
-.label CaseTest_Test3_ctb48 ;Main true block ;keep 
+	jneq 	Vars_i 	uint8:0x0a 	CaseTest_Test3_eblock48
+.label CaseTest_Test3_ctb47 ;Main true block ;keep 
 	; LineNumber: 44
 	call Common_PASS
-	jump CaseTest_Test3_edblock50
-.label CaseTest_Test3_eblock49
+	jump CaseTest_Test3_edblock49
+.label CaseTest_Test3_eblock48
 	; LineNumber: 44
 	call Common_FAIL
-.label CaseTest_Test3_edblock50
+.label CaseTest_Test3_edblock49
 	; LineNumber: 46
 	return
 .label end_procedure_CaseTest_Test3
@@ -477,7 +392,7 @@ text_print_finished
 .label CaseTest_Exec
 	; LineNumber: 53
 	; Assigning a string : Common_zp
-	mov 	Common_zp 	#CaseTest_Exec_stringassignstr56
+	mov 	Common_zp 	#CaseTest_Exec_stringassignstr55
 	call Common_Initialise
 	; LineNumber: 56
 	
@@ -506,22 +421,22 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label AdvancedMath_Advanced01_stringassigncpy59
-	load 	AdvancedMath_Advanced01_stringassignstr58 	_r8_2 	_r8_1
+.label AdvancedMath_Advanced01_stringassigncpy58
+	load 	AdvancedMath_Advanced01_stringassignstr57 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	AdvancedMath_Advanced01_stringassigncpy59
+	jneq 	_r8_1 	uint8:0x00 	AdvancedMath_Advanced01_stringassigncpy58
 	; LineNumber: 9
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_p1 	uint16:0x40a 	AdvancedMath_Advanced01_eblock62
-.label AdvancedMath_Advanced01_ctb61 ;Main true block ;keep 
+	jneq 	Vars_p1 	uint16:0x40a 	AdvancedMath_Advanced01_eblock61
+.label AdvancedMath_Advanced01_ctb60 ;Main true block ;keep 
 	; LineNumber: 8
 	call Common_PASS
-	jump AdvancedMath_Advanced01_edblock63
-.label AdvancedMath_Advanced01_eblock62
+	jump AdvancedMath_Advanced01_edblock62
+.label AdvancedMath_Advanced01_eblock61
 	; LineNumber: 8
 	call Common_FAIL
-.label AdvancedMath_Advanced01_edblock63
+.label AdvancedMath_Advanced01_edblock62
 	; LineNumber: 10
 	return
 .label end_procedure_AdvancedMath_Advanced01
@@ -537,22 +452,22 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label AdvancedMath_Advanced02_stringassigncpy70
-	load 	AdvancedMath_Advanced02_stringassignstr69 	_r8_2 	_r8_1
+.label AdvancedMath_Advanced02_stringassigncpy69
+	load 	AdvancedMath_Advanced02_stringassignstr68 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	AdvancedMath_Advanced02_stringassigncpy70
+	jneq 	_r8_1 	uint8:0x00 	AdvancedMath_Advanced02_stringassigncpy69
 	; LineNumber: 15
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_p1 	uint16:0x450 	AdvancedMath_Advanced02_eblock73
-.label AdvancedMath_Advanced02_ctb72 ;Main true block ;keep 
+	jneq 	Vars_p1 	uint16:0x450 	AdvancedMath_Advanced02_eblock72
+.label AdvancedMath_Advanced02_ctb71 ;Main true block ;keep 
 	; LineNumber: 14
 	call Common_PASS
-	jump AdvancedMath_Advanced02_edblock74
-.label AdvancedMath_Advanced02_eblock73
+	jump AdvancedMath_Advanced02_edblock73
+.label AdvancedMath_Advanced02_eblock72
 	; LineNumber: 14
 	call Common_FAIL
-.label AdvancedMath_Advanced02_edblock74
+.label AdvancedMath_Advanced02_edblock73
 	; LineNumber: 16
 	return
 .label end_procedure_AdvancedMath_Advanced02
@@ -578,22 +493,22 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label AdvancedMath_Advanced03_stringassigncpy81
-	load 	AdvancedMath_Advanced03_stringassignstr80 	_r8_2 	_r8_1
+.label AdvancedMath_Advanced03_stringassigncpy80
+	load 	AdvancedMath_Advanced03_stringassignstr79 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	AdvancedMath_Advanced03_stringassigncpy81
+	jneq 	_r8_1 	uint8:0x00 	AdvancedMath_Advanced03_stringassigncpy80
 	; LineNumber: 23
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_p1 	uint16:0x1180 	AdvancedMath_Advanced03_eblock84
-.label AdvancedMath_Advanced03_ctb83 ;Main true block ;keep 
+	jneq 	Vars_p1 	uint16:0x1180 	AdvancedMath_Advanced03_eblock83
+.label AdvancedMath_Advanced03_ctb82 ;Main true block ;keep 
 	; LineNumber: 22
 	call Common_PASS
-	jump AdvancedMath_Advanced03_edblock85
-.label AdvancedMath_Advanced03_eblock84
+	jump AdvancedMath_Advanced03_edblock84
+.label AdvancedMath_Advanced03_eblock83
 	; LineNumber: 22
 	call Common_FAIL
-.label AdvancedMath_Advanced03_edblock85
+.label AdvancedMath_Advanced03_edblock84
 	; LineNumber: 24
 	return
 .label end_procedure_AdvancedMath_Advanced03
@@ -627,22 +542,22 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label AdvancedMath_Advanced04_stringassigncpy92
-	load 	AdvancedMath_Advanced04_stringassignstr91 	_r8_2 	_r8_1
+.label AdvancedMath_Advanced04_stringassigncpy91
+	load 	AdvancedMath_Advanced04_stringassignstr90 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	AdvancedMath_Advanced04_stringassigncpy92
+	jneq 	_r8_1 	uint8:0x00 	AdvancedMath_Advanced04_stringassigncpy91
 	; LineNumber: 34
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_p1 	uint16:0x402 	AdvancedMath_Advanced04_eblock95
-.label AdvancedMath_Advanced04_ctb94 ;Main true block ;keep 
+	jneq 	Vars_p1 	uint16:0x402 	AdvancedMath_Advanced04_eblock94
+.label AdvancedMath_Advanced04_ctb93 ;Main true block ;keep 
 	; LineNumber: 33
 	call Common_PASS
-	jump AdvancedMath_Advanced04_edblock96
-.label AdvancedMath_Advanced04_eblock95
+	jump AdvancedMath_Advanced04_edblock95
+.label AdvancedMath_Advanced04_eblock94
 	; LineNumber: 33
 	call Common_FAIL
-.label AdvancedMath_Advanced04_edblock96
+.label AdvancedMath_Advanced04_edblock95
 	; LineNumber: 35
 	return
 .label end_procedure_AdvancedMath_Advanced04
@@ -674,22 +589,22 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label AdvancedMath_Advanced05_stringassigncpy103
-	load 	AdvancedMath_Advanced05_stringassignstr102 	_r8_2 	_r8_1
+.label AdvancedMath_Advanced05_stringassigncpy102
+	load 	AdvancedMath_Advanced05_stringassignstr101 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	AdvancedMath_Advanced05_stringassigncpy103
+	jneq 	_r8_1 	uint8:0x00 	AdvancedMath_Advanced05_stringassigncpy102
 	; LineNumber: 45
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_p1 	uint16:0x440 	AdvancedMath_Advanced05_eblock106
-.label AdvancedMath_Advanced05_ctb105 ;Main true block ;keep 
+	jneq 	Vars_p1 	uint16:0x440 	AdvancedMath_Advanced05_eblock105
+.label AdvancedMath_Advanced05_ctb104 ;Main true block ;keep 
 	; LineNumber: 44
 	call Common_PASS
-	jump AdvancedMath_Advanced05_edblock107
-.label AdvancedMath_Advanced05_eblock106
+	jump AdvancedMath_Advanced05_edblock106
+.label AdvancedMath_Advanced05_eblock105
 	; LineNumber: 44
 	call Common_FAIL
-.label AdvancedMath_Advanced05_edblock107
+.label AdvancedMath_Advanced05_edblock106
 	; LineNumber: 46
 	return
 .label end_procedure_AdvancedMath_Advanced05
@@ -726,22 +641,22 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label AdvancedMath_Advanced06_stringassigncpy114
-	load 	AdvancedMath_Advanced06_stringassignstr113 	_r8_2 	_r8_1
+.label AdvancedMath_Advanced06_stringassigncpy113
+	load 	AdvancedMath_Advanced06_stringassignstr112 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	AdvancedMath_Advanced06_stringassigncpy114
+	jneq 	_r8_1 	uint8:0x00 	AdvancedMath_Advanced06_stringassigncpy113
 	; LineNumber: 56
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_p1 	uint16:0x470 	AdvancedMath_Advanced06_eblock117
-.label AdvancedMath_Advanced06_ctb116 ;Main true block ;keep 
+	jneq 	Vars_p1 	uint16:0x470 	AdvancedMath_Advanced06_eblock116
+.label AdvancedMath_Advanced06_ctb115 ;Main true block ;keep 
 	; LineNumber: 55
 	call Common_PASS
-	jump AdvancedMath_Advanced06_edblock118
-.label AdvancedMath_Advanced06_eblock117
+	jump AdvancedMath_Advanced06_edblock117
+.label AdvancedMath_Advanced06_eblock116
 	; LineNumber: 55
 	call Common_FAIL
-.label AdvancedMath_Advanced06_edblock118
+.label AdvancedMath_Advanced06_edblock117
 	; LineNumber: 57
 	return
 .label end_procedure_AdvancedMath_Advanced06
@@ -772,22 +687,22 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label AdvancedMath_Advanced07_stringassigncpy125
-	load 	AdvancedMath_Advanced07_stringassignstr124 	_r8_2 	_r8_1
+.label AdvancedMath_Advanced07_stringassigncpy124
+	load 	AdvancedMath_Advanced07_stringassignstr123 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	AdvancedMath_Advanced07_stringassigncpy125
+	jneq 	_r8_1 	uint8:0x00 	AdvancedMath_Advanced07_stringassigncpy124
 	; LineNumber: 67
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_p1 	uint16:0x420 	AdvancedMath_Advanced07_eblock128
-.label AdvancedMath_Advanced07_ctb127 ;Main true block ;keep 
+	jneq 	Vars_p1 	uint16:0x420 	AdvancedMath_Advanced07_eblock127
+.label AdvancedMath_Advanced07_ctb126 ;Main true block ;keep 
 	; LineNumber: 66
 	call Common_PASS
-	jump AdvancedMath_Advanced07_edblock129
-.label AdvancedMath_Advanced07_eblock128
+	jump AdvancedMath_Advanced07_edblock128
+.label AdvancedMath_Advanced07_eblock127
 	; LineNumber: 66
 	call Common_FAIL
-.label AdvancedMath_Advanced07_edblock129
+.label AdvancedMath_Advanced07_edblock128
 	; LineNumber: 68
 	return
 .label end_procedure_AdvancedMath_Advanced07
@@ -815,22 +730,22 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label AdvancedMath_Advanced08_stringassigncpy136
-	load 	AdvancedMath_Advanced08_stringassignstr135 	_r8_2 	_r8_1
+.label AdvancedMath_Advanced08_stringassigncpy135
+	load 	AdvancedMath_Advanced08_stringassignstr134 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	AdvancedMath_Advanced08_stringassigncpy136
+	jneq 	_r8_1 	uint8:0x00 	AdvancedMath_Advanced08_stringassigncpy135
 	; LineNumber: 75
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_p1 	uint16:0x460 	AdvancedMath_Advanced08_eblock139
-.label AdvancedMath_Advanced08_ctb138 ;Main true block ;keep 
+	jneq 	Vars_p1 	uint16:0x460 	AdvancedMath_Advanced08_eblock138
+.label AdvancedMath_Advanced08_ctb137 ;Main true block ;keep 
 	; LineNumber: 74
 	call Common_PASS
-	jump AdvancedMath_Advanced08_edblock140
-.label AdvancedMath_Advanced08_eblock139
+	jump AdvancedMath_Advanced08_edblock139
+.label AdvancedMath_Advanced08_eblock138
 	; LineNumber: 74
 	call Common_FAIL
-.label AdvancedMath_Advanced08_edblock140
+.label AdvancedMath_Advanced08_edblock139
 	; LineNumber: 76
 	return
 .label end_procedure_AdvancedMath_Advanced08
@@ -855,11 +770,11 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label AdvancedMath_MulDivCombo1_stringassigncpy147
-	load 	AdvancedMath_MulDivCombo1_stringassignstr146 	_r8_2 	_r8_1
+.label AdvancedMath_MulDivCombo1_stringassigncpy146
+	load 	AdvancedMath_MulDivCombo1_stringassignstr145 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	AdvancedMath_MulDivCombo1_stringassigncpy147
+	jneq 	_r8_1 	uint8:0x00 	AdvancedMath_MulDivCombo1_stringassigncpy146
 	; LineNumber: 113
 	mov 	Vars_v1 	uint8:0x10
 	; LineNumber: 114
@@ -874,15 +789,15 @@ text_print_finished
 	mov 	Vars_i1 	_r16_1
 	; LineNumber: 117
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_i1 	uint16:0x800 	AdvancedMath_MulDivCombo1_eblock150
-.label AdvancedMath_MulDivCombo1_ctb149 ;Main true block ;keep 
+	jneq 	Vars_i1 	uint16:0x800 	AdvancedMath_MulDivCombo1_eblock149
+.label AdvancedMath_MulDivCombo1_ctb148 ;Main true block ;keep 
 	; LineNumber: 116
 	call Common_PASS
-	jump AdvancedMath_MulDivCombo1_edblock151
-.label AdvancedMath_MulDivCombo1_eblock150
+	jump AdvancedMath_MulDivCombo1_edblock150
+.label AdvancedMath_MulDivCombo1_eblock149
 	; LineNumber: 116
 	call Common_FAIL
-.label AdvancedMath_MulDivCombo1_edblock151
+.label AdvancedMath_MulDivCombo1_edblock150
 	; LineNumber: 118
 	return
 .label end_procedure_AdvancedMath_MulDivCombo1
@@ -896,11 +811,11 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label AdvancedMath_MulDivCombo2_stringassigncpy158
-	load 	AdvancedMath_MulDivCombo2_stringassignstr157 	_r8_2 	_r8_1
+.label AdvancedMath_MulDivCombo2_stringassigncpy157
+	load 	AdvancedMath_MulDivCombo2_stringassignstr156 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	AdvancedMath_MulDivCombo2_stringassigncpy158
+	jneq 	_r8_1 	uint8:0x00 	AdvancedMath_MulDivCombo2_stringassigncpy157
 	; LineNumber: 123
 	mov 	Vars_v1 	uint8:0x10
 	; LineNumber: 124
@@ -915,15 +830,15 @@ text_print_finished
 	mov 	Vars_i1 	_r16_1
 	; LineNumber: 127
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_i1 	uint8:0x40 	AdvancedMath_MulDivCombo2_eblock161
-.label AdvancedMath_MulDivCombo2_ctb160 ;Main true block ;keep 
+	jneq 	Vars_i1 	uint8:0x40 	AdvancedMath_MulDivCombo2_eblock160
+.label AdvancedMath_MulDivCombo2_ctb159 ;Main true block ;keep 
 	; LineNumber: 126
 	call Common_PASS
-	jump AdvancedMath_MulDivCombo2_edblock162
-.label AdvancedMath_MulDivCombo2_eblock161
+	jump AdvancedMath_MulDivCombo2_edblock161
+.label AdvancedMath_MulDivCombo2_eblock160
 	; LineNumber: 126
 	call Common_FAIL
-.label AdvancedMath_MulDivCombo2_edblock162
+.label AdvancedMath_MulDivCombo2_edblock161
 	; LineNumber: 128
 	return
 .label end_procedure_AdvancedMath_MulDivCombo2
@@ -937,11 +852,11 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label AdvancedMath_MulDivCombo3_stringassigncpy169
-	load 	AdvancedMath_MulDivCombo3_stringassignstr168 	_r8_2 	_r8_1
+.label AdvancedMath_MulDivCombo3_stringassigncpy168
+	load 	AdvancedMath_MulDivCombo3_stringassignstr167 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	AdvancedMath_MulDivCombo3_stringassigncpy169
+	jneq 	_r8_1 	uint8:0x00 	AdvancedMath_MulDivCombo3_stringassigncpy168
 	; LineNumber: 133
 	mov 	Vars_v1 	uint8:0x10
 	; LineNumber: 134
@@ -960,15 +875,15 @@ text_print_finished
 	mov 	Vars_i1 	_r16_1
 	; LineNumber: 138
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_i1 	uint16:0x2000 	AdvancedMath_MulDivCombo3_eblock172
-.label AdvancedMath_MulDivCombo3_ctb171 ;Main true block ;keep 
+	jneq 	Vars_i1 	uint16:0x2000 	AdvancedMath_MulDivCombo3_eblock171
+.label AdvancedMath_MulDivCombo3_ctb170 ;Main true block ;keep 
 	; LineNumber: 137
 	call Common_PASS
-	jump AdvancedMath_MulDivCombo3_edblock173
-.label AdvancedMath_MulDivCombo3_eblock172
+	jump AdvancedMath_MulDivCombo3_edblock172
+.label AdvancedMath_MulDivCombo3_eblock171
 	; LineNumber: 137
 	call Common_FAIL
-.label AdvancedMath_MulDivCombo3_edblock173
+.label AdvancedMath_MulDivCombo3_edblock172
 	; LineNumber: 139
 	return
 .label end_procedure_AdvancedMath_MulDivCombo3
@@ -981,7 +896,7 @@ text_print_finished
 	
 ; // initialise everything
 	; Assigning a string : Common_zp
-	mov 	Common_zp 	#AdvancedMath_Exec_stringassignstr179
+	mov 	Common_zp 	#AdvancedMath_Exec_stringassignstr178
 	call Common_Initialise
 	; LineNumber: 148
 	
@@ -1026,11 +941,11 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label Casts_Test1_stringassigncpy182
-	load 	Casts_Test1_stringassignstr181 	_r8_2 	_r8_1
+.label Casts_Test1_stringassigncpy181
+	load 	Casts_Test1_stringassignstr180 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	Casts_Test1_stringassigncpy182
+	jneq 	_r8_1 	uint8:0x00 	Casts_Test1_stringassigncpy181
 	; LineNumber: 8
 	mov 	Vars_i1 	uint16:0x201
 	; LineNumber: 9
@@ -1049,15 +964,15 @@ text_print_finished
 	; *** End of inline procedure :Common_CR
 	; LineNumber: 12
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_v1 	uint8:0x01 	Casts_Test1_eblock186
-.label Casts_Test1_ctb185 ;Main true block ;keep 
+	jneq 	Vars_v1 	uint8:0x01 	Casts_Test1_eblock185
+.label Casts_Test1_ctb184 ;Main true block ;keep 
 	; LineNumber: 11
 	call Common_PASS
-	jump Casts_Test1_edblock187
-.label Casts_Test1_eblock186
+	jump Casts_Test1_edblock186
+.label Casts_Test1_eblock185
 	; LineNumber: 11
 	call Common_FAIL
-.label Casts_Test1_edblock187
+.label Casts_Test1_edblock186
 	; LineNumber: 13
 	return
 .label end_procedure_Casts_Test1
@@ -1073,11 +988,11 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label Casts_Test2_stringassigncpy194
-	load 	Casts_Test2_stringassignstr193 	_r8_2 	_r8_1
+.label Casts_Test2_stringassigncpy193
+	load 	Casts_Test2_stringassignstr192 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	Casts_Test2_stringassigncpy194
+	jneq 	_r8_1 	uint8:0x00 	Casts_Test2_stringassigncpy193
 	; LineNumber: 19
 	mov 	Vars_v1 	uint8:0xff
 	; LineNumber: 20
@@ -1096,15 +1011,15 @@ text_print_finished
 	; *** End of inline procedure :Common_CR
 	; LineNumber: 22
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_i1 	uint8:0xff 	Casts_Test2_eblock198
-.label Casts_Test2_ctb197 ;Main true block ;keep 
+	jneq 	Vars_i1 	uint8:0xff 	Casts_Test2_eblock197
+.label Casts_Test2_ctb196 ;Main true block ;keep 
 	; LineNumber: 21
 	call Common_PASS
-	jump Casts_Test2_edblock199
-.label Casts_Test2_eblock198
+	jump Casts_Test2_edblock198
+.label Casts_Test2_eblock197
 	; LineNumber: 21
 	call Common_FAIL
-.label Casts_Test2_edblock199
+.label Casts_Test2_edblock198
 	; LineNumber: 23
 	return
 .label end_procedure_Casts_Test2
@@ -1120,11 +1035,11 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label Casts_Test3_stringassigncpy206
-	load 	Casts_Test3_stringassignstr205 	_r8_2 	_r8_1
+.label Casts_Test3_stringassigncpy205
+	load 	Casts_Test3_stringassignstr204 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	Casts_Test3_stringassigncpy206
+	jneq 	_r8_1 	uint8:0x00 	Casts_Test3_stringassigncpy205
 	; LineNumber: 29
 	; ::LoadVariable
 	; push
@@ -1146,15 +1061,15 @@ text_print_finished
 	; *** End of inline procedure :Common_CR
 	; LineNumber: 31
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_i1 	uint8:0x05 	Casts_Test3_eblock210
-.label Casts_Test3_ctb209 ;Main true block ;keep 
+	jneq 	Vars_i1 	uint8:0x05 	Casts_Test3_eblock209
+.label Casts_Test3_ctb208 ;Main true block ;keep 
 	; LineNumber: 30
 	call Common_PASS
-	jump Casts_Test3_edblock211
-.label Casts_Test3_eblock210
+	jump Casts_Test3_edblock210
+.label Casts_Test3_eblock209
 	; LineNumber: 30
 	call Common_FAIL
-.label Casts_Test3_edblock211
+.label Casts_Test3_edblock210
 	; LineNumber: 32
 	return
 .label end_procedure_Casts_Test3
@@ -1170,11 +1085,11 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label Casts_Test4_stringassigncpy218
-	load 	Casts_Test4_stringassignstr217 	_r8_2 	_r8_1
+.label Casts_Test4_stringassigncpy217
+	load 	Casts_Test4_stringassignstr216 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	Casts_Test4_stringassigncpy218
+	jneq 	_r8_1 	uint8:0x00 	Casts_Test4_stringassigncpy217
 	; LineNumber: 38
 	mov 	Vars_v1 	uint8:0x05
 	; LineNumber: 39
@@ -1198,15 +1113,15 @@ text_print_finished
 	; *** End of inline procedure :Common_CR
 	; LineNumber: 41
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_i1 	uint8:0x05 	Casts_Test4_eblock222
-.label Casts_Test4_ctb221 ;Main true block ;keep 
+	jneq 	Vars_i1 	uint8:0x05 	Casts_Test4_eblock221
+.label Casts_Test4_ctb220 ;Main true block ;keep 
 	; LineNumber: 40
 	call Common_PASS
-	jump Casts_Test4_edblock223
-.label Casts_Test4_eblock222
+	jump Casts_Test4_edblock222
+.label Casts_Test4_eblock221
 	; LineNumber: 40
 	call Common_FAIL
-.label Casts_Test4_edblock223
+.label Casts_Test4_edblock222
 	; LineNumber: 42
 	return
 .label end_procedure_Casts_Test4
@@ -1222,11 +1137,11 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label Casts_Test5_stringassigncpy230
-	load 	Casts_Test5_stringassignstr229 	_r8_2 	_r8_1
+.label Casts_Test5_stringassigncpy229
+	load 	Casts_Test5_stringassignstr228 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	Casts_Test5_stringassigncpy230
+	jneq 	_r8_1 	uint8:0x00 	Casts_Test5_stringassigncpy229
 	; LineNumber: 48
 	mov 	Vars_i2 	uint8:0x05
 	; LineNumber: 49
@@ -1250,15 +1165,15 @@ text_print_finished
 	; *** End of inline procedure :Common_CR
 	; LineNumber: 51
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_i1 	uint8:0x05 	Casts_Test5_eblock234
-.label Casts_Test5_ctb233 ;Main true block ;keep 
+	jneq 	Vars_i1 	uint8:0x05 	Casts_Test5_eblock233
+.label Casts_Test5_ctb232 ;Main true block ;keep 
 	; LineNumber: 50
 	call Common_PASS
-	jump Casts_Test5_edblock235
-.label Casts_Test5_eblock234
+	jump Casts_Test5_edblock234
+.label Casts_Test5_eblock233
 	; LineNumber: 50
 	call Common_FAIL
-.label Casts_Test5_edblock235
+.label Casts_Test5_edblock234
 	; LineNumber: 52
 	return
 .label end_procedure_Casts_Test5
@@ -1274,11 +1189,11 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label Casts_Test6_stringassigncpy242
-	load 	Casts_Test6_stringassignstr241 	_r8_2 	_r8_1
+.label Casts_Test6_stringassigncpy241
+	load 	Casts_Test6_stringassignstr240 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	Casts_Test6_stringassigncpy242
+	jneq 	_r8_1 	uint8:0x00 	Casts_Test6_stringassigncpy241
 	; LineNumber: 58
 	.asm
 ;ball
@@ -1304,15 +1219,15 @@ text_print_finished
 	; *** End of inline procedure :Common_CR
 	; LineNumber: 62
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_v1 	uint8:0xc8 	Casts_Test6_eblock246
-.label Casts_Test6_ctb245 ;Main true block ;keep 
+	jneq 	Vars_v1 	uint8:0xc8 	Casts_Test6_eblock245
+.label Casts_Test6_ctb244 ;Main true block ;keep 
 	; LineNumber: 61
 	call Common_PASS
-	jump Casts_Test6_edblock247
-.label Casts_Test6_eblock246
+	jump Casts_Test6_edblock246
+.label Casts_Test6_eblock245
 	; LineNumber: 61
 	call Common_FAIL
-.label Casts_Test6_edblock247
+.label Casts_Test6_edblock246
 	; LineNumber: 63
 	return
 .label end_procedure_Casts_Test6
@@ -1328,11 +1243,11 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label Casts_Test7_stringassigncpy254
-	load 	Casts_Test7_stringassignstr253 	_r8_2 	_r8_1
+.label Casts_Test7_stringassigncpy253
+	load 	Casts_Test7_stringassignstr252 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	Casts_Test7_stringassigncpy254
+	jneq 	_r8_1 	uint8:0x00 	Casts_Test7_stringassigncpy253
 	; LineNumber: 69
 	mov 	Vars_v2 	uint8:0x02
 	; LineNumber: 70
@@ -1356,15 +1271,15 @@ text_print_finished
 	; *** End of inline procedure :Common_CR
 	; LineNumber: 72
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_v1 	uint8:0xc8 	Casts_Test7_eblock258
-.label Casts_Test7_ctb257 ;Main true block ;keep 
+	jneq 	Vars_v1 	uint8:0xc8 	Casts_Test7_eblock257
+.label Casts_Test7_ctb256 ;Main true block ;keep 
 	; LineNumber: 71
 	call Common_PASS
-	jump Casts_Test7_edblock259
-.label Casts_Test7_eblock258
+	jump Casts_Test7_edblock258
+.label Casts_Test7_eblock257
 	; LineNumber: 71
 	call Common_FAIL
-.label Casts_Test7_edblock259
+.label Casts_Test7_edblock258
 	; LineNumber: 73
 	return
 .label end_procedure_Casts_Test7
@@ -1380,11 +1295,11 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label Casts_Test8_stringassigncpy266
-	load 	Casts_Test8_stringassignstr265 	_r8_2 	_r8_1
+.label Casts_Test8_stringassigncpy265
+	load 	Casts_Test8_stringassignstr264 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	Casts_Test8_stringassigncpy266
+	jneq 	_r8_1 	uint8:0x00 	Casts_Test8_stringassigncpy265
 	; LineNumber: 79
 	mov 	Vars_i2 	uint8:0x02
 	; LineNumber: 80
@@ -1408,15 +1323,15 @@ text_print_finished
 	; *** End of inline procedure :Common_CR
 	; LineNumber: 82
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_v1 	uint8:0xc8 	Casts_Test8_eblock270
-.label Casts_Test8_ctb269 ;Main true block ;keep 
+	jneq 	Vars_v1 	uint8:0xc8 	Casts_Test8_eblock269
+.label Casts_Test8_ctb268 ;Main true block ;keep 
 	; LineNumber: 81
 	call Common_PASS
-	jump Casts_Test8_edblock271
-.label Casts_Test8_eblock270
+	jump Casts_Test8_edblock270
+.label Casts_Test8_eblock269
 	; LineNumber: 81
 	call Common_FAIL
-.label Casts_Test8_edblock271
+.label Casts_Test8_edblock270
 	; LineNumber: 83
 	return
 .label end_procedure_Casts_Test8
@@ -1433,11 +1348,11 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label Casts_Test9_stringassigncpy278
-	load 	Casts_Test9_stringassignstr277 	_r8_2 	_r8_1
+.label Casts_Test9_stringassigncpy277
+	load 	Casts_Test9_stringassignstr276 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	Casts_Test9_stringassigncpy278
+	jneq 	_r8_1 	uint8:0x00 	Casts_Test9_stringassigncpy277
 	; LineNumber: 90
 	mov 	Vars_p1 	#Vars_ba1
 	; LineNumber: 91
@@ -1462,15 +1377,15 @@ text_print_finished
 	; *** End of inline procedure :Common_CR
 	; LineNumber: 93
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_i1 	uint8:0x08 	Casts_Test9_eblock282
-.label Casts_Test9_ctb281 ;Main true block ;keep 
+	jneq 	Vars_i1 	uint8:0x08 	Casts_Test9_eblock281
+.label Casts_Test9_ctb280 ;Main true block ;keep 
 	; LineNumber: 92
 	call Common_PASS
-	jump Casts_Test9_edblock283
-.label Casts_Test9_eblock282
+	jump Casts_Test9_edblock282
+.label Casts_Test9_eblock281
 	; LineNumber: 92
 	call Common_FAIL
-.label Casts_Test9_edblock283
+.label Casts_Test9_edblock282
 	; LineNumber: 94
 	return
 .label end_procedure_Casts_Test9
@@ -1486,11 +1401,11 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label Casts_Test10_stringassigncpy290
-	load 	Casts_Test10_stringassignstr289 	_r8_2 	_r8_1
+.label Casts_Test10_stringassigncpy289
+	load 	Casts_Test10_stringassignstr288 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	Casts_Test10_stringassigncpy290
+	jneq 	_r8_1 	uint8:0x00 	Casts_Test10_stringassigncpy289
 	; LineNumber: 100
 	mov 	Vars_p1 	#Vars_ba1
 	; LineNumber: 101
@@ -1517,15 +1432,15 @@ text_print_finished
 	; *** End of inline procedure :Common_CR
 	; LineNumber: 104
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_i1 	uint8:0x08 	Casts_Test10_eblock294
-.label Casts_Test10_ctb293 ;Main true block ;keep 
+	jneq 	Vars_i1 	uint8:0x08 	Casts_Test10_eblock293
+.label Casts_Test10_ctb292 ;Main true block ;keep 
 	; LineNumber: 103
 	call Common_PASS
-	jump Casts_Test10_edblock295
-.label Casts_Test10_eblock294
+	jump Casts_Test10_edblock294
+.label Casts_Test10_eblock293
 	; LineNumber: 103
 	call Common_FAIL
-.label Casts_Test10_edblock295
+.label Casts_Test10_edblock294
 	; LineNumber: 105
 	return
 .label end_procedure_Casts_Test10
@@ -1541,11 +1456,11 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label Casts_Test11_stringassigncpy302
-	load 	Casts_Test11_stringassignstr301 	_r8_2 	_r8_1
+.label Casts_Test11_stringassigncpy301
+	load 	Casts_Test11_stringassignstr300 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	Casts_Test11_stringassigncpy302
+	jneq 	_r8_1 	uint8:0x00 	Casts_Test11_stringassigncpy301
 	; LineNumber: 111
 	mov 	Vars_p1 	#Vars_ba1
 	; LineNumber: 112
@@ -1572,15 +1487,15 @@ text_print_finished
 	; *** End of inline procedure :Common_CR
 	; LineNumber: 115
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_i1 	uint8:0x08 	Casts_Test11_eblock306
-.label Casts_Test11_ctb305 ;Main true block ;keep 
+	jneq 	Vars_i1 	uint8:0x08 	Casts_Test11_eblock305
+.label Casts_Test11_ctb304 ;Main true block ;keep 
 	; LineNumber: 114
 	call Common_PASS
-	jump Casts_Test11_edblock307
-.label Casts_Test11_eblock306
+	jump Casts_Test11_edblock306
+.label Casts_Test11_eblock305
 	; LineNumber: 114
 	call Common_FAIL
-.label Casts_Test11_edblock307
+.label Casts_Test11_edblock306
 	; LineNumber: 116
 	return
 .label end_procedure_Casts_Test11
@@ -1596,11 +1511,11 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label Casts_Test12_stringassigncpy314
-	load 	Casts_Test12_stringassignstr313 	_r8_2 	_r8_1
+.label Casts_Test12_stringassigncpy313
+	load 	Casts_Test12_stringassignstr312 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	Casts_Test12_stringassigncpy314
+	jneq 	_r8_1 	uint8:0x00 	Casts_Test12_stringassigncpy313
 	; LineNumber: 122
 	mov 	Vars_ip 	#Vars_ia1
 	; LineNumber: 123
@@ -1625,15 +1540,15 @@ text_print_finished
 	; *** End of inline procedure :Common_CR
 	; LineNumber: 125
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_v1 	uint8:0xc8 	Casts_Test12_eblock318
-.label Casts_Test12_ctb317 ;Main true block ;keep 
+	jneq 	Vars_v1 	uint8:0xc8 	Casts_Test12_eblock317
+.label Casts_Test12_ctb316 ;Main true block ;keep 
 	; LineNumber: 124
 	call Common_PASS
-	jump Casts_Test12_edblock319
-.label Casts_Test12_eblock318
+	jump Casts_Test12_edblock318
+.label Casts_Test12_eblock317
 	; LineNumber: 124
 	call Common_FAIL
-.label Casts_Test12_edblock319
+.label Casts_Test12_edblock318
 	; LineNumber: 126
 	return
 .label end_procedure_Casts_Test12
@@ -1649,11 +1564,11 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label Casts_Test13_stringassigncpy326
-	load 	Casts_Test13_stringassignstr325 	_r8_2 	_r8_1
+.label Casts_Test13_stringassigncpy325
+	load 	Casts_Test13_stringassignstr324 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	Casts_Test13_stringassigncpy326
+	jneq 	_r8_1 	uint8:0x00 	Casts_Test13_stringassigncpy325
 	; LineNumber: 132
 	mov 	Vars_ip 	#Vars_ia1
 	; LineNumber: 133
@@ -1680,15 +1595,15 @@ text_print_finished
 	; *** End of inline procedure :Common_CR
 	; LineNumber: 136
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_v1 	uint8:0xc8 	Casts_Test13_eblock330
-.label Casts_Test13_ctb329 ;Main true block ;keep 
+	jneq 	Vars_v1 	uint8:0xc8 	Casts_Test13_eblock329
+.label Casts_Test13_ctb328 ;Main true block ;keep 
 	; LineNumber: 135
 	call Common_PASS
-	jump Casts_Test13_edblock331
-.label Casts_Test13_eblock330
+	jump Casts_Test13_edblock330
+.label Casts_Test13_eblock329
 	; LineNumber: 135
 	call Common_FAIL
-.label Casts_Test13_edblock331
+.label Casts_Test13_edblock330
 	; LineNumber: 137
 	return
 .label end_procedure_Casts_Test13
@@ -1704,11 +1619,11 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label Casts_Test14_stringassigncpy338
-	load 	Casts_Test14_stringassignstr337 	_r8_2 	_r8_1
+.label Casts_Test14_stringassigncpy337
+	load 	Casts_Test14_stringassignstr336 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	Casts_Test14_stringassigncpy338
+	jneq 	_r8_1 	uint8:0x00 	Casts_Test14_stringassigncpy337
 	; LineNumber: 143
 	mov 	Vars_ip 	#Vars_ia1
 	; LineNumber: 144
@@ -1735,15 +1650,15 @@ text_print_finished
 	; *** End of inline procedure :Common_CR
 	; LineNumber: 147
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_v1 	uint8:0xc8 	Casts_Test14_eblock342
-.label Casts_Test14_ctb341 ;Main true block ;keep 
+	jneq 	Vars_v1 	uint8:0xc8 	Casts_Test14_eblock341
+.label Casts_Test14_ctb340 ;Main true block ;keep 
 	; LineNumber: 146
 	call Common_PASS
-	jump Casts_Test14_edblock343
-.label Casts_Test14_eblock342
+	jump Casts_Test14_edblock342
+.label Casts_Test14_eblock341
 	; LineNumber: 146
 	call Common_FAIL
-.label Casts_Test14_edblock343
+.label Casts_Test14_edblock342
 	; LineNumber: 148
 	return
 .label end_procedure_Casts_Test14
@@ -1759,11 +1674,11 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label Casts_Test15_stringassigncpy350
-	load 	Casts_Test15_stringassignstr349 	_r8_2 	_r8_1
+.label Casts_Test15_stringassigncpy349
+	load 	Casts_Test15_stringassignstr348 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	Casts_Test15_stringassigncpy350
+	jneq 	_r8_1 	uint8:0x00 	Casts_Test15_stringassigncpy349
 	; LineNumber: 154
 	mov 	Vars_ir_p1 	uint8:0x02
 	call Vars_IntegerReturn
@@ -1784,15 +1699,15 @@ text_print_finished
 	; *** End of inline procedure :Common_CR
 	; LineNumber: 156
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_v1 	uint8:0x04 	Casts_Test15_eblock354
-.label Casts_Test15_ctb353 ;Main true block ;keep 
+	jneq 	Vars_v1 	uint8:0x04 	Casts_Test15_eblock353
+.label Casts_Test15_ctb352 ;Main true block ;keep 
 	; LineNumber: 155
 	call Common_PASS
-	jump Casts_Test15_edblock355
-.label Casts_Test15_eblock354
+	jump Casts_Test15_edblock354
+.label Casts_Test15_eblock353
 	; LineNumber: 155
 	call Common_FAIL
-.label Casts_Test15_edblock355
+.label Casts_Test15_edblock354
 	; LineNumber: 157
 	return
 .label end_procedure_Casts_Test15
@@ -1808,11 +1723,11 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label Casts_Test16_stringassigncpy362
-	load 	Casts_Test16_stringassignstr361 	_r8_2 	_r8_1
+.label Casts_Test16_stringassigncpy361
+	load 	Casts_Test16_stringassignstr360 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	Casts_Test16_stringassigncpy362
+	jneq 	_r8_1 	uint8:0x00 	Casts_Test16_stringassigncpy361
 	; LineNumber: 163
 	mov 	Vars_ir_p1 	uint8:0x02
 	call Vars_ByteReturn
@@ -1833,15 +1748,15 @@ text_print_finished
 	; *** End of inline procedure :Common_CR
 	; LineNumber: 166
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_i1 	uint8:0x04 	Casts_Test16_eblock366
-.label Casts_Test16_ctb365 ;Main true block ;keep 
+	jneq 	Vars_i1 	uint8:0x04 	Casts_Test16_eblock365
+.label Casts_Test16_ctb364 ;Main true block ;keep 
 	; LineNumber: 165
 	call Common_PASS
-	jump Casts_Test16_edblock367
-.label Casts_Test16_eblock366
+	jump Casts_Test16_edblock366
+.label Casts_Test16_eblock365
 	; LineNumber: 165
 	call Common_FAIL
-.label Casts_Test16_edblock367
+.label Casts_Test16_edblock366
 	; LineNumber: 167
 	return
 .label end_procedure_Casts_Test16
@@ -1857,11 +1772,11 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label Casts_Test17_stringassigncpy374
-	load 	Casts_Test17_stringassignstr373 	_r8_2 	_r8_1
+.label Casts_Test17_stringassigncpy373
+	load 	Casts_Test17_stringassignstr372 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	Casts_Test17_stringassigncpy374
+	jneq 	_r8_1 	uint8:0x00 	Casts_Test17_stringassigncpy373
 	; LineNumber: 173
 	; *** Inline procedure :Common_CR
 	; LineNumber: 20
@@ -1878,15 +1793,15 @@ text_print_finished
 	; Binary clause Simplified: EQUALS
 	mov 	Vars_ir_p1 	uint8:0x02
 	call Vars_ByteReturn
-	jneq 	Vars_ByteReturn_fret 	uint8:0x04 	Casts_Test17_eblock378
-.label Casts_Test17_ctb377 ;Main true block ;keep 
+	jneq 	Vars_ByteReturn_fret 	uint8:0x04 	Casts_Test17_eblock377
+.label Casts_Test17_ctb376 ;Main true block ;keep 
 	; LineNumber: 173
 	call Common_PASS
-	jump Casts_Test17_edblock379
-.label Casts_Test17_eblock378
+	jump Casts_Test17_edblock378
+.label Casts_Test17_eblock377
 	; LineNumber: 173
 	call Common_FAIL
-.label Casts_Test17_edblock379
+.label Casts_Test17_edblock378
 	; LineNumber: 175
 	return
 .label end_procedure_Casts_Test17
@@ -1902,11 +1817,11 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label Casts_Test18_stringassigncpy386
-	load 	Casts_Test18_stringassignstr385 	_r8_2 	_r8_1
+.label Casts_Test18_stringassigncpy385
+	load 	Casts_Test18_stringassignstr384 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	Casts_Test18_stringassigncpy386
+	jneq 	_r8_1 	uint8:0x00 	Casts_Test18_stringassigncpy385
 	; LineNumber: 181
 	; *** Inline procedure :Common_CR
 	; LineNumber: 20
@@ -1923,15 +1838,15 @@ text_print_finished
 	; Binary clause Simplified: EQUALS
 	mov 	Vars_ir_p1 	uint8:0x02
 	call Vars_IntegerReturn
-	jneq 	Vars_IntegerReturn_fret 	uint8:0x04 	Casts_Test18_eblock390
-.label Casts_Test18_ctb389 ;Main true block ;keep 
+	jneq 	Vars_IntegerReturn_fret 	uint8:0x04 	Casts_Test18_eblock389
+.label Casts_Test18_ctb388 ;Main true block ;keep 
 	; LineNumber: 181
 	call Common_PASS
-	jump Casts_Test18_edblock391
-.label Casts_Test18_eblock390
+	jump Casts_Test18_edblock390
+.label Casts_Test18_eblock389
 	; LineNumber: 181
 	call Common_FAIL
-.label Casts_Test18_edblock391
+.label Casts_Test18_edblock390
 	; LineNumber: 183
 	return
 .label end_procedure_Casts_Test18
@@ -1943,7 +1858,7 @@ text_print_finished
 .label Casts_Exec
 	; LineNumber: 199
 	; Assigning a string : Common_zp
-	mov 	Common_zp 	#Casts_Exec_stringassignstr397
+	mov 	Common_zp 	#Casts_Exec_stringassignstr396
 	call Common_Initialise
 	; LineNumber: 201
 	call Casts_Test1
@@ -2006,22 +1921,22 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label IntegerTest_T01_stringassigncpy400
-	load 	IntegerTest_T01_stringassignstr399 	_r8_2 	_r8_1
+.label IntegerTest_T01_stringassigncpy399
+	load 	IntegerTest_T01_stringassignstr398 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	IntegerTest_T01_stringassigncpy400
+	jneq 	_r8_1 	uint8:0x00 	IntegerTest_T01_stringassigncpy399
 	; LineNumber: 9
 	; Binary clause Simplified: GREATEREQUAL
-	jlt 	Vars_i1 	Vars_i2 	IntegerTest_T01_eblock403
-.label IntegerTest_T01_ctb402 ;Main true block ;keep 
+	jlt 	Vars_i1 	Vars_i2 	IntegerTest_T01_eblock402
+.label IntegerTest_T01_ctb401 ;Main true block ;keep 
 	; LineNumber: 8
 	call Common_PASS
-	jump IntegerTest_T01_edblock404
-.label IntegerTest_T01_eblock403
+	jump IntegerTest_T01_edblock403
+.label IntegerTest_T01_eblock402
 	; LineNumber: 8
 	call Common_FAIL
-.label IntegerTest_T01_edblock404
+.label IntegerTest_T01_edblock403
 	; LineNumber: 10
 	return
 .label end_procedure_IntegerTest_T01
@@ -2041,22 +1956,22 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label IntegerTest_T02_stringassigncpy411
-	load 	IntegerTest_T02_stringassignstr410 	_r8_2 	_r8_1
+.label IntegerTest_T02_stringassigncpy410
+	load 	IntegerTest_T02_stringassignstr409 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	IntegerTest_T02_stringassigncpy411
+	jneq 	_r8_1 	uint8:0x00 	IntegerTest_T02_stringassigncpy410
 	; LineNumber: 17
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_i1 	Vars_i2 	IntegerTest_T02_eblock414
-.label IntegerTest_T02_ctb413 ;Main true block ;keep 
+	jneq 	Vars_i1 	Vars_i2 	IntegerTest_T02_eblock413
+.label IntegerTest_T02_ctb412 ;Main true block ;keep 
 	; LineNumber: 16
 	call Common_PASS
-	jump IntegerTest_T02_edblock415
-.label IntegerTest_T02_eblock414
+	jump IntegerTest_T02_edblock414
+.label IntegerTest_T02_eblock413
 	; LineNumber: 16
 	call Common_FAIL
-.label IntegerTest_T02_edblock415
+.label IntegerTest_T02_edblock414
 	; LineNumber: 18
 	return
 .label end_procedure_IntegerTest_T02
@@ -2076,22 +1991,22 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label IntegerTest_T03_stringassigncpy422
-	load 	IntegerTest_T03_stringassignstr421 	_r8_2 	_r8_1
+.label IntegerTest_T03_stringassigncpy421
+	load 	IntegerTest_T03_stringassignstr420 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	IntegerTest_T03_stringassigncpy422
+	jneq 	_r8_1 	uint8:0x00 	IntegerTest_T03_stringassigncpy421
 	; LineNumber: 25
 	; Binary clause Simplified: GREATER
-	jlte 	Vars_i1 	Vars_i2 	IntegerTest_T03_eblock425
-.label IntegerTest_T03_ctb424 ;Main true block ;keep 
+	jlte 	Vars_i1 	Vars_i2 	IntegerTest_T03_eblock424
+.label IntegerTest_T03_ctb423 ;Main true block ;keep 
 	; LineNumber: 24
 	call Common_FAIL
-	jump IntegerTest_T03_edblock426
-.label IntegerTest_T03_eblock425
+	jump IntegerTest_T03_edblock425
+.label IntegerTest_T03_eblock424
 	; LineNumber: 24
 	call Common_PASS
-.label IntegerTest_T03_edblock426
+.label IntegerTest_T03_edblock425
 	; LineNumber: 26
 	return
 .label end_procedure_IntegerTest_T03
@@ -2111,22 +2026,22 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label IntegerTest_T04_stringassigncpy433
-	load 	IntegerTest_T04_stringassignstr432 	_r8_2 	_r8_1
+.label IntegerTest_T04_stringassigncpy432
+	load 	IntegerTest_T04_stringassignstr431 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	IntegerTest_T04_stringassigncpy433
+	jneq 	_r8_1 	uint8:0x00 	IntegerTest_T04_stringassigncpy432
 	; LineNumber: 33
 	; Binary clause Simplified: LESS
-	jgte 	Vars_i1 	Vars_i2 	IntegerTest_T04_eblock436
-.label IntegerTest_T04_ctb435 ;Main true block ;keep 
+	jgte 	Vars_i1 	Vars_i2 	IntegerTest_T04_eblock435
+.label IntegerTest_T04_ctb434 ;Main true block ;keep 
 	; LineNumber: 32
 	call Common_FAIL
-	jump IntegerTest_T04_edblock437
-.label IntegerTest_T04_eblock436
+	jump IntegerTest_T04_edblock436
+.label IntegerTest_T04_eblock435
 	; LineNumber: 32
 	call Common_PASS
-.label IntegerTest_T04_edblock437
+.label IntegerTest_T04_edblock436
 	; LineNumber: 34
 	return
 .label end_procedure_IntegerTest_T04
@@ -2146,22 +2061,22 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label IntegerTest_T05_stringassigncpy444
-	load 	IntegerTest_T05_stringassignstr443 	_r8_2 	_r8_1
+.label IntegerTest_T05_stringassigncpy443
+	load 	IntegerTest_T05_stringassignstr442 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	IntegerTest_T05_stringassigncpy444
+	jneq 	_r8_1 	uint8:0x00 	IntegerTest_T05_stringassigncpy443
 	; LineNumber: 42
 	; Binary clause Simplified: LESSEQUAL
-	jgt 	Vars_i1 	Vars_i2 	IntegerTest_T05_eblock447
-.label IntegerTest_T05_ctb446 ;Main true block ;keep 
+	jgt 	Vars_i1 	Vars_i2 	IntegerTest_T05_eblock446
+.label IntegerTest_T05_ctb445 ;Main true block ;keep 
 	; LineNumber: 41
 	call Common_PASS
-	jump IntegerTest_T05_edblock448
-.label IntegerTest_T05_eblock447
+	jump IntegerTest_T05_edblock447
+.label IntegerTest_T05_eblock446
 	; LineNumber: 41
 	call Common_FAIL
-.label IntegerTest_T05_edblock448
+.label IntegerTest_T05_edblock447
 	; LineNumber: 43
 	return
 .label end_procedure_IntegerTest_T05
@@ -2181,22 +2096,22 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label IntegerTest_T06_stringassigncpy455
-	load 	IntegerTest_T06_stringassignstr454 	_r8_2 	_r8_1
+.label IntegerTest_T06_stringassigncpy454
+	load 	IntegerTest_T06_stringassignstr453 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	IntegerTest_T06_stringassigncpy455
+	jneq 	_r8_1 	uint8:0x00 	IntegerTest_T06_stringassigncpy454
 	; LineNumber: 50
 	; Binary clause Simplified: LESSEQUAL
-	jgt 	Vars_i1 	Vars_i2 	IntegerTest_T06_eblock458
-.label IntegerTest_T06_ctb457 ;Main true block ;keep 
+	jgt 	Vars_i1 	Vars_i2 	IntegerTest_T06_eblock457
+.label IntegerTest_T06_ctb456 ;Main true block ;keep 
 	; LineNumber: 49
 	call Common_PASS
-	jump IntegerTest_T06_edblock459
-.label IntegerTest_T06_eblock458
+	jump IntegerTest_T06_edblock458
+.label IntegerTest_T06_eblock457
 	; LineNumber: 49
 	call Common_FAIL
-.label IntegerTest_T06_edblock459
+.label IntegerTest_T06_edblock458
 	; LineNumber: 51
 	return
 .label end_procedure_IntegerTest_T06
@@ -2214,22 +2129,22 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label IntegerTest_T066_stringassigncpy466
-	load 	IntegerTest_T066_stringassignstr465 	_r8_2 	_r8_1
+.label IntegerTest_T066_stringassigncpy465
+	load 	IntegerTest_T066_stringassignstr464 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	IntegerTest_T066_stringassigncpy466
+	jneq 	_r8_1 	uint8:0x00 	IntegerTest_T066_stringassigncpy465
 	; LineNumber: 58
 	; Binary clause Simplified: NOTEQUALS
-	jeq 	Vars_i1 	uint16:0x2001 	IntegerTest_T066_eblock469
-.label IntegerTest_T066_ctb468 ;Main true block ;keep 
+	jeq 	Vars_i1 	uint16:0x2001 	IntegerTest_T066_eblock468
+.label IntegerTest_T066_ctb467 ;Main true block ;keep 
 	; LineNumber: 57
 	call Common_PASS
-	jump IntegerTest_T066_edblock470
-.label IntegerTest_T066_eblock469
+	jump IntegerTest_T066_edblock469
+.label IntegerTest_T066_eblock468
 	; LineNumber: 57
 	call Common_FAIL
-.label IntegerTest_T066_edblock470
+.label IntegerTest_T066_edblock469
 	; LineNumber: 59
 	return
 .label end_procedure_IntegerTest_T066
@@ -2253,22 +2168,22 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label IntegerTest_T07_stringassigncpy477
-	load 	IntegerTest_T07_stringassignstr476 	_r8_2 	_r8_1
+.label IntegerTest_T07_stringassigncpy476
+	load 	IntegerTest_T07_stringassignstr475 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	IntegerTest_T07_stringassigncpy477
+	jneq 	_r8_1 	uint8:0x00 	IntegerTest_T07_stringassigncpy476
 	; LineNumber: 68
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_i1 	uint16:0xbb8 	IntegerTest_T07_eblock480
-.label IntegerTest_T07_ctb479 ;Main true block ;keep 
+	jneq 	Vars_i1 	uint16:0xbb8 	IntegerTest_T07_eblock479
+.label IntegerTest_T07_ctb478 ;Main true block ;keep 
 	; LineNumber: 67
 	call Common_PASS
-	jump IntegerTest_T07_edblock481
-.label IntegerTest_T07_eblock480
+	jump IntegerTest_T07_edblock480
+.label IntegerTest_T07_eblock479
 	; LineNumber: 67
 	call Common_FAIL
-.label IntegerTest_T07_edblock481
+.label IntegerTest_T07_edblock480
 	; LineNumber: 69
 	return
 .label end_procedure_IntegerTest_T07
@@ -2292,22 +2207,22 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label IntegerTest_T08_stringassigncpy488
-	load 	IntegerTest_T08_stringassignstr487 	_r8_2 	_r8_1
+.label IntegerTest_T08_stringassigncpy487
+	load 	IntegerTest_T08_stringassignstr486 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	IntegerTest_T08_stringassigncpy488
+	jneq 	_r8_1 	uint8:0x00 	IntegerTest_T08_stringassigncpy487
 	; LineNumber: 77
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_i1 	uint16:0xfc18 	IntegerTest_T08_eblock491
-.label IntegerTest_T08_ctb490 ;Main true block ;keep 
+	jneq 	Vars_i1 	uint16:0xfc18 	IntegerTest_T08_eblock490
+.label IntegerTest_T08_ctb489 ;Main true block ;keep 
 	; LineNumber: 76
 	call Common_PASS
-	jump IntegerTest_T08_edblock492
-.label IntegerTest_T08_eblock491
+	jump IntegerTest_T08_edblock491
+.label IntegerTest_T08_eblock490
 	; LineNumber: 76
 	call Common_FAIL
-.label IntegerTest_T08_edblock492
+.label IntegerTest_T08_edblock491
 	; LineNumber: 78
 	return
 .label end_procedure_IntegerTest_T08
@@ -2333,22 +2248,22 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label IntegerTest_T09_stringassigncpy499
-	load 	IntegerTest_T09_stringassignstr498 	_r8_2 	_r8_1
+.label IntegerTest_T09_stringassigncpy498
+	load 	IntegerTest_T09_stringassignstr497 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	IntegerTest_T09_stringassigncpy499
+	jneq 	_r8_1 	uint8:0x00 	IntegerTest_T09_stringassigncpy498
 	; LineNumber: 86
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_i1 	uint16:0xfa0 	IntegerTest_T09_eblock502
-.label IntegerTest_T09_ctb501 ;Main true block ;keep 
+	jneq 	Vars_i1 	uint16:0xfa0 	IntegerTest_T09_eblock501
+.label IntegerTest_T09_ctb500 ;Main true block ;keep 
 	; LineNumber: 85
 	call Common_PASS
-	jump IntegerTest_T09_edblock503
-.label IntegerTest_T09_eblock502
+	jump IntegerTest_T09_edblock502
+.label IntegerTest_T09_eblock501
 	; LineNumber: 85
 	call Common_FAIL
-.label IntegerTest_T09_edblock503
+.label IntegerTest_T09_edblock502
 	; LineNumber: 87
 	return
 .label end_procedure_IntegerTest_T09
@@ -2374,22 +2289,22 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label IntegerTest_T10_stringassigncpy510
-	load 	IntegerTest_T10_stringassignstr509 	_r8_2 	_r8_1
+.label IntegerTest_T10_stringassigncpy509
+	load 	IntegerTest_T10_stringassignstr508 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	IntegerTest_T10_stringassigncpy510
+	jneq 	_r8_1 	uint8:0x00 	IntegerTest_T10_stringassigncpy509
 	; LineNumber: 95
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_i1 	uint16:0xf830 	IntegerTest_T10_eblock513
-.label IntegerTest_T10_ctb512 ;Main true block ;keep 
+	jneq 	Vars_i1 	uint16:0xf830 	IntegerTest_T10_eblock512
+.label IntegerTest_T10_ctb511 ;Main true block ;keep 
 	; LineNumber: 94
 	call Common_PASS
-	jump IntegerTest_T10_edblock514
-.label IntegerTest_T10_eblock513
+	jump IntegerTest_T10_edblock513
+.label IntegerTest_T10_eblock512
 	; LineNumber: 94
 	call Common_FAIL
-.label IntegerTest_T10_edblock514
+.label IntegerTest_T10_edblock513
 	; LineNumber: 96
 	return
 .label end_procedure_IntegerTest_T10
@@ -2419,22 +2334,22 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label IntegerTest_T11_stringassigncpy521
-	load 	IntegerTest_T11_stringassignstr520 	_r8_2 	_r8_1
+.label IntegerTest_T11_stringassigncpy520
+	load 	IntegerTest_T11_stringassignstr519 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	IntegerTest_T11_stringassigncpy521
+	jneq 	_r8_1 	uint8:0x00 	IntegerTest_T11_stringassigncpy520
 	; LineNumber: 105
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_i1 	uint16:0x2cec 	IntegerTest_T11_eblock524
-.label IntegerTest_T11_ctb523 ;Main true block ;keep 
+	jneq 	Vars_i1 	uint16:0x2cec 	IntegerTest_T11_eblock523
+.label IntegerTest_T11_ctb522 ;Main true block ;keep 
 	; LineNumber: 104
 	call Common_PASS
-	jump IntegerTest_T11_edblock525
-.label IntegerTest_T11_eblock524
+	jump IntegerTest_T11_edblock524
+.label IntegerTest_T11_eblock523
 	; LineNumber: 104
 	call Common_FAIL
-.label IntegerTest_T11_edblock525
+.label IntegerTest_T11_edblock524
 	; LineNumber: 106
 	return
 .label end_procedure_IntegerTest_T11
@@ -2466,22 +2381,22 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label IntegerTest_T12_stringassigncpy532
-	load 	IntegerTest_T12_stringassignstr531 	_r8_2 	_r8_1
+.label IntegerTest_T12_stringassigncpy531
+	load 	IntegerTest_T12_stringassignstr530 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	IntegerTest_T12_stringassigncpy532
+	jneq 	_r8_1 	uint8:0x00 	IntegerTest_T12_stringassigncpy531
 	; LineNumber: 115
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_i1 	uint16:0xe0c0 	IntegerTest_T12_eblock535
-.label IntegerTest_T12_ctb534 ;Main true block ;keep 
+	jneq 	Vars_i1 	uint16:0xe0c0 	IntegerTest_T12_eblock534
+.label IntegerTest_T12_ctb533 ;Main true block ;keep 
 	; LineNumber: 114
 	call Common_PASS
-	jump IntegerTest_T12_edblock536
-.label IntegerTest_T12_eblock535
+	jump IntegerTest_T12_edblock535
+.label IntegerTest_T12_eblock534
 	; LineNumber: 114
 	call Common_FAIL
-.label IntegerTest_T12_edblock536
+.label IntegerTest_T12_edblock535
 	; LineNumber: 116
 	return
 .label end_procedure_IntegerTest_T12
@@ -2518,22 +2433,22 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label IntegerTest_TMIX1_stringassigncpy543
-	load 	IntegerTest_TMIX1_stringassignstr542 	_r8_2 	_r8_1
+.label IntegerTest_TMIX1_stringassigncpy542
+	load 	IntegerTest_TMIX1_stringassignstr541 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	IntegerTest_TMIX1_stringassigncpy543
+	jneq 	_r8_1 	uint8:0x00 	IntegerTest_TMIX1_stringassigncpy542
 	; LineNumber: 161
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_i1 	uint8:0x0e 	IntegerTest_TMIX1_eblock546
-.label IntegerTest_TMIX1_ctb545 ;Main true block ;keep 
+	jneq 	Vars_i1 	uint8:0x0e 	IntegerTest_TMIX1_eblock545
+.label IntegerTest_TMIX1_ctb544 ;Main true block ;keep 
 	; LineNumber: 160
 	call Common_PASS
-	jump IntegerTest_TMIX1_edblock547
-.label IntegerTest_TMIX1_eblock546
+	jump IntegerTest_TMIX1_edblock546
+.label IntegerTest_TMIX1_eblock545
 	; LineNumber: 160
 	call Common_FAIL
-.label IntegerTest_TMIX1_edblock547
+.label IntegerTest_TMIX1_edblock546
 	; LineNumber: 162
 	return
 .label end_procedure_IntegerTest_TMIX1
@@ -2558,25 +2473,25 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label IntegerTest_T15_stringassigncpy554
-	load 	IntegerTest_T15_stringassignstr553 	_r8_2 	_r8_1
+.label IntegerTest_T15_stringassigncpy553
+	load 	IntegerTest_T15_stringassignstr552 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	IntegerTest_T15_stringassigncpy554
+	jneq 	_r8_1 	uint8:0x00 	IntegerTest_T15_stringassigncpy553
 	; LineNumber: 170
 	; Binary clause Simplified: EQUALS
 	; ::LoadVariable
 	; push
 	load 	Vars_barr 	uint8:0x00 	_r8_1
-	jneq 	_r8_1 	uint8:0xff 	IntegerTest_T15_eblock557
-.label IntegerTest_T15_ctb556 ;Main true block ;keep 
+	jneq 	_r8_1 	uint8:0xff 	IntegerTest_T15_eblock556
+.label IntegerTest_T15_ctb555 ;Main true block ;keep 
 	; LineNumber: 169
 	call Common_PASS
-	jump IntegerTest_T15_edblock558
-.label IntegerTest_T15_eblock557
+	jump IntegerTest_T15_edblock557
+.label IntegerTest_T15_eblock556
 	; LineNumber: 169
 	call Common_FAIL
-.label IntegerTest_T15_edblock558
+.label IntegerTest_T15_edblock557
 	; LineNumber: 172
 	return
 .label end_procedure_IntegerTest_T15
@@ -2605,25 +2520,25 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label IntegerTest_T16_stringassigncpy565
-	load 	IntegerTest_T16_stringassignstr564 	_r8_2 	_r8_1
+.label IntegerTest_T16_stringassigncpy564
+	load 	IntegerTest_T16_stringassignstr563 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	IntegerTest_T16_stringassigncpy565
+	jneq 	_r8_1 	uint8:0x00 	IntegerTest_T16_stringassigncpy564
 	; LineNumber: 180
 	; Binary clause Simplified: EQUALS
 	; ::LoadVariable
 	; push
 	load 	Vars_barr 	uint8:0x01 	_r8_1
-	jneq 	_r8_1 	uint8:0xff 	IntegerTest_T16_eblock568
-.label IntegerTest_T16_ctb567 ;Main true block ;keep 
+	jneq 	_r8_1 	uint8:0xff 	IntegerTest_T16_eblock567
+.label IntegerTest_T16_ctb566 ;Main true block ;keep 
 	; LineNumber: 179
 	call Common_PASS
-	jump IntegerTest_T16_edblock569
-.label IntegerTest_T16_eblock568
+	jump IntegerTest_T16_edblock568
+.label IntegerTest_T16_eblock567
 	; LineNumber: 179
 	call Common_FAIL
-.label IntegerTest_T16_edblock569
+.label IntegerTest_T16_edblock568
 	; LineNumber: 182
 	return
 .label end_procedure_IntegerTest_T16
@@ -2636,7 +2551,7 @@ text_print_finished
 	
 ; // initialise everything
 	; Assigning a string : Common_zp
-	mov 	Common_zp 	#IntegerTest_Exec_stringassignstr575
+	mov 	Common_zp 	#IntegerTest_Exec_stringassignstr574
 	call Common_Initialise
 	; LineNumber: 191
 	
@@ -2700,26 +2615,26 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label IfThenElse_GT1_GreaterThan_True_stringassigncpy578
-	load 	IfThenElse_GT1_GreaterThan_True_stringassignstr577 	_r8_2 	_r8_1
+.label IfThenElse_GT1_GreaterThan_True_stringassigncpy577
+	load 	IfThenElse_GT1_GreaterThan_True_stringassignstr576 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	IfThenElse_GT1_GreaterThan_True_stringassigncpy578
+	jneq 	_r8_1 	uint8:0x00 	IfThenElse_GT1_GreaterThan_True_stringassigncpy577
 	; LineNumber: 14
 	; Binary clause Simplified: GREATER
-	jlte 	Vars_v1 	Vars_v2 	IfThenElse_GT1_GreaterThan_True_eblock581
-.label IfThenElse_GT1_GreaterThan_True_ctb580 ;Main true block ;keep 
+	jlte 	Vars_v1 	Vars_v2 	IfThenElse_GT1_GreaterThan_True_eblock580
+.label IfThenElse_GT1_GreaterThan_True_ctb579 ;Main true block ;keep 
 	; LineNumber: 13
 	; LineNumber: 14
 	call Common_PASS
 	; LineNumber: 14
-	jump IfThenElse_GT1_GreaterThan_True_edblock582
-.label IfThenElse_GT1_GreaterThan_True_eblock581
+	jump IfThenElse_GT1_GreaterThan_True_edblock581
+.label IfThenElse_GT1_GreaterThan_True_eblock580
 	; LineNumber: 13
 	; LineNumber: 14
 	call Common_FAIL
 	; LineNumber: 14
-.label IfThenElse_GT1_GreaterThan_True_edblock582
+.label IfThenElse_GT1_GreaterThan_True_edblock581
 	; LineNumber: 15
 	return
 .label end_procedure_IfThenElse_GT1_GreaterThan_True
@@ -2739,26 +2654,26 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label IfThenElse_GT2_GreaterThan_False_stringassigncpy589
-	load 	IfThenElse_GT2_GreaterThan_False_stringassignstr588 	_r8_2 	_r8_1
+.label IfThenElse_GT2_GreaterThan_False_stringassigncpy588
+	load 	IfThenElse_GT2_GreaterThan_False_stringassignstr587 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	IfThenElse_GT2_GreaterThan_False_stringassigncpy589
+	jneq 	_r8_1 	uint8:0x00 	IfThenElse_GT2_GreaterThan_False_stringassigncpy588
 	; LineNumber: 21
 	; Binary clause Simplified: GREATER
-	jlte 	Vars_v1 	Vars_v2 	IfThenElse_GT2_GreaterThan_False_eblock592
-.label IfThenElse_GT2_GreaterThan_False_ctb591 ;Main true block ;keep 
+	jlte 	Vars_v1 	Vars_v2 	IfThenElse_GT2_GreaterThan_False_eblock591
+.label IfThenElse_GT2_GreaterThan_False_ctb590 ;Main true block ;keep 
 	; LineNumber: 20
 	; LineNumber: 21
 	call Common_FAIL
 	; LineNumber: 21
-	jump IfThenElse_GT2_GreaterThan_False_edblock593
-.label IfThenElse_GT2_GreaterThan_False_eblock592
+	jump IfThenElse_GT2_GreaterThan_False_edblock592
+.label IfThenElse_GT2_GreaterThan_False_eblock591
 	; LineNumber: 20
 	; LineNumber: 21
 	call Common_PASS
 	; LineNumber: 21
-.label IfThenElse_GT2_GreaterThan_False_edblock593
+.label IfThenElse_GT2_GreaterThan_False_edblock592
 	; LineNumber: 22
 	return
 .label end_procedure_IfThenElse_GT2_GreaterThan_False
@@ -2778,26 +2693,26 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label IfThenElse_GT3_GreaterThan_False_stringassigncpy600
-	load 	IfThenElse_GT3_GreaterThan_False_stringassignstr599 	_r8_2 	_r8_1
+.label IfThenElse_GT3_GreaterThan_False_stringassigncpy599
+	load 	IfThenElse_GT3_GreaterThan_False_stringassignstr598 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	IfThenElse_GT3_GreaterThan_False_stringassigncpy600
+	jneq 	_r8_1 	uint8:0x00 	IfThenElse_GT3_GreaterThan_False_stringassigncpy599
 	; LineNumber: 28
 	; Binary clause Simplified: GREATER
-	jlte 	Vars_v1 	Vars_v2 	IfThenElse_GT3_GreaterThan_False_eblock603
-.label IfThenElse_GT3_GreaterThan_False_ctb602 ;Main true block ;keep 
+	jlte 	Vars_v1 	Vars_v2 	IfThenElse_GT3_GreaterThan_False_eblock602
+.label IfThenElse_GT3_GreaterThan_False_ctb601 ;Main true block ;keep 
 	; LineNumber: 27
 	; LineNumber: 28
 	call Common_FAIL
 	; LineNumber: 28
-	jump IfThenElse_GT3_GreaterThan_False_edblock604
-.label IfThenElse_GT3_GreaterThan_False_eblock603
+	jump IfThenElse_GT3_GreaterThan_False_edblock603
+.label IfThenElse_GT3_GreaterThan_False_eblock602
 	; LineNumber: 27
 	; LineNumber: 28
 	call Common_PASS
 	; LineNumber: 28
-.label IfThenElse_GT3_GreaterThan_False_edblock604
+.label IfThenElse_GT3_GreaterThan_False_edblock603
 	; LineNumber: 29
 	return
 .label end_procedure_IfThenElse_GT3_GreaterThan_False
@@ -2817,26 +2732,26 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label IfThenElse_GT4_GreaterThan_False_stringassigncpy611
-	load 	IfThenElse_GT4_GreaterThan_False_stringassignstr610 	_r8_2 	_r8_1
+.label IfThenElse_GT4_GreaterThan_False_stringassigncpy610
+	load 	IfThenElse_GT4_GreaterThan_False_stringassignstr609 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	IfThenElse_GT4_GreaterThan_False_stringassigncpy611
+	jneq 	_r8_1 	uint8:0x00 	IfThenElse_GT4_GreaterThan_False_stringassigncpy610
 	; LineNumber: 35
 	; Binary clause Simplified: GREATER
-	jlte 	Vars_v1 	Vars_v2 	IfThenElse_GT4_GreaterThan_False_eblock614
-.label IfThenElse_GT4_GreaterThan_False_ctb613 ;Main true block ;keep 
+	jlte 	Vars_v1 	Vars_v2 	IfThenElse_GT4_GreaterThan_False_eblock613
+.label IfThenElse_GT4_GreaterThan_False_ctb612 ;Main true block ;keep 
 	; LineNumber: 34
 	; LineNumber: 35
 	call Common_FAIL
 	; LineNumber: 35
-	jump IfThenElse_GT4_GreaterThan_False_edblock615
-.label IfThenElse_GT4_GreaterThan_False_eblock614
+	jump IfThenElse_GT4_GreaterThan_False_edblock614
+.label IfThenElse_GT4_GreaterThan_False_eblock613
 	; LineNumber: 34
 	; LineNumber: 35
 	call Common_PASS
 	; LineNumber: 35
-.label IfThenElse_GT4_GreaterThan_False_edblock615
+.label IfThenElse_GT4_GreaterThan_False_edblock614
 	; LineNumber: 36
 	return
 .label end_procedure_IfThenElse_GT4_GreaterThan_False
@@ -2856,26 +2771,26 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label IfThenElse_GT5_GreaterThan_True_stringassigncpy622
-	load 	IfThenElse_GT5_GreaterThan_True_stringassignstr621 	_r8_2 	_r8_1
+.label IfThenElse_GT5_GreaterThan_True_stringassigncpy621
+	load 	IfThenElse_GT5_GreaterThan_True_stringassignstr620 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	IfThenElse_GT5_GreaterThan_True_stringassigncpy622
+	jneq 	_r8_1 	uint8:0x00 	IfThenElse_GT5_GreaterThan_True_stringassigncpy621
 	; LineNumber: 42
 	; Binary clause Simplified: GREATER
-	jlte 	Vars_v1 	Vars_v2 	IfThenElse_GT5_GreaterThan_True_eblock625
-.label IfThenElse_GT5_GreaterThan_True_ctb624 ;Main true block ;keep 
+	jlte 	Vars_v1 	Vars_v2 	IfThenElse_GT5_GreaterThan_True_eblock624
+.label IfThenElse_GT5_GreaterThan_True_ctb623 ;Main true block ;keep 
 	; LineNumber: 41
 	; LineNumber: 42
 	call Common_PASS
 	; LineNumber: 42
-	jump IfThenElse_GT5_GreaterThan_True_edblock626
-.label IfThenElse_GT5_GreaterThan_True_eblock625
+	jump IfThenElse_GT5_GreaterThan_True_edblock625
+.label IfThenElse_GT5_GreaterThan_True_eblock624
 	; LineNumber: 41
 	; LineNumber: 42
 	call Common_FAIL
 	; LineNumber: 42
-.label IfThenElse_GT5_GreaterThan_True_edblock626
+.label IfThenElse_GT5_GreaterThan_True_edblock625
 	; LineNumber: 43
 	return
 .label end_procedure_IfThenElse_GT5_GreaterThan_True
@@ -2895,26 +2810,26 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label IfThenElse_GTE1_GreaterEqual_True_stringassigncpy633
-	load 	IfThenElse_GTE1_GreaterEqual_True_stringassignstr632 	_r8_2 	_r8_1
+.label IfThenElse_GTE1_GreaterEqual_True_stringassigncpy632
+	load 	IfThenElse_GTE1_GreaterEqual_True_stringassignstr631 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	IfThenElse_GTE1_GreaterEqual_True_stringassigncpy633
+	jneq 	_r8_1 	uint8:0x00 	IfThenElse_GTE1_GreaterEqual_True_stringassigncpy632
 	; LineNumber: 50
 	; Binary clause Simplified: GREATEREQUAL
-	jlt 	Vars_v1 	Vars_v2 	IfThenElse_GTE1_GreaterEqual_True_eblock636
-.label IfThenElse_GTE1_GreaterEqual_True_ctb635 ;Main true block ;keep 
+	jlt 	Vars_v1 	Vars_v2 	IfThenElse_GTE1_GreaterEqual_True_eblock635
+.label IfThenElse_GTE1_GreaterEqual_True_ctb634 ;Main true block ;keep 
 	; LineNumber: 49
 	; LineNumber: 50
 	call Common_PASS
 	; LineNumber: 50
-	jump IfThenElse_GTE1_GreaterEqual_True_edblock637
-.label IfThenElse_GTE1_GreaterEqual_True_eblock636
+	jump IfThenElse_GTE1_GreaterEqual_True_edblock636
+.label IfThenElse_GTE1_GreaterEqual_True_eblock635
 	; LineNumber: 49
 	; LineNumber: 50
 	call Common_FAIL
 	; LineNumber: 50
-.label IfThenElse_GTE1_GreaterEqual_True_edblock637
+.label IfThenElse_GTE1_GreaterEqual_True_edblock636
 	; LineNumber: 51
 	return
 .label end_procedure_IfThenElse_GTE1_GreaterEqual_True
@@ -2934,26 +2849,26 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label IfThenElse_GTE2_GreaterThan_False_stringassigncpy644
-	load 	IfThenElse_GTE2_GreaterThan_False_stringassignstr643 	_r8_2 	_r8_1
+.label IfThenElse_GTE2_GreaterThan_False_stringassigncpy643
+	load 	IfThenElse_GTE2_GreaterThan_False_stringassignstr642 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	IfThenElse_GTE2_GreaterThan_False_stringassigncpy644
+	jneq 	_r8_1 	uint8:0x00 	IfThenElse_GTE2_GreaterThan_False_stringassigncpy643
 	; LineNumber: 57
 	; Binary clause Simplified: GREATEREQUAL
-	jlt 	Vars_v1 	Vars_v2 	IfThenElse_GTE2_GreaterThan_False_eblock647
-.label IfThenElse_GTE2_GreaterThan_False_ctb646 ;Main true block ;keep 
+	jlt 	Vars_v1 	Vars_v2 	IfThenElse_GTE2_GreaterThan_False_eblock646
+.label IfThenElse_GTE2_GreaterThan_False_ctb645 ;Main true block ;keep 
 	; LineNumber: 56
 	; LineNumber: 57
 	call Common_FAIL
 	; LineNumber: 57
-	jump IfThenElse_GTE2_GreaterThan_False_edblock648
-.label IfThenElse_GTE2_GreaterThan_False_eblock647
+	jump IfThenElse_GTE2_GreaterThan_False_edblock647
+.label IfThenElse_GTE2_GreaterThan_False_eblock646
 	; LineNumber: 56
 	; LineNumber: 57
 	call Common_PASS
 	; LineNumber: 57
-.label IfThenElse_GTE2_GreaterThan_False_edblock648
+.label IfThenElse_GTE2_GreaterThan_False_edblock647
 	; LineNumber: 58
 	return
 .label end_procedure_IfThenElse_GTE2_GreaterThan_False
@@ -2973,26 +2888,26 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label IfThenElse_GTE3_GreaterThan_True_stringassigncpy655
-	load 	IfThenElse_GTE3_GreaterThan_True_stringassignstr654 	_r8_2 	_r8_1
+.label IfThenElse_GTE3_GreaterThan_True_stringassigncpy654
+	load 	IfThenElse_GTE3_GreaterThan_True_stringassignstr653 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	IfThenElse_GTE3_GreaterThan_True_stringassigncpy655
+	jneq 	_r8_1 	uint8:0x00 	IfThenElse_GTE3_GreaterThan_True_stringassigncpy654
 	; LineNumber: 64
 	; Binary clause Simplified: GREATEREQUAL
-	jlt 	Vars_v1 	Vars_v2 	IfThenElse_GTE3_GreaterThan_True_eblock658
-.label IfThenElse_GTE3_GreaterThan_True_ctb657 ;Main true block ;keep 
+	jlt 	Vars_v1 	Vars_v2 	IfThenElse_GTE3_GreaterThan_True_eblock657
+.label IfThenElse_GTE3_GreaterThan_True_ctb656 ;Main true block ;keep 
 	; LineNumber: 63
 	; LineNumber: 64
 	call Common_PASS
 	; LineNumber: 64
-	jump IfThenElse_GTE3_GreaterThan_True_edblock659
-.label IfThenElse_GTE3_GreaterThan_True_eblock658
+	jump IfThenElse_GTE3_GreaterThan_True_edblock658
+.label IfThenElse_GTE3_GreaterThan_True_eblock657
 	; LineNumber: 63
 	; LineNumber: 64
 	call Common_FAIL
 	; LineNumber: 64
-.label IfThenElse_GTE3_GreaterThan_True_edblock659
+.label IfThenElse_GTE3_GreaterThan_True_edblock658
 	; LineNumber: 65
 	return
 .label end_procedure_IfThenElse_GTE3_GreaterThan_True
@@ -3012,26 +2927,26 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label IfThenElse_GTE4_GreaterThan_False_stringassigncpy666
-	load 	IfThenElse_GTE4_GreaterThan_False_stringassignstr665 	_r8_2 	_r8_1
+.label IfThenElse_GTE4_GreaterThan_False_stringassigncpy665
+	load 	IfThenElse_GTE4_GreaterThan_False_stringassignstr664 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	IfThenElse_GTE4_GreaterThan_False_stringassigncpy666
+	jneq 	_r8_1 	uint8:0x00 	IfThenElse_GTE4_GreaterThan_False_stringassigncpy665
 	; LineNumber: 71
 	; Binary clause Simplified: GREATEREQUAL
-	jlt 	Vars_v1 	Vars_v2 	IfThenElse_GTE4_GreaterThan_False_eblock669
-.label IfThenElse_GTE4_GreaterThan_False_ctb668 ;Main true block ;keep 
+	jlt 	Vars_v1 	Vars_v2 	IfThenElse_GTE4_GreaterThan_False_eblock668
+.label IfThenElse_GTE4_GreaterThan_False_ctb667 ;Main true block ;keep 
 	; LineNumber: 70
 	; LineNumber: 71
 	call Common_FAIL
 	; LineNumber: 71
-	jump IfThenElse_GTE4_GreaterThan_False_edblock670
-.label IfThenElse_GTE4_GreaterThan_False_eblock669
+	jump IfThenElse_GTE4_GreaterThan_False_edblock669
+.label IfThenElse_GTE4_GreaterThan_False_eblock668
 	; LineNumber: 70
 	; LineNumber: 71
 	call Common_PASS
 	; LineNumber: 71
-.label IfThenElse_GTE4_GreaterThan_False_edblock670
+.label IfThenElse_GTE4_GreaterThan_False_edblock669
 	; LineNumber: 72
 	return
 .label end_procedure_IfThenElse_GTE4_GreaterThan_False
@@ -3051,26 +2966,26 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label IfThenElse_GTE5_GreaterThan_True_stringassigncpy677
-	load 	IfThenElse_GTE5_GreaterThan_True_stringassignstr676 	_r8_2 	_r8_1
+.label IfThenElse_GTE5_GreaterThan_True_stringassigncpy676
+	load 	IfThenElse_GTE5_GreaterThan_True_stringassignstr675 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	IfThenElse_GTE5_GreaterThan_True_stringassigncpy677
+	jneq 	_r8_1 	uint8:0x00 	IfThenElse_GTE5_GreaterThan_True_stringassigncpy676
 	; LineNumber: 78
 	; Binary clause Simplified: GREATEREQUAL
-	jlt 	Vars_v1 	Vars_v2 	IfThenElse_GTE5_GreaterThan_True_eblock680
-.label IfThenElse_GTE5_GreaterThan_True_ctb679 ;Main true block ;keep 
+	jlt 	Vars_v1 	Vars_v2 	IfThenElse_GTE5_GreaterThan_True_eblock679
+.label IfThenElse_GTE5_GreaterThan_True_ctb678 ;Main true block ;keep 
 	; LineNumber: 77
 	; LineNumber: 78
 	call Common_PASS
 	; LineNumber: 78
-	jump IfThenElse_GTE5_GreaterThan_True_edblock681
-.label IfThenElse_GTE5_GreaterThan_True_eblock680
+	jump IfThenElse_GTE5_GreaterThan_True_edblock680
+.label IfThenElse_GTE5_GreaterThan_True_eblock679
 	; LineNumber: 77
 	; LineNumber: 78
 	call Common_FAIL
 	; LineNumber: 78
-.label IfThenElse_GTE5_GreaterThan_True_edblock681
+.label IfThenElse_GTE5_GreaterThan_True_edblock680
 	; LineNumber: 79
 	return
 .label end_procedure_IfThenElse_GTE5_GreaterThan_True
@@ -3090,26 +3005,26 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label IfThenElse_LT1_LessThan_True_stringassigncpy688
-	load 	IfThenElse_LT1_LessThan_True_stringassignstr687 	_r8_2 	_r8_1
+.label IfThenElse_LT1_LessThan_True_stringassigncpy687
+	load 	IfThenElse_LT1_LessThan_True_stringassignstr686 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	IfThenElse_LT1_LessThan_True_stringassigncpy688
+	jneq 	_r8_1 	uint8:0x00 	IfThenElse_LT1_LessThan_True_stringassigncpy687
 	; LineNumber: 86
 	; Binary clause Simplified: LESS
-	jgte 	Vars_v1 	Vars_v2 	IfThenElse_LT1_LessThan_True_eblock691
-.label IfThenElse_LT1_LessThan_True_ctb690 ;Main true block ;keep 
+	jgte 	Vars_v1 	Vars_v2 	IfThenElse_LT1_LessThan_True_eblock690
+.label IfThenElse_LT1_LessThan_True_ctb689 ;Main true block ;keep 
 	; LineNumber: 85
 	; LineNumber: 86
 	call Common_PASS
 	; LineNumber: 86
-	jump IfThenElse_LT1_LessThan_True_edblock692
-.label IfThenElse_LT1_LessThan_True_eblock691
+	jump IfThenElse_LT1_LessThan_True_edblock691
+.label IfThenElse_LT1_LessThan_True_eblock690
 	; LineNumber: 85
 	; LineNumber: 86
 	call Common_FAIL
 	; LineNumber: 86
-.label IfThenElse_LT1_LessThan_True_edblock692
+.label IfThenElse_LT1_LessThan_True_edblock691
 	; LineNumber: 87
 	return
 .label end_procedure_IfThenElse_LT1_LessThan_True
@@ -3129,26 +3044,26 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label IfThenElse_LT2_LessThan_False_stringassigncpy699
-	load 	IfThenElse_LT2_LessThan_False_stringassignstr698 	_r8_2 	_r8_1
+.label IfThenElse_LT2_LessThan_False_stringassigncpy698
+	load 	IfThenElse_LT2_LessThan_False_stringassignstr697 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	IfThenElse_LT2_LessThan_False_stringassigncpy699
+	jneq 	_r8_1 	uint8:0x00 	IfThenElse_LT2_LessThan_False_stringassigncpy698
 	; LineNumber: 93
 	; Binary clause Simplified: LESS
-	jgte 	Vars_v1 	Vars_v2 	IfThenElse_LT2_LessThan_False_eblock702
-.label IfThenElse_LT2_LessThan_False_ctb701 ;Main true block ;keep 
+	jgte 	Vars_v1 	Vars_v2 	IfThenElse_LT2_LessThan_False_eblock701
+.label IfThenElse_LT2_LessThan_False_ctb700 ;Main true block ;keep 
 	; LineNumber: 92
 	; LineNumber: 93
 	call Common_FAIL
 	; LineNumber: 93
-	jump IfThenElse_LT2_LessThan_False_edblock703
-.label IfThenElse_LT2_LessThan_False_eblock702
+	jump IfThenElse_LT2_LessThan_False_edblock702
+.label IfThenElse_LT2_LessThan_False_eblock701
 	; LineNumber: 92
 	; LineNumber: 93
 	call Common_PASS
 	; LineNumber: 93
-.label IfThenElse_LT2_LessThan_False_edblock703
+.label IfThenElse_LT2_LessThan_False_edblock702
 	; LineNumber: 94
 	return
 .label end_procedure_IfThenElse_LT2_LessThan_False
@@ -3168,26 +3083,26 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label IfThenElse_LT3_LessThan_False_stringassigncpy710
-	load 	IfThenElse_LT3_LessThan_False_stringassignstr709 	_r8_2 	_r8_1
+.label IfThenElse_LT3_LessThan_False_stringassigncpy709
+	load 	IfThenElse_LT3_LessThan_False_stringassignstr708 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	IfThenElse_LT3_LessThan_False_stringassigncpy710
+	jneq 	_r8_1 	uint8:0x00 	IfThenElse_LT3_LessThan_False_stringassigncpy709
 	; LineNumber: 100
 	; Binary clause Simplified: LESS
-	jgte 	Vars_v1 	Vars_v2 	IfThenElse_LT3_LessThan_False_eblock713
-.label IfThenElse_LT3_LessThan_False_ctb712 ;Main true block ;keep 
+	jgte 	Vars_v1 	Vars_v2 	IfThenElse_LT3_LessThan_False_eblock712
+.label IfThenElse_LT3_LessThan_False_ctb711 ;Main true block ;keep 
 	; LineNumber: 99
 	; LineNumber: 100
 	call Common_FAIL
 	; LineNumber: 100
-	jump IfThenElse_LT3_LessThan_False_edblock714
-.label IfThenElse_LT3_LessThan_False_eblock713
+	jump IfThenElse_LT3_LessThan_False_edblock713
+.label IfThenElse_LT3_LessThan_False_eblock712
 	; LineNumber: 99
 	; LineNumber: 100
 	call Common_PASS
 	; LineNumber: 100
-.label IfThenElse_LT3_LessThan_False_edblock714
+.label IfThenElse_LT3_LessThan_False_edblock713
 	; LineNumber: 101
 	return
 .label end_procedure_IfThenElse_LT3_LessThan_False
@@ -3207,26 +3122,26 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label IfThenElse_LT4_LessThan_True_stringassigncpy721
-	load 	IfThenElse_LT4_LessThan_True_stringassignstr720 	_r8_2 	_r8_1
+.label IfThenElse_LT4_LessThan_True_stringassigncpy720
+	load 	IfThenElse_LT4_LessThan_True_stringassignstr719 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	IfThenElse_LT4_LessThan_True_stringassigncpy721
+	jneq 	_r8_1 	uint8:0x00 	IfThenElse_LT4_LessThan_True_stringassigncpy720
 	; LineNumber: 107
 	; Binary clause Simplified: LESS
-	jgte 	Vars_v1 	Vars_v2 	IfThenElse_LT4_LessThan_True_eblock724
-.label IfThenElse_LT4_LessThan_True_ctb723 ;Main true block ;keep 
+	jgte 	Vars_v1 	Vars_v2 	IfThenElse_LT4_LessThan_True_eblock723
+.label IfThenElse_LT4_LessThan_True_ctb722 ;Main true block ;keep 
 	; LineNumber: 106
 	; LineNumber: 107
 	call Common_PASS
 	; LineNumber: 107
-	jump IfThenElse_LT4_LessThan_True_edblock725
-.label IfThenElse_LT4_LessThan_True_eblock724
+	jump IfThenElse_LT4_LessThan_True_edblock724
+.label IfThenElse_LT4_LessThan_True_eblock723
 	; LineNumber: 106
 	; LineNumber: 107
 	call Common_FAIL
 	; LineNumber: 107
-.label IfThenElse_LT4_LessThan_True_edblock725
+.label IfThenElse_LT4_LessThan_True_edblock724
 	; LineNumber: 108
 	return
 .label end_procedure_IfThenElse_LT4_LessThan_True
@@ -3246,26 +3161,26 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label IfThenElse_LT5_LessThan_False_stringassigncpy732
-	load 	IfThenElse_LT5_LessThan_False_stringassignstr731 	_r8_2 	_r8_1
+.label IfThenElse_LT5_LessThan_False_stringassigncpy731
+	load 	IfThenElse_LT5_LessThan_False_stringassignstr730 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	IfThenElse_LT5_LessThan_False_stringassigncpy732
+	jneq 	_r8_1 	uint8:0x00 	IfThenElse_LT5_LessThan_False_stringassigncpy731
 	; LineNumber: 114
 	; Binary clause Simplified: LESS
-	jgte 	Vars_v1 	Vars_v2 	IfThenElse_LT5_LessThan_False_eblock735
-.label IfThenElse_LT5_LessThan_False_ctb734 ;Main true block ;keep 
+	jgte 	Vars_v1 	Vars_v2 	IfThenElse_LT5_LessThan_False_eblock734
+.label IfThenElse_LT5_LessThan_False_ctb733 ;Main true block ;keep 
 	; LineNumber: 113
 	; LineNumber: 114
 	call Common_FAIL
 	; LineNumber: 114
-	jump IfThenElse_LT5_LessThan_False_edblock736
-.label IfThenElse_LT5_LessThan_False_eblock735
+	jump IfThenElse_LT5_LessThan_False_edblock735
+.label IfThenElse_LT5_LessThan_False_eblock734
 	; LineNumber: 113
 	; LineNumber: 114
 	call Common_PASS
 	; LineNumber: 114
-.label IfThenElse_LT5_LessThan_False_edblock736
+.label IfThenElse_LT5_LessThan_False_edblock735
 	; LineNumber: 115
 	return
 .label end_procedure_IfThenElse_LT5_LessThan_False
@@ -3285,26 +3200,26 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label IfThenElse_LTE1_LessEqual_True_stringassigncpy743
-	load 	IfThenElse_LTE1_LessEqual_True_stringassignstr742 	_r8_2 	_r8_1
+.label IfThenElse_LTE1_LessEqual_True_stringassigncpy742
+	load 	IfThenElse_LTE1_LessEqual_True_stringassignstr741 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	IfThenElse_LTE1_LessEqual_True_stringassigncpy743
+	jneq 	_r8_1 	uint8:0x00 	IfThenElse_LTE1_LessEqual_True_stringassigncpy742
 	; LineNumber: 122
 	; Binary clause Simplified: LESSEQUAL
-	jgt 	Vars_v1 	Vars_v2 	IfThenElse_LTE1_LessEqual_True_eblock746
-.label IfThenElse_LTE1_LessEqual_True_ctb745 ;Main true block ;keep 
+	jgt 	Vars_v1 	Vars_v2 	IfThenElse_LTE1_LessEqual_True_eblock745
+.label IfThenElse_LTE1_LessEqual_True_ctb744 ;Main true block ;keep 
 	; LineNumber: 121
 	; LineNumber: 122
 	call Common_PASS
 	; LineNumber: 122
-	jump IfThenElse_LTE1_LessEqual_True_edblock747
-.label IfThenElse_LTE1_LessEqual_True_eblock746
+	jump IfThenElse_LTE1_LessEqual_True_edblock746
+.label IfThenElse_LTE1_LessEqual_True_eblock745
 	; LineNumber: 121
 	; LineNumber: 122
 	call Common_FAIL
 	; LineNumber: 122
-.label IfThenElse_LTE1_LessEqual_True_edblock747
+.label IfThenElse_LTE1_LessEqual_True_edblock746
 	; LineNumber: 123
 	return
 .label end_procedure_IfThenElse_LTE1_LessEqual_True
@@ -3324,26 +3239,26 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label IfThenElse_LTE1_LessEqual_True2_stringassigncpy754
-	load 	IfThenElse_LTE1_LessEqual_True2_stringassignstr753 	_r8_2 	_r8_1
+.label IfThenElse_LTE1_LessEqual_True2_stringassigncpy753
+	load 	IfThenElse_LTE1_LessEqual_True2_stringassignstr752 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	IfThenElse_LTE1_LessEqual_True2_stringassigncpy754
+	jneq 	_r8_1 	uint8:0x00 	IfThenElse_LTE1_LessEqual_True2_stringassigncpy753
 	; LineNumber: 129
 	; Binary clause Simplified: LESSEQUAL
-	jgt 	Vars_v1 	Vars_v2 	IfThenElse_LTE1_LessEqual_True2_eblock757
-.label IfThenElse_LTE1_LessEqual_True2_ctb756 ;Main true block ;keep 
+	jgt 	Vars_v1 	Vars_v2 	IfThenElse_LTE1_LessEqual_True2_eblock756
+.label IfThenElse_LTE1_LessEqual_True2_ctb755 ;Main true block ;keep 
 	; LineNumber: 128
 	; LineNumber: 129
 	call Common_PASS
 	; LineNumber: 129
-	jump IfThenElse_LTE1_LessEqual_True2_edblock758
-.label IfThenElse_LTE1_LessEqual_True2_eblock757
+	jump IfThenElse_LTE1_LessEqual_True2_edblock757
+.label IfThenElse_LTE1_LessEqual_True2_eblock756
 	; LineNumber: 128
 	; LineNumber: 129
 	call Common_FAIL
 	; LineNumber: 129
-.label IfThenElse_LTE1_LessEqual_True2_edblock758
+.label IfThenElse_LTE1_LessEqual_True2_edblock757
 	; LineNumber: 130
 	return
 .label end_procedure_IfThenElse_LTE1_LessEqual_True2
@@ -3363,26 +3278,26 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label IfThenElse_LTE2_LessThan_False_stringassigncpy765
-	load 	IfThenElse_LTE2_LessThan_False_stringassignstr764 	_r8_2 	_r8_1
+.label IfThenElse_LTE2_LessThan_False_stringassigncpy764
+	load 	IfThenElse_LTE2_LessThan_False_stringassignstr763 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	IfThenElse_LTE2_LessThan_False_stringassigncpy765
+	jneq 	_r8_1 	uint8:0x00 	IfThenElse_LTE2_LessThan_False_stringassigncpy764
 	; LineNumber: 136
 	; Binary clause Simplified: LESSEQUAL
-	jgt 	Vars_v1 	Vars_v2 	IfThenElse_LTE2_LessThan_False_eblock768
-.label IfThenElse_LTE2_LessThan_False_ctb767 ;Main true block ;keep 
+	jgt 	Vars_v1 	Vars_v2 	IfThenElse_LTE2_LessThan_False_eblock767
+.label IfThenElse_LTE2_LessThan_False_ctb766 ;Main true block ;keep 
 	; LineNumber: 135
 	; LineNumber: 136
 	call Common_FAIL
 	; LineNumber: 136
-	jump IfThenElse_LTE2_LessThan_False_edblock769
-.label IfThenElse_LTE2_LessThan_False_eblock768
+	jump IfThenElse_LTE2_LessThan_False_edblock768
+.label IfThenElse_LTE2_LessThan_False_eblock767
 	; LineNumber: 135
 	; LineNumber: 136
 	call Common_PASS
 	; LineNumber: 136
-.label IfThenElse_LTE2_LessThan_False_edblock769
+.label IfThenElse_LTE2_LessThan_False_edblock768
 	; LineNumber: 137
 	return
 .label end_procedure_IfThenElse_LTE2_LessThan_False
@@ -3402,26 +3317,26 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label IfThenElse_LTE3_LessThan_True_stringassigncpy776
-	load 	IfThenElse_LTE3_LessThan_True_stringassignstr775 	_r8_2 	_r8_1
+.label IfThenElse_LTE3_LessThan_True_stringassigncpy775
+	load 	IfThenElse_LTE3_LessThan_True_stringassignstr774 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	IfThenElse_LTE3_LessThan_True_stringassigncpy776
+	jneq 	_r8_1 	uint8:0x00 	IfThenElse_LTE3_LessThan_True_stringassigncpy775
 	; LineNumber: 143
 	; Binary clause Simplified: LESSEQUAL
-	jgt 	Vars_v1 	Vars_v2 	IfThenElse_LTE3_LessThan_True_eblock779
-.label IfThenElse_LTE3_LessThan_True_ctb778 ;Main true block ;keep 
+	jgt 	Vars_v1 	Vars_v2 	IfThenElse_LTE3_LessThan_True_eblock778
+.label IfThenElse_LTE3_LessThan_True_ctb777 ;Main true block ;keep 
 	; LineNumber: 142
 	; LineNumber: 143
 	call Common_PASS
 	; LineNumber: 143
-	jump IfThenElse_LTE3_LessThan_True_edblock780
-.label IfThenElse_LTE3_LessThan_True_eblock779
+	jump IfThenElse_LTE3_LessThan_True_edblock779
+.label IfThenElse_LTE3_LessThan_True_eblock778
 	; LineNumber: 142
 	; LineNumber: 143
 	call Common_FAIL
 	; LineNumber: 143
-.label IfThenElse_LTE3_LessThan_True_edblock780
+.label IfThenElse_LTE3_LessThan_True_edblock779
 	; LineNumber: 144
 	return
 .label end_procedure_IfThenElse_LTE3_LessThan_True
@@ -3441,26 +3356,26 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label IfThenElse_LTE4_LessThan_True_stringassigncpy787
-	load 	IfThenElse_LTE4_LessThan_True_stringassignstr786 	_r8_2 	_r8_1
+.label IfThenElse_LTE4_LessThan_True_stringassigncpy786
+	load 	IfThenElse_LTE4_LessThan_True_stringassignstr785 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	IfThenElse_LTE4_LessThan_True_stringassigncpy787
+	jneq 	_r8_1 	uint8:0x00 	IfThenElse_LTE4_LessThan_True_stringassigncpy786
 	; LineNumber: 150
 	; Binary clause Simplified: LESSEQUAL
-	jgt 	Vars_v1 	Vars_v2 	IfThenElse_LTE4_LessThan_True_eblock790
-.label IfThenElse_LTE4_LessThan_True_ctb789 ;Main true block ;keep 
+	jgt 	Vars_v1 	Vars_v2 	IfThenElse_LTE4_LessThan_True_eblock789
+.label IfThenElse_LTE4_LessThan_True_ctb788 ;Main true block ;keep 
 	; LineNumber: 149
 	; LineNumber: 150
 	call Common_PASS
 	; LineNumber: 150
-	jump IfThenElse_LTE4_LessThan_True_edblock791
-.label IfThenElse_LTE4_LessThan_True_eblock790
+	jump IfThenElse_LTE4_LessThan_True_edblock790
+.label IfThenElse_LTE4_LessThan_True_eblock789
 	; LineNumber: 149
 	; LineNumber: 150
 	call Common_FAIL
 	; LineNumber: 150
-.label IfThenElse_LTE4_LessThan_True_edblock791
+.label IfThenElse_LTE4_LessThan_True_edblock790
 	; LineNumber: 151
 	return
 .label end_procedure_IfThenElse_LTE4_LessThan_True
@@ -3480,26 +3395,26 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label IfThenElse_LTE5_LessThan_False_stringassigncpy798
-	load 	IfThenElse_LTE5_LessThan_False_stringassignstr797 	_r8_2 	_r8_1
+.label IfThenElse_LTE5_LessThan_False_stringassigncpy797
+	load 	IfThenElse_LTE5_LessThan_False_stringassignstr796 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	IfThenElse_LTE5_LessThan_False_stringassigncpy798
+	jneq 	_r8_1 	uint8:0x00 	IfThenElse_LTE5_LessThan_False_stringassigncpy797
 	; LineNumber: 157
 	; Binary clause Simplified: LESSEQUAL
-	jgt 	Vars_v1 	Vars_v2 	IfThenElse_LTE5_LessThan_False_eblock801
-.label IfThenElse_LTE5_LessThan_False_ctb800 ;Main true block ;keep 
+	jgt 	Vars_v1 	Vars_v2 	IfThenElse_LTE5_LessThan_False_eblock800
+.label IfThenElse_LTE5_LessThan_False_ctb799 ;Main true block ;keep 
 	; LineNumber: 156
 	; LineNumber: 157
 	call Common_FAIL
 	; LineNumber: 157
-	jump IfThenElse_LTE5_LessThan_False_edblock802
-.label IfThenElse_LTE5_LessThan_False_eblock801
+	jump IfThenElse_LTE5_LessThan_False_edblock801
+.label IfThenElse_LTE5_LessThan_False_eblock800
 	; LineNumber: 156
 	; LineNumber: 157
 	call Common_PASS
 	; LineNumber: 157
-.label IfThenElse_LTE5_LessThan_False_edblock802
+.label IfThenElse_LTE5_LessThan_False_edblock801
 	; LineNumber: 158
 	return
 .label end_procedure_IfThenElse_LTE5_LessThan_False
@@ -3519,26 +3434,26 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label IfThenElse_EQ1_EqualTo_True_stringassigncpy809
-	load 	IfThenElse_EQ1_EqualTo_True_stringassignstr808 	_r8_2 	_r8_1
+.label IfThenElse_EQ1_EqualTo_True_stringassigncpy808
+	load 	IfThenElse_EQ1_EqualTo_True_stringassignstr807 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	IfThenElse_EQ1_EqualTo_True_stringassigncpy809
+	jneq 	_r8_1 	uint8:0x00 	IfThenElse_EQ1_EqualTo_True_stringassigncpy808
 	; LineNumber: 165
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_v1 	Vars_v2 	IfThenElse_EQ1_EqualTo_True_eblock812
-.label IfThenElse_EQ1_EqualTo_True_ctb811 ;Main true block ;keep 
+	jneq 	Vars_v1 	Vars_v2 	IfThenElse_EQ1_EqualTo_True_eblock811
+.label IfThenElse_EQ1_EqualTo_True_ctb810 ;Main true block ;keep 
 	; LineNumber: 164
 	; LineNumber: 165
 	call Common_PASS
 	; LineNumber: 165
-	jump IfThenElse_EQ1_EqualTo_True_edblock813
-.label IfThenElse_EQ1_EqualTo_True_eblock812
+	jump IfThenElse_EQ1_EqualTo_True_edblock812
+.label IfThenElse_EQ1_EqualTo_True_eblock811
 	; LineNumber: 164
 	; LineNumber: 165
 	call Common_FAIL
 	; LineNumber: 165
-.label IfThenElse_EQ1_EqualTo_True_edblock813
+.label IfThenElse_EQ1_EqualTo_True_edblock812
 	; LineNumber: 166
 	return
 .label end_procedure_IfThenElse_EQ1_EqualTo_True
@@ -3558,26 +3473,26 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label IfThenElse_EQ2_EqualTo_False_stringassigncpy820
-	load 	IfThenElse_EQ2_EqualTo_False_stringassignstr819 	_r8_2 	_r8_1
+.label IfThenElse_EQ2_EqualTo_False_stringassigncpy819
+	load 	IfThenElse_EQ2_EqualTo_False_stringassignstr818 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	IfThenElse_EQ2_EqualTo_False_stringassigncpy820
+	jneq 	_r8_1 	uint8:0x00 	IfThenElse_EQ2_EqualTo_False_stringassigncpy819
 	; LineNumber: 172
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_v1 	Vars_v2 	IfThenElse_EQ2_EqualTo_False_eblock823
-.label IfThenElse_EQ2_EqualTo_False_ctb822 ;Main true block ;keep 
+	jneq 	Vars_v1 	Vars_v2 	IfThenElse_EQ2_EqualTo_False_eblock822
+.label IfThenElse_EQ2_EqualTo_False_ctb821 ;Main true block ;keep 
 	; LineNumber: 171
 	; LineNumber: 172
 	call Common_FAIL
 	; LineNumber: 172
-	jump IfThenElse_EQ2_EqualTo_False_edblock824
-.label IfThenElse_EQ2_EqualTo_False_eblock823
+	jump IfThenElse_EQ2_EqualTo_False_edblock823
+.label IfThenElse_EQ2_EqualTo_False_eblock822
 	; LineNumber: 171
 	; LineNumber: 172
 	call Common_PASS
 	; LineNumber: 172
-.label IfThenElse_EQ2_EqualTo_False_edblock824
+.label IfThenElse_EQ2_EqualTo_False_edblock823
 	; LineNumber: 173
 	return
 .label end_procedure_IfThenElse_EQ2_EqualTo_False
@@ -3597,26 +3512,26 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label IfThenElse_NEQ1_NotEqualTo_True_stringassigncpy831
-	load 	IfThenElse_NEQ1_NotEqualTo_True_stringassignstr830 	_r8_2 	_r8_1
+.label IfThenElse_NEQ1_NotEqualTo_True_stringassigncpy830
+	load 	IfThenElse_NEQ1_NotEqualTo_True_stringassignstr829 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	IfThenElse_NEQ1_NotEqualTo_True_stringassigncpy831
+	jneq 	_r8_1 	uint8:0x00 	IfThenElse_NEQ1_NotEqualTo_True_stringassigncpy830
 	; LineNumber: 180
 	; Binary clause Simplified: NOTEQUALS
-	jeq 	Vars_v1 	Vars_v2 	IfThenElse_NEQ1_NotEqualTo_True_eblock834
-.label IfThenElse_NEQ1_NotEqualTo_True_ctb833 ;Main true block ;keep 
+	jeq 	Vars_v1 	Vars_v2 	IfThenElse_NEQ1_NotEqualTo_True_eblock833
+.label IfThenElse_NEQ1_NotEqualTo_True_ctb832 ;Main true block ;keep 
 	; LineNumber: 179
 	; LineNumber: 180
 	call Common_PASS
 	; LineNumber: 180
-	jump IfThenElse_NEQ1_NotEqualTo_True_edblock835
-.label IfThenElse_NEQ1_NotEqualTo_True_eblock834
+	jump IfThenElse_NEQ1_NotEqualTo_True_edblock834
+.label IfThenElse_NEQ1_NotEqualTo_True_eblock833
 	; LineNumber: 179
 	; LineNumber: 180
 	call Common_FAIL
 	; LineNumber: 180
-.label IfThenElse_NEQ1_NotEqualTo_True_edblock835
+.label IfThenElse_NEQ1_NotEqualTo_True_edblock834
 	; LineNumber: 181
 	return
 .label end_procedure_IfThenElse_NEQ1_NotEqualTo_True
@@ -3636,26 +3551,26 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label IfThenElse_NEQ2_NotEqualTo_False_stringassigncpy842
-	load 	IfThenElse_NEQ2_NotEqualTo_False_stringassignstr841 	_r8_2 	_r8_1
+.label IfThenElse_NEQ2_NotEqualTo_False_stringassigncpy841
+	load 	IfThenElse_NEQ2_NotEqualTo_False_stringassignstr840 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	IfThenElse_NEQ2_NotEqualTo_False_stringassigncpy842
+	jneq 	_r8_1 	uint8:0x00 	IfThenElse_NEQ2_NotEqualTo_False_stringassigncpy841
 	; LineNumber: 187
 	; Binary clause Simplified: NOTEQUALS
-	jeq 	Vars_v1 	Vars_v2 	IfThenElse_NEQ2_NotEqualTo_False_eblock845
-.label IfThenElse_NEQ2_NotEqualTo_False_ctb844 ;Main true block ;keep 
+	jeq 	Vars_v1 	Vars_v2 	IfThenElse_NEQ2_NotEqualTo_False_eblock844
+.label IfThenElse_NEQ2_NotEqualTo_False_ctb843 ;Main true block ;keep 
 	; LineNumber: 186
 	; LineNumber: 187
 	call Common_FAIL
 	; LineNumber: 187
-	jump IfThenElse_NEQ2_NotEqualTo_False_edblock846
-.label IfThenElse_NEQ2_NotEqualTo_False_eblock845
+	jump IfThenElse_NEQ2_NotEqualTo_False_edblock845
+.label IfThenElse_NEQ2_NotEqualTo_False_eblock844
 	; LineNumber: 186
 	; LineNumber: 187
 	call Common_PASS
 	; LineNumber: 187
-.label IfThenElse_NEQ2_NotEqualTo_False_edblock846
+.label IfThenElse_NEQ2_NotEqualTo_False_edblock845
 	; LineNumber: 188
 	return
 .label end_procedure_IfThenElse_NEQ2_NotEqualTo_False
@@ -3677,30 +3592,30 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label IfThenElse_Advanced1_stringassigncpy853
-	load 	IfThenElse_Advanced1_stringassignstr852 	_r8_2 	_r8_1
+.label IfThenElse_Advanced1_stringassigncpy852
+	load 	IfThenElse_Advanced1_stringassignstr851 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	IfThenElse_Advanced1_stringassigncpy853
+	jneq 	_r8_1 	uint8:0x00 	IfThenElse_Advanced1_stringassigncpy852
 	; LineNumber: 196
 	; Binary clause Simplified: GREATEREQUAL
-	jlt 	Vars_v1 	Vars_v2 	IfThenElse_Advanced1_eblock856
-.label IfThenElse_Advanced1_localsuccess860 ;keep
+	jlt 	Vars_v1 	Vars_v2 	IfThenElse_Advanced1_eblock855
+.label IfThenElse_Advanced1_localsuccess859 ;keep
 	; ; logical AND, second requirement
 	; Binary clause Simplified: NOTEQUALS
-	jeq 	Vars_v3 	uint8:0x05 	IfThenElse_Advanced1_eblock856
-.label IfThenElse_Advanced1_ctb855 ;Main true block ;keep 
+	jeq 	Vars_v3 	uint8:0x05 	IfThenElse_Advanced1_eblock855
+.label IfThenElse_Advanced1_ctb854 ;Main true block ;keep 
 	; LineNumber: 195
 	; LineNumber: 196
 	call Common_FAIL
 	; LineNumber: 196
-	jump IfThenElse_Advanced1_edblock857
-.label IfThenElse_Advanced1_eblock856
+	jump IfThenElse_Advanced1_edblock856
+.label IfThenElse_Advanced1_eblock855
 	; LineNumber: 195
 	; LineNumber: 196
 	call Common_PASS
 	; LineNumber: 196
-.label IfThenElse_Advanced1_edblock857
+.label IfThenElse_Advanced1_edblock856
 	; LineNumber: 197
 	return
 .label end_procedure_IfThenElse_Advanced1
@@ -3722,35 +3637,35 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label IfThenElse_Advanced2_stringassigncpy865
-	load 	IfThenElse_Advanced2_stringassignstr864 	_r8_2 	_r8_1
+.label IfThenElse_Advanced2_stringassigncpy864
+	load 	IfThenElse_Advanced2_stringassignstr863 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	IfThenElse_Advanced2_stringassigncpy865
+	jneq 	_r8_1 	uint8:0x00 	IfThenElse_Advanced2_stringassigncpy864
 	; LineNumber: 204
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_v1 	Vars_v2 	IfThenElse_Advanced2_eblock868
-.label IfThenElse_Advanced2_localsuccess872 ;keep
+	jneq 	Vars_v1 	Vars_v2 	IfThenElse_Advanced2_eblock867
+.label IfThenElse_Advanced2_localsuccess871 ;keep
 	; ; logical AND, second requirement
 	; Binary clause Simplified: NOTEQUALS
-	jeq 	Vars_v3 	uint8:0x05 	IfThenElse_Advanced2_localfailed873
-	jump IfThenElse_Advanced2_ctb867
-.label IfThenElse_Advanced2_localfailed873 ;keep
+	jeq 	Vars_v3 	uint8:0x05 	IfThenElse_Advanced2_localfailed872
+	jump IfThenElse_Advanced2_ctb866
+.label IfThenElse_Advanced2_localfailed872 ;keep
 	; ; logical OR, second chance
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_v4 	uint8:0x04 	IfThenElse_Advanced2_eblock868
-.label IfThenElse_Advanced2_ctb867 ;Main true block ;keep 
+	jneq 	Vars_v4 	uint8:0x04 	IfThenElse_Advanced2_eblock867
+.label IfThenElse_Advanced2_ctb866 ;Main true block ;keep 
 	; LineNumber: 203
 	; LineNumber: 204
 	call Common_PASS
 	; LineNumber: 204
-	jump IfThenElse_Advanced2_edblock869
-.label IfThenElse_Advanced2_eblock868
+	jump IfThenElse_Advanced2_edblock868
+.label IfThenElse_Advanced2_eblock867
 	; LineNumber: 203
 	; LineNumber: 204
 	call Common_FAIL
 	; LineNumber: 204
-.label IfThenElse_Advanced2_edblock869
+.label IfThenElse_Advanced2_edblock868
 	; LineNumber: 205
 	return
 .label end_procedure_IfThenElse_Advanced2
@@ -3770,26 +3685,26 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label IfThenElse_IGT1_GreaterThan_True_stringassigncpy878
-	load 	IfThenElse_IGT1_GreaterThan_True_stringassignstr877 	_r8_2 	_r8_1
+.label IfThenElse_IGT1_GreaterThan_True_stringassigncpy877
+	load 	IfThenElse_IGT1_GreaterThan_True_stringassignstr876 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	IfThenElse_IGT1_GreaterThan_True_stringassigncpy878
+	jneq 	_r8_1 	uint8:0x00 	IfThenElse_IGT1_GreaterThan_True_stringassigncpy877
 	; LineNumber: 215
 	; Binary clause Simplified: GREATER
-	jlte 	Vars_i1 	Vars_i2 	IfThenElse_IGT1_GreaterThan_True_eblock881
-.label IfThenElse_IGT1_GreaterThan_True_ctb880 ;Main true block ;keep 
+	jlte 	Vars_i1 	Vars_i2 	IfThenElse_IGT1_GreaterThan_True_eblock880
+.label IfThenElse_IGT1_GreaterThan_True_ctb879 ;Main true block ;keep 
 	; LineNumber: 214
 	; LineNumber: 215
 	call Common_PASS
 	; LineNumber: 215
-	jump IfThenElse_IGT1_GreaterThan_True_edblock882
-.label IfThenElse_IGT1_GreaterThan_True_eblock881
+	jump IfThenElse_IGT1_GreaterThan_True_edblock881
+.label IfThenElse_IGT1_GreaterThan_True_eblock880
 	; LineNumber: 214
 	; LineNumber: 215
 	call Common_FAIL
 	; LineNumber: 215
-.label IfThenElse_IGT1_GreaterThan_True_edblock882
+.label IfThenElse_IGT1_GreaterThan_True_edblock881
 	; LineNumber: 216
 	return
 .label end_procedure_IfThenElse_IGT1_GreaterThan_True
@@ -3809,26 +3724,26 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label IfThenElse_IGT2_GreaterThan_False_stringassigncpy889
-	load 	IfThenElse_IGT2_GreaterThan_False_stringassignstr888 	_r8_2 	_r8_1
+.label IfThenElse_IGT2_GreaterThan_False_stringassigncpy888
+	load 	IfThenElse_IGT2_GreaterThan_False_stringassignstr887 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	IfThenElse_IGT2_GreaterThan_False_stringassigncpy889
+	jneq 	_r8_1 	uint8:0x00 	IfThenElse_IGT2_GreaterThan_False_stringassigncpy888
 	; LineNumber: 222
 	; Binary clause Simplified: GREATER
-	jlte 	Vars_i1 	Vars_i2 	IfThenElse_IGT2_GreaterThan_False_eblock892
-.label IfThenElse_IGT2_GreaterThan_False_ctb891 ;Main true block ;keep 
+	jlte 	Vars_i1 	Vars_i2 	IfThenElse_IGT2_GreaterThan_False_eblock891
+.label IfThenElse_IGT2_GreaterThan_False_ctb890 ;Main true block ;keep 
 	; LineNumber: 221
 	; LineNumber: 222
 	call Common_FAIL
 	; LineNumber: 222
-	jump IfThenElse_IGT2_GreaterThan_False_edblock893
-.label IfThenElse_IGT2_GreaterThan_False_eblock892
+	jump IfThenElse_IGT2_GreaterThan_False_edblock892
+.label IfThenElse_IGT2_GreaterThan_False_eblock891
 	; LineNumber: 221
 	; LineNumber: 222
 	call Common_PASS
 	; LineNumber: 222
-.label IfThenElse_IGT2_GreaterThan_False_edblock893
+.label IfThenElse_IGT2_GreaterThan_False_edblock892
 	; LineNumber: 223
 	return
 .label end_procedure_IfThenElse_IGT2_GreaterThan_False
@@ -3848,26 +3763,26 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label IfThenElse_IGT3_GreaterThan_False_stringassigncpy900
-	load 	IfThenElse_IGT3_GreaterThan_False_stringassignstr899 	_r8_2 	_r8_1
+.label IfThenElse_IGT3_GreaterThan_False_stringassigncpy899
+	load 	IfThenElse_IGT3_GreaterThan_False_stringassignstr898 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	IfThenElse_IGT3_GreaterThan_False_stringassigncpy900
+	jneq 	_r8_1 	uint8:0x00 	IfThenElse_IGT3_GreaterThan_False_stringassigncpy899
 	; LineNumber: 229
 	; Binary clause Simplified: GREATER
-	jlte 	Vars_i1 	Vars_i2 	IfThenElse_IGT3_GreaterThan_False_eblock903
-.label IfThenElse_IGT3_GreaterThan_False_ctb902 ;Main true block ;keep 
+	jlte 	Vars_i1 	Vars_i2 	IfThenElse_IGT3_GreaterThan_False_eblock902
+.label IfThenElse_IGT3_GreaterThan_False_ctb901 ;Main true block ;keep 
 	; LineNumber: 228
 	; LineNumber: 229
 	call Common_FAIL
 	; LineNumber: 229
-	jump IfThenElse_IGT3_GreaterThan_False_edblock904
-.label IfThenElse_IGT3_GreaterThan_False_eblock903
+	jump IfThenElse_IGT3_GreaterThan_False_edblock903
+.label IfThenElse_IGT3_GreaterThan_False_eblock902
 	; LineNumber: 228
 	; LineNumber: 229
 	call Common_PASS
 	; LineNumber: 229
-.label IfThenElse_IGT3_GreaterThan_False_edblock904
+.label IfThenElse_IGT3_GreaterThan_False_edblock903
 	; LineNumber: 230
 	return
 .label end_procedure_IfThenElse_IGT3_GreaterThan_False
@@ -3887,26 +3802,26 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label IfThenElse_IGT4_GreaterThan_False_stringassigncpy911
-	load 	IfThenElse_IGT4_GreaterThan_False_stringassignstr910 	_r8_2 	_r8_1
+.label IfThenElse_IGT4_GreaterThan_False_stringassigncpy910
+	load 	IfThenElse_IGT4_GreaterThan_False_stringassignstr909 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	IfThenElse_IGT4_GreaterThan_False_stringassigncpy911
+	jneq 	_r8_1 	uint8:0x00 	IfThenElse_IGT4_GreaterThan_False_stringassigncpy910
 	; LineNumber: 236
 	; Binary clause Simplified: GREATER
-	jlte 	Vars_i1 	Vars_i2 	IfThenElse_IGT4_GreaterThan_False_eblock914
-.label IfThenElse_IGT4_GreaterThan_False_ctb913 ;Main true block ;keep 
+	jlte 	Vars_i1 	Vars_i2 	IfThenElse_IGT4_GreaterThan_False_eblock913
+.label IfThenElse_IGT4_GreaterThan_False_ctb912 ;Main true block ;keep 
 	; LineNumber: 235
 	; LineNumber: 236
 	call Common_FAIL
 	; LineNumber: 236
-	jump IfThenElse_IGT4_GreaterThan_False_edblock915
-.label IfThenElse_IGT4_GreaterThan_False_eblock914
+	jump IfThenElse_IGT4_GreaterThan_False_edblock914
+.label IfThenElse_IGT4_GreaterThan_False_eblock913
 	; LineNumber: 235
 	; LineNumber: 236
 	call Common_PASS
 	; LineNumber: 236
-.label IfThenElse_IGT4_GreaterThan_False_edblock915
+.label IfThenElse_IGT4_GreaterThan_False_edblock914
 	; LineNumber: 237
 	return
 .label end_procedure_IfThenElse_IGT4_GreaterThan_False
@@ -3926,26 +3841,26 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label IfThenElse_IGT5_GreaterThan_True_stringassigncpy922
-	load 	IfThenElse_IGT5_GreaterThan_True_stringassignstr921 	_r8_2 	_r8_1
+.label IfThenElse_IGT5_GreaterThan_True_stringassigncpy921
+	load 	IfThenElse_IGT5_GreaterThan_True_stringassignstr920 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	IfThenElse_IGT5_GreaterThan_True_stringassigncpy922
+	jneq 	_r8_1 	uint8:0x00 	IfThenElse_IGT5_GreaterThan_True_stringassigncpy921
 	; LineNumber: 243
 	; Binary clause Simplified: GREATER
-	jlte 	Vars_i1 	Vars_i2 	IfThenElse_IGT5_GreaterThan_True_eblock925
-.label IfThenElse_IGT5_GreaterThan_True_ctb924 ;Main true block ;keep 
+	jlte 	Vars_i1 	Vars_i2 	IfThenElse_IGT5_GreaterThan_True_eblock924
+.label IfThenElse_IGT5_GreaterThan_True_ctb923 ;Main true block ;keep 
 	; LineNumber: 242
 	; LineNumber: 243
 	call Common_PASS
 	; LineNumber: 243
-	jump IfThenElse_IGT5_GreaterThan_True_edblock926
-.label IfThenElse_IGT5_GreaterThan_True_eblock925
+	jump IfThenElse_IGT5_GreaterThan_True_edblock925
+.label IfThenElse_IGT5_GreaterThan_True_eblock924
 	; LineNumber: 242
 	; LineNumber: 243
 	call Common_FAIL
 	; LineNumber: 243
-.label IfThenElse_IGT5_GreaterThan_True_edblock926
+.label IfThenElse_IGT5_GreaterThan_True_edblock925
 	; LineNumber: 244
 	return
 .label end_procedure_IfThenElse_IGT5_GreaterThan_True
@@ -3965,26 +3880,26 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label IfThenElse_IGTE1_GreaterEqual_True_stringassigncpy933
-	load 	IfThenElse_IGTE1_GreaterEqual_True_stringassignstr932 	_r8_2 	_r8_1
+.label IfThenElse_IGTE1_GreaterEqual_True_stringassigncpy932
+	load 	IfThenElse_IGTE1_GreaterEqual_True_stringassignstr931 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	IfThenElse_IGTE1_GreaterEqual_True_stringassigncpy933
+	jneq 	_r8_1 	uint8:0x00 	IfThenElse_IGTE1_GreaterEqual_True_stringassigncpy932
 	; LineNumber: 251
 	; Binary clause Simplified: GREATEREQUAL
-	jlt 	Vars_i1 	Vars_i2 	IfThenElse_IGTE1_GreaterEqual_True_eblock936
-.label IfThenElse_IGTE1_GreaterEqual_True_ctb935 ;Main true block ;keep 
+	jlt 	Vars_i1 	Vars_i2 	IfThenElse_IGTE1_GreaterEqual_True_eblock935
+.label IfThenElse_IGTE1_GreaterEqual_True_ctb934 ;Main true block ;keep 
 	; LineNumber: 250
 	; LineNumber: 251
 	call Common_PASS
 	; LineNumber: 251
-	jump IfThenElse_IGTE1_GreaterEqual_True_edblock937
-.label IfThenElse_IGTE1_GreaterEqual_True_eblock936
+	jump IfThenElse_IGTE1_GreaterEqual_True_edblock936
+.label IfThenElse_IGTE1_GreaterEqual_True_eblock935
 	; LineNumber: 250
 	; LineNumber: 251
 	call Common_FAIL
 	; LineNumber: 251
-.label IfThenElse_IGTE1_GreaterEqual_True_edblock937
+.label IfThenElse_IGTE1_GreaterEqual_True_edblock936
 	; LineNumber: 252
 	return
 .label end_procedure_IfThenElse_IGTE1_GreaterEqual_True
@@ -4004,26 +3919,26 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label IfThenElse_IGTE2_GreaterThan_False_stringassigncpy944
-	load 	IfThenElse_IGTE2_GreaterThan_False_stringassignstr943 	_r8_2 	_r8_1
+.label IfThenElse_IGTE2_GreaterThan_False_stringassigncpy943
+	load 	IfThenElse_IGTE2_GreaterThan_False_stringassignstr942 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	IfThenElse_IGTE2_GreaterThan_False_stringassigncpy944
+	jneq 	_r8_1 	uint8:0x00 	IfThenElse_IGTE2_GreaterThan_False_stringassigncpy943
 	; LineNumber: 258
 	; Binary clause Simplified: GREATEREQUAL
-	jlt 	Vars_i1 	Vars_i2 	IfThenElse_IGTE2_GreaterThan_False_eblock947
-.label IfThenElse_IGTE2_GreaterThan_False_ctb946 ;Main true block ;keep 
+	jlt 	Vars_i1 	Vars_i2 	IfThenElse_IGTE2_GreaterThan_False_eblock946
+.label IfThenElse_IGTE2_GreaterThan_False_ctb945 ;Main true block ;keep 
 	; LineNumber: 257
 	; LineNumber: 258
 	call Common_FAIL
 	; LineNumber: 258
-	jump IfThenElse_IGTE2_GreaterThan_False_edblock948
-.label IfThenElse_IGTE2_GreaterThan_False_eblock947
+	jump IfThenElse_IGTE2_GreaterThan_False_edblock947
+.label IfThenElse_IGTE2_GreaterThan_False_eblock946
 	; LineNumber: 257
 	; LineNumber: 258
 	call Common_PASS
 	; LineNumber: 258
-.label IfThenElse_IGTE2_GreaterThan_False_edblock948
+.label IfThenElse_IGTE2_GreaterThan_False_edblock947
 	; LineNumber: 259
 	return
 .label end_procedure_IfThenElse_IGTE2_GreaterThan_False
@@ -4043,26 +3958,26 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label IfThenElse_IGTE3_GreaterThan_True_stringassigncpy955
-	load 	IfThenElse_IGTE3_GreaterThan_True_stringassignstr954 	_r8_2 	_r8_1
+.label IfThenElse_IGTE3_GreaterThan_True_stringassigncpy954
+	load 	IfThenElse_IGTE3_GreaterThan_True_stringassignstr953 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	IfThenElse_IGTE3_GreaterThan_True_stringassigncpy955
+	jneq 	_r8_1 	uint8:0x00 	IfThenElse_IGTE3_GreaterThan_True_stringassigncpy954
 	; LineNumber: 265
 	; Binary clause Simplified: GREATEREQUAL
-	jlt 	Vars_i1 	Vars_i2 	IfThenElse_IGTE3_GreaterThan_True_eblock958
-.label IfThenElse_IGTE3_GreaterThan_True_ctb957 ;Main true block ;keep 
+	jlt 	Vars_i1 	Vars_i2 	IfThenElse_IGTE3_GreaterThan_True_eblock957
+.label IfThenElse_IGTE3_GreaterThan_True_ctb956 ;Main true block ;keep 
 	; LineNumber: 264
 	; LineNumber: 265
 	call Common_PASS
 	; LineNumber: 265
-	jump IfThenElse_IGTE3_GreaterThan_True_edblock959
-.label IfThenElse_IGTE3_GreaterThan_True_eblock958
+	jump IfThenElse_IGTE3_GreaterThan_True_edblock958
+.label IfThenElse_IGTE3_GreaterThan_True_eblock957
 	; LineNumber: 264
 	; LineNumber: 265
 	call Common_FAIL
 	; LineNumber: 265
-.label IfThenElse_IGTE3_GreaterThan_True_edblock959
+.label IfThenElse_IGTE3_GreaterThan_True_edblock958
 	; LineNumber: 266
 	return
 .label end_procedure_IfThenElse_IGTE3_GreaterThan_True
@@ -4082,26 +3997,26 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label IfThenElse_IGTE4_GreaterThan_False_stringassigncpy966
-	load 	IfThenElse_IGTE4_GreaterThan_False_stringassignstr965 	_r8_2 	_r8_1
+.label IfThenElse_IGTE4_GreaterThan_False_stringassigncpy965
+	load 	IfThenElse_IGTE4_GreaterThan_False_stringassignstr964 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	IfThenElse_IGTE4_GreaterThan_False_stringassigncpy966
+	jneq 	_r8_1 	uint8:0x00 	IfThenElse_IGTE4_GreaterThan_False_stringassigncpy965
 	; LineNumber: 272
 	; Binary clause Simplified: GREATEREQUAL
-	jlt 	Vars_i1 	Vars_i2 	IfThenElse_IGTE4_GreaterThan_False_eblock969
-.label IfThenElse_IGTE4_GreaterThan_False_ctb968 ;Main true block ;keep 
+	jlt 	Vars_i1 	Vars_i2 	IfThenElse_IGTE4_GreaterThan_False_eblock968
+.label IfThenElse_IGTE4_GreaterThan_False_ctb967 ;Main true block ;keep 
 	; LineNumber: 271
 	; LineNumber: 272
 	call Common_FAIL
 	; LineNumber: 272
-	jump IfThenElse_IGTE4_GreaterThan_False_edblock970
-.label IfThenElse_IGTE4_GreaterThan_False_eblock969
+	jump IfThenElse_IGTE4_GreaterThan_False_edblock969
+.label IfThenElse_IGTE4_GreaterThan_False_eblock968
 	; LineNumber: 271
 	; LineNumber: 272
 	call Common_PASS
 	; LineNumber: 272
-.label IfThenElse_IGTE4_GreaterThan_False_edblock970
+.label IfThenElse_IGTE4_GreaterThan_False_edblock969
 	; LineNumber: 273
 	return
 .label end_procedure_IfThenElse_IGTE4_GreaterThan_False
@@ -4121,26 +4036,26 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label IfThenElse_IGTE5_GreaterThan_True_stringassigncpy977
-	load 	IfThenElse_IGTE5_GreaterThan_True_stringassignstr976 	_r8_2 	_r8_1
+.label IfThenElse_IGTE5_GreaterThan_True_stringassigncpy976
+	load 	IfThenElse_IGTE5_GreaterThan_True_stringassignstr975 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	IfThenElse_IGTE5_GreaterThan_True_stringassigncpy977
+	jneq 	_r8_1 	uint8:0x00 	IfThenElse_IGTE5_GreaterThan_True_stringassigncpy976
 	; LineNumber: 279
 	; Binary clause Simplified: GREATEREQUAL
-	jlt 	Vars_i1 	Vars_i2 	IfThenElse_IGTE5_GreaterThan_True_eblock980
-.label IfThenElse_IGTE5_GreaterThan_True_ctb979 ;Main true block ;keep 
+	jlt 	Vars_i1 	Vars_i2 	IfThenElse_IGTE5_GreaterThan_True_eblock979
+.label IfThenElse_IGTE5_GreaterThan_True_ctb978 ;Main true block ;keep 
 	; LineNumber: 278
 	; LineNumber: 279
 	call Common_PASS
 	; LineNumber: 279
-	jump IfThenElse_IGTE5_GreaterThan_True_edblock981
-.label IfThenElse_IGTE5_GreaterThan_True_eblock980
+	jump IfThenElse_IGTE5_GreaterThan_True_edblock980
+.label IfThenElse_IGTE5_GreaterThan_True_eblock979
 	; LineNumber: 278
 	; LineNumber: 279
 	call Common_FAIL
 	; LineNumber: 279
-.label IfThenElse_IGTE5_GreaterThan_True_edblock981
+.label IfThenElse_IGTE5_GreaterThan_True_edblock980
 	; LineNumber: 280
 	return
 .label end_procedure_IfThenElse_IGTE5_GreaterThan_True
@@ -4164,26 +4079,26 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label IfThenElse_ILT1_GreaterThan_True_stringassigncpy988
-	load 	IfThenElse_ILT1_GreaterThan_True_stringassignstr987 	_r8_2 	_r8_1
+.label IfThenElse_ILT1_GreaterThan_True_stringassigncpy987
+	load 	IfThenElse_ILT1_GreaterThan_True_stringassignstr986 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	IfThenElse_ILT1_GreaterThan_True_stringassigncpy988
+	jneq 	_r8_1 	uint8:0x00 	IfThenElse_ILT1_GreaterThan_True_stringassigncpy987
 	; LineNumber: 294
 	; Binary clause Simplified: LESS
-	jgte 	Vars_i2 	Vars_i1 	IfThenElse_ILT1_GreaterThan_True_eblock991
-.label IfThenElse_ILT1_GreaterThan_True_ctb990 ;Main true block ;keep 
+	jgte 	Vars_i2 	Vars_i1 	IfThenElse_ILT1_GreaterThan_True_eblock990
+.label IfThenElse_ILT1_GreaterThan_True_ctb989 ;Main true block ;keep 
 	; LineNumber: 293
 	; LineNumber: 294
 	call Common_PASS
 	; LineNumber: 294
-	jump IfThenElse_ILT1_GreaterThan_True_edblock992
-.label IfThenElse_ILT1_GreaterThan_True_eblock991
+	jump IfThenElse_ILT1_GreaterThan_True_edblock991
+.label IfThenElse_ILT1_GreaterThan_True_eblock990
 	; LineNumber: 293
 	; LineNumber: 294
 	call Common_FAIL
 	; LineNumber: 294
-.label IfThenElse_ILT1_GreaterThan_True_edblock992
+.label IfThenElse_ILT1_GreaterThan_True_edblock991
 	; LineNumber: 295
 	return
 .label end_procedure_IfThenElse_ILT1_GreaterThan_True
@@ -4203,26 +4118,26 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label IfThenElse_ILT2_GreaterThan_False_stringassigncpy999
-	load 	IfThenElse_ILT2_GreaterThan_False_stringassignstr998 	_r8_2 	_r8_1
+.label IfThenElse_ILT2_GreaterThan_False_stringassigncpy998
+	load 	IfThenElse_ILT2_GreaterThan_False_stringassignstr997 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	IfThenElse_ILT2_GreaterThan_False_stringassigncpy999
+	jneq 	_r8_1 	uint8:0x00 	IfThenElse_ILT2_GreaterThan_False_stringassigncpy998
 	; LineNumber: 301
 	; Binary clause Simplified: LESS
-	jgte 	Vars_i2 	Vars_i1 	IfThenElse_ILT2_GreaterThan_False_eblock1002
-.label IfThenElse_ILT2_GreaterThan_False_ctb1001 ;Main true block ;keep 
+	jgte 	Vars_i2 	Vars_i1 	IfThenElse_ILT2_GreaterThan_False_eblock1001
+.label IfThenElse_ILT2_GreaterThan_False_ctb1000 ;Main true block ;keep 
 	; LineNumber: 300
 	; LineNumber: 301
 	call Common_FAIL
 	; LineNumber: 301
-	jump IfThenElse_ILT2_GreaterThan_False_edblock1003
-.label IfThenElse_ILT2_GreaterThan_False_eblock1002
+	jump IfThenElse_ILT2_GreaterThan_False_edblock1002
+.label IfThenElse_ILT2_GreaterThan_False_eblock1001
 	; LineNumber: 300
 	; LineNumber: 301
 	call Common_PASS
 	; LineNumber: 301
-.label IfThenElse_ILT2_GreaterThan_False_edblock1003
+.label IfThenElse_ILT2_GreaterThan_False_edblock1002
 	; LineNumber: 302
 	return
 .label end_procedure_IfThenElse_ILT2_GreaterThan_False
@@ -4242,26 +4157,26 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label IfThenElse_ILT3_GreaterThan_False_stringassigncpy1010
-	load 	IfThenElse_ILT3_GreaterThan_False_stringassignstr1009 	_r8_2 	_r8_1
+.label IfThenElse_ILT3_GreaterThan_False_stringassigncpy1009
+	load 	IfThenElse_ILT3_GreaterThan_False_stringassignstr1008 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	IfThenElse_ILT3_GreaterThan_False_stringassigncpy1010
+	jneq 	_r8_1 	uint8:0x00 	IfThenElse_ILT3_GreaterThan_False_stringassigncpy1009
 	; LineNumber: 308
 	; Binary clause Simplified: LESS
-	jgte 	Vars_i2 	Vars_i1 	IfThenElse_ILT3_GreaterThan_False_eblock1013
-.label IfThenElse_ILT3_GreaterThan_False_ctb1012 ;Main true block ;keep 
+	jgte 	Vars_i2 	Vars_i1 	IfThenElse_ILT3_GreaterThan_False_eblock1012
+.label IfThenElse_ILT3_GreaterThan_False_ctb1011 ;Main true block ;keep 
 	; LineNumber: 307
 	; LineNumber: 308
 	call Common_FAIL
 	; LineNumber: 308
-	jump IfThenElse_ILT3_GreaterThan_False_edblock1014
-.label IfThenElse_ILT3_GreaterThan_False_eblock1013
+	jump IfThenElse_ILT3_GreaterThan_False_edblock1013
+.label IfThenElse_ILT3_GreaterThan_False_eblock1012
 	; LineNumber: 307
 	; LineNumber: 308
 	call Common_PASS
 	; LineNumber: 308
-.label IfThenElse_ILT3_GreaterThan_False_edblock1014
+.label IfThenElse_ILT3_GreaterThan_False_edblock1013
 	; LineNumber: 309
 	return
 .label end_procedure_IfThenElse_ILT3_GreaterThan_False
@@ -4281,26 +4196,26 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label IfThenElse_ILT4_GreaterThan_False_stringassigncpy1021
-	load 	IfThenElse_ILT4_GreaterThan_False_stringassignstr1020 	_r8_2 	_r8_1
+.label IfThenElse_ILT4_GreaterThan_False_stringassigncpy1020
+	load 	IfThenElse_ILT4_GreaterThan_False_stringassignstr1019 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	IfThenElse_ILT4_GreaterThan_False_stringassigncpy1021
+	jneq 	_r8_1 	uint8:0x00 	IfThenElse_ILT4_GreaterThan_False_stringassigncpy1020
 	; LineNumber: 315
 	; Binary clause Simplified: LESS
-	jgte 	Vars_i2 	Vars_i1 	IfThenElse_ILT4_GreaterThan_False_eblock1024
-.label IfThenElse_ILT4_GreaterThan_False_ctb1023 ;Main true block ;keep 
+	jgte 	Vars_i2 	Vars_i1 	IfThenElse_ILT4_GreaterThan_False_eblock1023
+.label IfThenElse_ILT4_GreaterThan_False_ctb1022 ;Main true block ;keep 
 	; LineNumber: 314
 	; LineNumber: 315
 	call Common_FAIL
 	; LineNumber: 315
-	jump IfThenElse_ILT4_GreaterThan_False_edblock1025
-.label IfThenElse_ILT4_GreaterThan_False_eblock1024
+	jump IfThenElse_ILT4_GreaterThan_False_edblock1024
+.label IfThenElse_ILT4_GreaterThan_False_eblock1023
 	; LineNumber: 314
 	; LineNumber: 315
 	call Common_PASS
 	; LineNumber: 315
-.label IfThenElse_ILT4_GreaterThan_False_edblock1025
+.label IfThenElse_ILT4_GreaterThan_False_edblock1024
 	; LineNumber: 316
 	return
 .label end_procedure_IfThenElse_ILT4_GreaterThan_False
@@ -4320,26 +4235,26 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label IfThenElse_ILT5_GreaterThan_True_stringassigncpy1032
-	load 	IfThenElse_ILT5_GreaterThan_True_stringassignstr1031 	_r8_2 	_r8_1
+.label IfThenElse_ILT5_GreaterThan_True_stringassigncpy1031
+	load 	IfThenElse_ILT5_GreaterThan_True_stringassignstr1030 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	IfThenElse_ILT5_GreaterThan_True_stringassigncpy1032
+	jneq 	_r8_1 	uint8:0x00 	IfThenElse_ILT5_GreaterThan_True_stringassigncpy1031
 	; LineNumber: 322
 	; Binary clause Simplified: LESS
-	jgte 	Vars_i2 	Vars_i1 	IfThenElse_ILT5_GreaterThan_True_eblock1035
-.label IfThenElse_ILT5_GreaterThan_True_ctb1034 ;Main true block ;keep 
+	jgte 	Vars_i2 	Vars_i1 	IfThenElse_ILT5_GreaterThan_True_eblock1034
+.label IfThenElse_ILT5_GreaterThan_True_ctb1033 ;Main true block ;keep 
 	; LineNumber: 321
 	; LineNumber: 322
 	call Common_PASS
 	; LineNumber: 322
-	jump IfThenElse_ILT5_GreaterThan_True_edblock1036
-.label IfThenElse_ILT5_GreaterThan_True_eblock1035
+	jump IfThenElse_ILT5_GreaterThan_True_edblock1035
+.label IfThenElse_ILT5_GreaterThan_True_eblock1034
 	; LineNumber: 321
 	; LineNumber: 322
 	call Common_FAIL
 	; LineNumber: 322
-.label IfThenElse_ILT5_GreaterThan_True_edblock1036
+.label IfThenElse_ILT5_GreaterThan_True_edblock1035
 	; LineNumber: 323
 	return
 .label end_procedure_IfThenElse_ILT5_GreaterThan_True
@@ -4359,26 +4274,26 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label IfThenElse_ILTE1_GreaterEqual_True_stringassigncpy1043
-	load 	IfThenElse_ILTE1_GreaterEqual_True_stringassignstr1042 	_r8_2 	_r8_1
+.label IfThenElse_ILTE1_GreaterEqual_True_stringassigncpy1042
+	load 	IfThenElse_ILTE1_GreaterEqual_True_stringassignstr1041 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	IfThenElse_ILTE1_GreaterEqual_True_stringassigncpy1043
+	jneq 	_r8_1 	uint8:0x00 	IfThenElse_ILTE1_GreaterEqual_True_stringassigncpy1042
 	; LineNumber: 330
 	; Binary clause Simplified: LESSEQUAL
-	jgt 	Vars_i2 	Vars_i1 	IfThenElse_ILTE1_GreaterEqual_True_eblock1046
-.label IfThenElse_ILTE1_GreaterEqual_True_ctb1045 ;Main true block ;keep 
+	jgt 	Vars_i2 	Vars_i1 	IfThenElse_ILTE1_GreaterEqual_True_eblock1045
+.label IfThenElse_ILTE1_GreaterEqual_True_ctb1044 ;Main true block ;keep 
 	; LineNumber: 329
 	; LineNumber: 330
 	call Common_PASS
 	; LineNumber: 330
-	jump IfThenElse_ILTE1_GreaterEqual_True_edblock1047
-.label IfThenElse_ILTE1_GreaterEqual_True_eblock1046
+	jump IfThenElse_ILTE1_GreaterEqual_True_edblock1046
+.label IfThenElse_ILTE1_GreaterEqual_True_eblock1045
 	; LineNumber: 329
 	; LineNumber: 330
 	call Common_FAIL
 	; LineNumber: 330
-.label IfThenElse_ILTE1_GreaterEqual_True_edblock1047
+.label IfThenElse_ILTE1_GreaterEqual_True_edblock1046
 	; LineNumber: 331
 	return
 .label end_procedure_IfThenElse_ILTE1_GreaterEqual_True
@@ -4398,26 +4313,26 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label IfThenElse_ILTE2_GreaterThan_False_stringassigncpy1054
-	load 	IfThenElse_ILTE2_GreaterThan_False_stringassignstr1053 	_r8_2 	_r8_1
+.label IfThenElse_ILTE2_GreaterThan_False_stringassigncpy1053
+	load 	IfThenElse_ILTE2_GreaterThan_False_stringassignstr1052 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	IfThenElse_ILTE2_GreaterThan_False_stringassigncpy1054
+	jneq 	_r8_1 	uint8:0x00 	IfThenElse_ILTE2_GreaterThan_False_stringassigncpy1053
 	; LineNumber: 337
 	; Binary clause Simplified: LESSEQUAL
-	jgt 	Vars_i2 	Vars_i1 	IfThenElse_ILTE2_GreaterThan_False_eblock1057
-.label IfThenElse_ILTE2_GreaterThan_False_ctb1056 ;Main true block ;keep 
+	jgt 	Vars_i2 	Vars_i1 	IfThenElse_ILTE2_GreaterThan_False_eblock1056
+.label IfThenElse_ILTE2_GreaterThan_False_ctb1055 ;Main true block ;keep 
 	; LineNumber: 336
 	; LineNumber: 337
 	call Common_FAIL
 	; LineNumber: 337
-	jump IfThenElse_ILTE2_GreaterThan_False_edblock1058
-.label IfThenElse_ILTE2_GreaterThan_False_eblock1057
+	jump IfThenElse_ILTE2_GreaterThan_False_edblock1057
+.label IfThenElse_ILTE2_GreaterThan_False_eblock1056
 	; LineNumber: 336
 	; LineNumber: 337
 	call Common_PASS
 	; LineNumber: 337
-.label IfThenElse_ILTE2_GreaterThan_False_edblock1058
+.label IfThenElse_ILTE2_GreaterThan_False_edblock1057
 	; LineNumber: 338
 	return
 .label end_procedure_IfThenElse_ILTE2_GreaterThan_False
@@ -4437,26 +4352,26 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label IfThenElse_ILTE3_GreaterThan_True_stringassigncpy1065
-	load 	IfThenElse_ILTE3_GreaterThan_True_stringassignstr1064 	_r8_2 	_r8_1
+.label IfThenElse_ILTE3_GreaterThan_True_stringassigncpy1064
+	load 	IfThenElse_ILTE3_GreaterThan_True_stringassignstr1063 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	IfThenElse_ILTE3_GreaterThan_True_stringassigncpy1065
+	jneq 	_r8_1 	uint8:0x00 	IfThenElse_ILTE3_GreaterThan_True_stringassigncpy1064
 	; LineNumber: 344
 	; Binary clause Simplified: LESSEQUAL
-	jgt 	Vars_i2 	Vars_i1 	IfThenElse_ILTE3_GreaterThan_True_eblock1068
-.label IfThenElse_ILTE3_GreaterThan_True_ctb1067 ;Main true block ;keep 
+	jgt 	Vars_i2 	Vars_i1 	IfThenElse_ILTE3_GreaterThan_True_eblock1067
+.label IfThenElse_ILTE3_GreaterThan_True_ctb1066 ;Main true block ;keep 
 	; LineNumber: 343
 	; LineNumber: 344
 	call Common_PASS
 	; LineNumber: 344
-	jump IfThenElse_ILTE3_GreaterThan_True_edblock1069
-.label IfThenElse_ILTE3_GreaterThan_True_eblock1068
+	jump IfThenElse_ILTE3_GreaterThan_True_edblock1068
+.label IfThenElse_ILTE3_GreaterThan_True_eblock1067
 	; LineNumber: 343
 	; LineNumber: 344
 	call Common_FAIL
 	; LineNumber: 344
-.label IfThenElse_ILTE3_GreaterThan_True_edblock1069
+.label IfThenElse_ILTE3_GreaterThan_True_edblock1068
 	; LineNumber: 345
 	return
 .label end_procedure_IfThenElse_ILTE3_GreaterThan_True
@@ -4476,26 +4391,26 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label IfThenElse_ILTE4_GreaterThan_False_stringassigncpy1076
-	load 	IfThenElse_ILTE4_GreaterThan_False_stringassignstr1075 	_r8_2 	_r8_1
+.label IfThenElse_ILTE4_GreaterThan_False_stringassigncpy1075
+	load 	IfThenElse_ILTE4_GreaterThan_False_stringassignstr1074 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	IfThenElse_ILTE4_GreaterThan_False_stringassigncpy1076
+	jneq 	_r8_1 	uint8:0x00 	IfThenElse_ILTE4_GreaterThan_False_stringassigncpy1075
 	; LineNumber: 351
 	; Binary clause Simplified: LESSEQUAL
-	jgt 	Vars_i2 	Vars_i1 	IfThenElse_ILTE4_GreaterThan_False_eblock1079
-.label IfThenElse_ILTE4_GreaterThan_False_ctb1078 ;Main true block ;keep 
+	jgt 	Vars_i2 	Vars_i1 	IfThenElse_ILTE4_GreaterThan_False_eblock1078
+.label IfThenElse_ILTE4_GreaterThan_False_ctb1077 ;Main true block ;keep 
 	; LineNumber: 350
 	; LineNumber: 351
 	call Common_FAIL
 	; LineNumber: 351
-	jump IfThenElse_ILTE4_GreaterThan_False_edblock1080
-.label IfThenElse_ILTE4_GreaterThan_False_eblock1079
+	jump IfThenElse_ILTE4_GreaterThan_False_edblock1079
+.label IfThenElse_ILTE4_GreaterThan_False_eblock1078
 	; LineNumber: 350
 	; LineNumber: 351
 	call Common_PASS
 	; LineNumber: 351
-.label IfThenElse_ILTE4_GreaterThan_False_edblock1080
+.label IfThenElse_ILTE4_GreaterThan_False_edblock1079
 	; LineNumber: 352
 	return
 .label end_procedure_IfThenElse_ILTE4_GreaterThan_False
@@ -4515,26 +4430,26 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label IfThenElse_ILTE5_GreaterThan_True_stringassigncpy1087
-	load 	IfThenElse_ILTE5_GreaterThan_True_stringassignstr1086 	_r8_2 	_r8_1
+.label IfThenElse_ILTE5_GreaterThan_True_stringassigncpy1086
+	load 	IfThenElse_ILTE5_GreaterThan_True_stringassignstr1085 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	IfThenElse_ILTE5_GreaterThan_True_stringassigncpy1087
+	jneq 	_r8_1 	uint8:0x00 	IfThenElse_ILTE5_GreaterThan_True_stringassigncpy1086
 	; LineNumber: 358
 	; Binary clause Simplified: LESSEQUAL
-	jgt 	Vars_i2 	Vars_i1 	IfThenElse_ILTE5_GreaterThan_True_eblock1090
-.label IfThenElse_ILTE5_GreaterThan_True_ctb1089 ;Main true block ;keep 
+	jgt 	Vars_i2 	Vars_i1 	IfThenElse_ILTE5_GreaterThan_True_eblock1089
+.label IfThenElse_ILTE5_GreaterThan_True_ctb1088 ;Main true block ;keep 
 	; LineNumber: 357
 	; LineNumber: 358
 	call Common_PASS
 	; LineNumber: 358
-	jump IfThenElse_ILTE5_GreaterThan_True_edblock1091
-.label IfThenElse_ILTE5_GreaterThan_True_eblock1090
+	jump IfThenElse_ILTE5_GreaterThan_True_edblock1090
+.label IfThenElse_ILTE5_GreaterThan_True_eblock1089
 	; LineNumber: 357
 	; LineNumber: 358
 	call Common_FAIL
 	; LineNumber: 358
-.label IfThenElse_ILTE5_GreaterThan_True_edblock1091
+.label IfThenElse_ILTE5_GreaterThan_True_edblock1090
 	; LineNumber: 359
 	return
 .label end_procedure_IfThenElse_ILTE5_GreaterThan_True
@@ -4587,30 +4502,30 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label IfThenElse_AdvancedI1_stringassigncpy1098
-	load 	IfThenElse_AdvancedI1_stringassignstr1097 	_r8_2 	_r8_1
+.label IfThenElse_AdvancedI1_stringassigncpy1097
+	load 	IfThenElse_AdvancedI1_stringassignstr1096 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	IfThenElse_AdvancedI1_stringassigncpy1098
+	jneq 	_r8_1 	uint8:0x00 	IfThenElse_AdvancedI1_stringassigncpy1097
 	; LineNumber: 540
 	; Binary clause Simplified: GREATEREQUAL
-	jlt 	Vars_i1 	Vars_i2 	IfThenElse_AdvancedI1_eblock1101
-.label IfThenElse_AdvancedI1_localsuccess1105 ;keep
+	jlt 	Vars_i1 	Vars_i2 	IfThenElse_AdvancedI1_eblock1100
+.label IfThenElse_AdvancedI1_localsuccess1104 ;keep
 	; ; logical AND, second requirement
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_i3 	uint16:0xbb8 	IfThenElse_AdvancedI1_eblock1101
-.label IfThenElse_AdvancedI1_ctb1100 ;Main true block ;keep 
+	jneq 	Vars_i3 	uint16:0xbb8 	IfThenElse_AdvancedI1_eblock1100
+.label IfThenElse_AdvancedI1_ctb1099 ;Main true block ;keep 
 	; LineNumber: 539
 	; LineNumber: 540
 	call Common_PASS
 	; LineNumber: 540
-	jump IfThenElse_AdvancedI1_edblock1102
-.label IfThenElse_AdvancedI1_eblock1101
+	jump IfThenElse_AdvancedI1_edblock1101
+.label IfThenElse_AdvancedI1_eblock1100
 	; LineNumber: 539
 	; LineNumber: 540
 	call Common_FAIL
 	; LineNumber: 540
-.label IfThenElse_AdvancedI1_edblock1102
+.label IfThenElse_AdvancedI1_edblock1101
 	; LineNumber: 541
 	return
 .label end_procedure_IfThenElse_AdvancedI1
@@ -4632,31 +4547,31 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label IfThenElse_AdvancedI2_stringassigncpy1110
-	load 	IfThenElse_AdvancedI2_stringassignstr1109 	_r8_2 	_r8_1
+.label IfThenElse_AdvancedI2_stringassigncpy1109
+	load 	IfThenElse_AdvancedI2_stringassignstr1108 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	IfThenElse_AdvancedI2_stringassigncpy1110
+	jneq 	_r8_1 	uint8:0x00 	IfThenElse_AdvancedI2_stringassigncpy1109
 	; LineNumber: 548
 	; Binary clause Simplified: GREATER
-	jlte 	Vars_i1 	Vars_i2 	IfThenElse_AdvancedI2_localfailed1117
-	jump IfThenElse_AdvancedI2_ctb1112
-.label IfThenElse_AdvancedI2_localfailed1117 ;keep
+	jlte 	Vars_i1 	Vars_i2 	IfThenElse_AdvancedI2_localfailed1116
+	jump IfThenElse_AdvancedI2_ctb1111
+.label IfThenElse_AdvancedI2_localfailed1116 ;keep
 	; ; logical OR, second chance
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_i3 	uint16:0x1388 	IfThenElse_AdvancedI2_eblock1113
-.label IfThenElse_AdvancedI2_ctb1112 ;Main true block ;keep 
+	jneq 	Vars_i3 	uint16:0x1388 	IfThenElse_AdvancedI2_eblock1112
+.label IfThenElse_AdvancedI2_ctb1111 ;Main true block ;keep 
 	; LineNumber: 547
 	; LineNumber: 548
 	call Common_FAIL
 	; LineNumber: 548
-	jump IfThenElse_AdvancedI2_edblock1114
-.label IfThenElse_AdvancedI2_eblock1113
+	jump IfThenElse_AdvancedI2_edblock1113
+.label IfThenElse_AdvancedI2_eblock1112
 	; LineNumber: 547
 	; LineNumber: 548
 	call Common_PASS
 	; LineNumber: 548
-.label IfThenElse_AdvancedI2_edblock1114
+.label IfThenElse_AdvancedI2_edblock1113
 	; LineNumber: 549
 	return
 .label end_procedure_IfThenElse_AdvancedI2
@@ -4678,35 +4593,35 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label IfThenElse_AdvancedI3_stringassigncpy1122
-	load 	IfThenElse_AdvancedI3_stringassignstr1121 	_r8_2 	_r8_1
+.label IfThenElse_AdvancedI3_stringassigncpy1121
+	load 	IfThenElse_AdvancedI3_stringassignstr1120 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	IfThenElse_AdvancedI3_stringassigncpy1122
+	jneq 	_r8_1 	uint8:0x00 	IfThenElse_AdvancedI3_stringassigncpy1121
 	; LineNumber: 555
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_i1 	Vars_i2 	IfThenElse_AdvancedI3_localfailed1129
-	jump IfThenElse_AdvancedI3_ctb1124
-.label IfThenElse_AdvancedI3_localfailed1129 ;keep
+	jneq 	Vars_i1 	Vars_i2 	IfThenElse_AdvancedI3_localfailed1128
+	jump IfThenElse_AdvancedI3_ctb1123
+.label IfThenElse_AdvancedI3_localfailed1128 ;keep
 	; ; logical OR, second chance
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_i3 	uint16:0xbb8 	IfThenElse_AdvancedI3_eblock1125
-.label IfThenElse_AdvancedI3_localsuccess1130 ;keep
+	jneq 	Vars_i3 	uint16:0xbb8 	IfThenElse_AdvancedI3_eblock1124
+.label IfThenElse_AdvancedI3_localsuccess1129 ;keep
 	; ; logical AND, second requirement
 	; Binary clause Simplified: GREATEREQUAL
-	jlt 	Vars_i1 	uint16:0x1388 	IfThenElse_AdvancedI3_eblock1125
-.label IfThenElse_AdvancedI3_ctb1124 ;Main true block ;keep 
+	jlt 	Vars_i1 	uint16:0x1388 	IfThenElse_AdvancedI3_eblock1124
+.label IfThenElse_AdvancedI3_ctb1123 ;Main true block ;keep 
 	; LineNumber: 554
 	; LineNumber: 555
 	call Common_PASS
 	; LineNumber: 555
-	jump IfThenElse_AdvancedI3_edblock1126
-.label IfThenElse_AdvancedI3_eblock1125
+	jump IfThenElse_AdvancedI3_edblock1125
+.label IfThenElse_AdvancedI3_eblock1124
 	; LineNumber: 554
 	; LineNumber: 555
 	call Common_FAIL
 	; LineNumber: 555
-.label IfThenElse_AdvancedI3_edblock1126
+.label IfThenElse_AdvancedI3_edblock1125
 	; LineNumber: 556
 	return
 .label end_procedure_IfThenElse_AdvancedI3
@@ -4726,26 +4641,26 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label IfThenElse_AdvancedI4_stringassigncpy1135
-	load 	IfThenElse_AdvancedI4_stringassignstr1134 	_r8_2 	_r8_1
+.label IfThenElse_AdvancedI4_stringassigncpy1134
+	load 	IfThenElse_AdvancedI4_stringassignstr1133 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	IfThenElse_AdvancedI4_stringassigncpy1135
+	jneq 	_r8_1 	uint8:0x00 	IfThenElse_AdvancedI4_stringassigncpy1134
 	; LineNumber: 571
 	; Binary clause Simplified: GREATER
-	jlte 	Vars_i1 	uint16:0x501 	IfThenElse_AdvancedI4_eblock1138
-.label IfThenElse_AdvancedI4_localsuccess1142 ;keep
+	jlte 	Vars_i1 	uint16:0x501 	IfThenElse_AdvancedI4_eblock1137
+.label IfThenElse_AdvancedI4_localsuccess1141 ;keep
 	; ; logical AND, second requirement
 	; Binary clause Simplified: LESS
-	jgte 	Vars_i1 	uint16:0x551 	IfThenElse_AdvancedI4_eblock1138
-.label IfThenElse_AdvancedI4_ctb1137 ;Main true block ;keep 
+	jgte 	Vars_i1 	uint16:0x551 	IfThenElse_AdvancedI4_eblock1137
+.label IfThenElse_AdvancedI4_ctb1136 ;Main true block ;keep 
 	; LineNumber: 570
 	call Common_FAIL
-	jump IfThenElse_AdvancedI4_edblock1139
-.label IfThenElse_AdvancedI4_eblock1138
+	jump IfThenElse_AdvancedI4_edblock1138
+.label IfThenElse_AdvancedI4_eblock1137
 	; LineNumber: 570
 	call Common_PASS
-.label IfThenElse_AdvancedI4_edblock1139
+.label IfThenElse_AdvancedI4_edblock1138
 	; LineNumber: 574
 	return
 .label end_procedure_IfThenElse_AdvancedI4
@@ -4767,27 +4682,27 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label IfThenElse_AdvancedI5_stringassigncpy1147
-	load 	IfThenElse_AdvancedI5_stringassignstr1146 	_r8_2 	_r8_1
+.label IfThenElse_AdvancedI5_stringassigncpy1146
+	load 	IfThenElse_AdvancedI5_stringassignstr1145 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	IfThenElse_AdvancedI5_stringassigncpy1147
+	jneq 	_r8_1 	uint8:0x00 	IfThenElse_AdvancedI5_stringassigncpy1146
 	; LineNumber: 582
 	; Binary clause Simplified: GREATER
-	jlte 	Vars_i1 	uint16:0x700 	IfThenElse_AdvancedI5_localfailed1154
-	jump IfThenElse_AdvancedI5_ctb1149
-.label IfThenElse_AdvancedI5_localfailed1154 ;keep
+	jlte 	Vars_i1 	uint16:0x700 	IfThenElse_AdvancedI5_localfailed1153
+	jump IfThenElse_AdvancedI5_ctb1148
+.label IfThenElse_AdvancedI5_localfailed1153 ;keep
 	; ; logical OR, second chance
 	; Binary clause Simplified: LESS
-	jgte 	Vars_i1 	uint16:0x400 	IfThenElse_AdvancedI5_eblock1150
-.label IfThenElse_AdvancedI5_ctb1149 ;Main true block ;keep 
+	jgte 	Vars_i1 	uint16:0x400 	IfThenElse_AdvancedI5_eblock1149
+.label IfThenElse_AdvancedI5_ctb1148 ;Main true block ;keep 
 	; LineNumber: 581
 	call Common_FAIL
-	jump IfThenElse_AdvancedI5_edblock1151
-.label IfThenElse_AdvancedI5_eblock1150
+	jump IfThenElse_AdvancedI5_edblock1150
+.label IfThenElse_AdvancedI5_eblock1149
 	; LineNumber: 581
 	call Common_PASS
-.label IfThenElse_AdvancedI5_edblock1151
+.label IfThenElse_AdvancedI5_edblock1150
 	; LineNumber: 585
 	return
 .label end_procedure_IfThenElse_AdvancedI5
@@ -4804,7 +4719,7 @@ text_print_finished
 	
 ; // initialise everything
 	; Assigning a string : Common_zp
-	mov 	Common_zp 	#IfThenElse_Exec_stringassignstr1158
+	mov 	Common_zp 	#IfThenElse_Exec_stringassignstr1157
 	call Common_Initialise
 	; LineNumber: 597
 	
@@ -4961,22 +4876,22 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label MulDiv_ByteMulByte01_stringassigncpy1161
-	load 	MulDiv_ByteMulByte01_stringassignstr1160 	_r8_2 	_r8_1
+.label MulDiv_ByteMulByte01_stringassigncpy1160
+	load 	MulDiv_ByteMulByte01_stringassignstr1159 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	MulDiv_ByteMulByte01_stringassigncpy1161
+	jneq 	_r8_1 	uint8:0x00 	MulDiv_ByteMulByte01_stringassigncpy1160
 	; LineNumber: 12
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_rb 	uint8:0x87 	MulDiv_ByteMulByte01_eblock1164
-.label MulDiv_ByteMulByte01_ctb1163 ;Main true block ;keep 
+	jneq 	Vars_rb 	uint8:0x87 	MulDiv_ByteMulByte01_eblock1163
+.label MulDiv_ByteMulByte01_ctb1162 ;Main true block ;keep 
 	; LineNumber: 11
 	call Common_PASS
-	jump MulDiv_ByteMulByte01_edblock1165
-.label MulDiv_ByteMulByte01_eblock1164
+	jump MulDiv_ByteMulByte01_edblock1164
+.label MulDiv_ByteMulByte01_eblock1163
 	; LineNumber: 11
 	call Common_FAIL
-.label MulDiv_ByteMulByte01_edblock1165
+.label MulDiv_ByteMulByte01_edblock1164
 	; LineNumber: 13
 	return
 .label end_procedure_MulDiv_ByteMulByte01
@@ -4998,22 +4913,22 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label MulDiv_ByteMulBytePow202_stringassigncpy1172
-	load 	MulDiv_ByteMulBytePow202_stringassignstr1171 	_r8_2 	_r8_1
+.label MulDiv_ByteMulBytePow202_stringassigncpy1171
+	load 	MulDiv_ByteMulBytePow202_stringassignstr1170 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	MulDiv_ByteMulBytePow202_stringassigncpy1172
+	jneq 	_r8_1 	uint8:0x00 	MulDiv_ByteMulBytePow202_stringassigncpy1171
 	; LineNumber: 20
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_rb 	uint8:0x3c 	MulDiv_ByteMulBytePow202_eblock1175
-.label MulDiv_ByteMulBytePow202_ctb1174 ;Main true block ;keep 
+	jneq 	Vars_rb 	uint8:0x3c 	MulDiv_ByteMulBytePow202_eblock1174
+.label MulDiv_ByteMulBytePow202_ctb1173 ;Main true block ;keep 
 	; LineNumber: 19
 	call Common_PASS
-	jump MulDiv_ByteMulBytePow202_edblock1176
-.label MulDiv_ByteMulBytePow202_eblock1175
+	jump MulDiv_ByteMulBytePow202_edblock1175
+.label MulDiv_ByteMulBytePow202_eblock1174
 	; LineNumber: 19
 	call Common_FAIL
-.label MulDiv_ByteMulBytePow202_edblock1176
+.label MulDiv_ByteMulBytePow202_edblock1175
 	; LineNumber: 21
 	return
 .label end_procedure_MulDiv_ByteMulBytePow202
@@ -5033,22 +4948,22 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label MulDiv_ByteDivBytePow203_stringassigncpy1183
-	load 	MulDiv_ByteDivBytePow203_stringassignstr1182 	_r8_2 	_r8_1
+.label MulDiv_ByteDivBytePow203_stringassigncpy1182
+	load 	MulDiv_ByteDivBytePow203_stringassignstr1181 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	MulDiv_ByteDivBytePow203_stringassigncpy1183
+	jneq 	_r8_1 	uint8:0x00 	MulDiv_ByteDivBytePow203_stringassigncpy1182
 	; LineNumber: 27
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_rb 	uint8:0x19 	MulDiv_ByteDivBytePow203_eblock1186
-.label MulDiv_ByteDivBytePow203_ctb1185 ;Main true block ;keep 
+	jneq 	Vars_rb 	uint8:0x19 	MulDiv_ByteDivBytePow203_eblock1185
+.label MulDiv_ByteDivBytePow203_ctb1184 ;Main true block ;keep 
 	; LineNumber: 26
 	call Common_PASS
-	jump MulDiv_ByteDivBytePow203_edblock1187
-.label MulDiv_ByteDivBytePow203_eblock1186
+	jump MulDiv_ByteDivBytePow203_edblock1186
+.label MulDiv_ByteDivBytePow203_eblock1185
 	; LineNumber: 26
 	call Common_FAIL
-.label MulDiv_ByteDivBytePow203_edblock1187
+.label MulDiv_ByteDivBytePow203_edblock1186
 	; LineNumber: 28
 	return
 .label end_procedure_MulDiv_ByteDivBytePow203
@@ -5072,22 +4987,22 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label MulDiv_ByteDivByte04_stringassigncpy1194
-	load 	MulDiv_ByteDivByte04_stringassignstr1193 	_r8_2 	_r8_1
+.label MulDiv_ByteDivByte04_stringassigncpy1193
+	load 	MulDiv_ByteDivByte04_stringassignstr1192 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	MulDiv_ByteDivByte04_stringassigncpy1194
+	jneq 	_r8_1 	uint8:0x00 	MulDiv_ByteDivByte04_stringassigncpy1193
 	; LineNumber: 37
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_rb 	uint8:0x14 	MulDiv_ByteDivByte04_eblock1197
-.label MulDiv_ByteDivByte04_ctb1196 ;Main true block ;keep 
+	jneq 	Vars_rb 	uint8:0x14 	MulDiv_ByteDivByte04_eblock1196
+.label MulDiv_ByteDivByte04_ctb1195 ;Main true block ;keep 
 	; LineNumber: 36
 	call Common_PASS
-	jump MulDiv_ByteDivByte04_edblock1198
-.label MulDiv_ByteDivByte04_eblock1197
+	jump MulDiv_ByteDivByte04_edblock1197
+.label MulDiv_ByteDivByte04_eblock1196
 	; LineNumber: 36
 	call Common_FAIL
-.label MulDiv_ByteDivByte04_edblock1198
+.label MulDiv_ByteDivByte04_edblock1197
 	; LineNumber: 38
 	return
 .label end_procedure_MulDiv_ByteDivByte04
@@ -5119,22 +5034,22 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label MulDiv_ByteMulMul05_stringassigncpy1205
-	load 	MulDiv_ByteMulMul05_stringassignstr1204 	_r8_2 	_r8_1
+.label MulDiv_ByteMulMul05_stringassigncpy1204
+	load 	MulDiv_ByteMulMul05_stringassignstr1203 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	MulDiv_ByteMulMul05_stringassigncpy1205
+	jneq 	_r8_1 	uint8:0x00 	MulDiv_ByteMulMul05_stringassigncpy1204
 	; LineNumber: 48
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_rb 	uint8:0x30 	MulDiv_ByteMulMul05_eblock1208
-.label MulDiv_ByteMulMul05_ctb1207 ;Main true block ;keep 
+	jneq 	Vars_rb 	uint8:0x30 	MulDiv_ByteMulMul05_eblock1207
+.label MulDiv_ByteMulMul05_ctb1206 ;Main true block ;keep 
 	; LineNumber: 47
 	call Common_PASS
-	jump MulDiv_ByteMulMul05_edblock1209
-.label MulDiv_ByteMulMul05_eblock1208
+	jump MulDiv_ByteMulMul05_edblock1208
+.label MulDiv_ByteMulMul05_eblock1207
 	; LineNumber: 47
 	call Common_FAIL
-.label MulDiv_ByteMulMul05_edblock1209
+.label MulDiv_ByteMulMul05_edblock1208
 	; LineNumber: 49
 	return
 .label end_procedure_MulDiv_ByteMulMul05
@@ -5158,22 +5073,22 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label MulDiv_IntByteMul06_stringassigncpy1216
-	load 	MulDiv_IntByteMul06_stringassignstr1215 	_r8_2 	_r8_1
+.label MulDiv_IntByteMul06_stringassigncpy1215
+	load 	MulDiv_IntByteMul06_stringassignstr1214 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	MulDiv_IntByteMul06_stringassigncpy1216
+	jneq 	_r8_1 	uint8:0x00 	MulDiv_IntByteMul06_stringassigncpy1215
 	; LineNumber: 58
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_ri 	uint16:0xbd6 	MulDiv_IntByteMul06_eblock1219
-.label MulDiv_IntByteMul06_ctb1218 ;Main true block ;keep 
+	jneq 	Vars_ri 	uint16:0xbd6 	MulDiv_IntByteMul06_eblock1218
+.label MulDiv_IntByteMul06_ctb1217 ;Main true block ;keep 
 	; LineNumber: 57
 	call Common_PASS
-	jump MulDiv_IntByteMul06_edblock1220
-.label MulDiv_IntByteMul06_eblock1219
+	jump MulDiv_IntByteMul06_edblock1219
+.label MulDiv_IntByteMul06_eblock1218
 	; LineNumber: 57
 	call Common_FAIL
-.label MulDiv_IntByteMul06_edblock1220
+.label MulDiv_IntByteMul06_edblock1219
 	; LineNumber: 59
 	return
 .label end_procedure_MulDiv_IntByteMul06
@@ -5195,22 +5110,22 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label MulDiv_IntMulPow07_stringassigncpy1227
-	load 	MulDiv_IntMulPow07_stringassignstr1226 	_r8_2 	_r8_1
+.label MulDiv_IntMulPow07_stringassigncpy1226
+	load 	MulDiv_IntMulPow07_stringassignstr1225 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	MulDiv_IntMulPow07_stringassigncpy1227
+	jneq 	_r8_1 	uint8:0x00 	MulDiv_IntMulPow07_stringassigncpy1226
 	; LineNumber: 70
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_ri 	uint16:0xfc8 	MulDiv_IntMulPow07_eblock1230
-.label MulDiv_IntMulPow07_ctb1229 ;Main true block ;keep 
+	jneq 	Vars_ri 	uint16:0xfc8 	MulDiv_IntMulPow07_eblock1229
+.label MulDiv_IntMulPow07_ctb1228 ;Main true block ;keep 
 	; LineNumber: 69
 	call Common_PASS
-	jump MulDiv_IntMulPow07_edblock1231
-.label MulDiv_IntMulPow07_eblock1230
+	jump MulDiv_IntMulPow07_edblock1230
+.label MulDiv_IntMulPow07_eblock1229
 	; LineNumber: 69
 	call Common_FAIL
-.label MulDiv_IntMulPow07_edblock1231
+.label MulDiv_IntMulPow07_edblock1230
 	; LineNumber: 71
 	return
 .label end_procedure_MulDiv_IntMulPow07
@@ -5232,22 +5147,22 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label MulDiv_IntDivByte08_stringassigncpy1238
-	load 	MulDiv_IntDivByte08_stringassignstr1237 	_r8_2 	_r8_1
+.label MulDiv_IntDivByte08_stringassigncpy1237
+	load 	MulDiv_IntDivByte08_stringassignstr1236 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	MulDiv_IntDivByte08_stringassigncpy1238
+	jneq 	_r8_1 	uint8:0x00 	MulDiv_IntDivByte08_stringassigncpy1237
 	; LineNumber: 80
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_v2 	uint8:0x7b 	MulDiv_IntDivByte08_eblock1241
-.label MulDiv_IntDivByte08_ctb1240 ;Main true block ;keep 
+	jneq 	Vars_v2 	uint8:0x7b 	MulDiv_IntDivByte08_eblock1240
+.label MulDiv_IntDivByte08_ctb1239 ;Main true block ;keep 
 	; LineNumber: 79
 	call Common_PASS
-	jump MulDiv_IntDivByte08_edblock1242
-.label MulDiv_IntDivByte08_eblock1241
+	jump MulDiv_IntDivByte08_edblock1241
+.label MulDiv_IntDivByte08_eblock1240
 	; LineNumber: 79
 	call Common_FAIL
-.label MulDiv_IntDivByte08_edblock1242
+.label MulDiv_IntDivByte08_edblock1241
 	; LineNumber: 81
 	return
 .label end_procedure_MulDiv_IntDivByte08
@@ -5269,22 +5184,22 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label MulDiv_IntDivInt09_stringassigncpy1249
-	load 	MulDiv_IntDivInt09_stringassignstr1248 	_r8_2 	_r8_1
+.label MulDiv_IntDivInt09_stringassigncpy1248
+	load 	MulDiv_IntDivInt09_stringassignstr1247 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	MulDiv_IntDivInt09_stringassigncpy1249
+	jneq 	_r8_1 	uint8:0x00 	MulDiv_IntDivInt09_stringassigncpy1248
 	; LineNumber: 89
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_i1 	uint8:0x3c 	MulDiv_IntDivInt09_eblock1252
-.label MulDiv_IntDivInt09_ctb1251 ;Main true block ;keep 
+	jneq 	Vars_i1 	uint8:0x3c 	MulDiv_IntDivInt09_eblock1251
+.label MulDiv_IntDivInt09_ctb1250 ;Main true block ;keep 
 	; LineNumber: 88
 	call Common_PASS
-	jump MulDiv_IntDivInt09_edblock1253
-.label MulDiv_IntDivInt09_eblock1252
+	jump MulDiv_IntDivInt09_edblock1252
+.label MulDiv_IntDivInt09_eblock1251
 	; LineNumber: 88
 	call Common_FAIL
-.label MulDiv_IntDivInt09_edblock1253
+.label MulDiv_IntDivInt09_edblock1252
 	; LineNumber: 90
 	return
 .label end_procedure_MulDiv_IntDivInt09
@@ -5304,22 +5219,22 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label MulDiv_IntDivPow210_stringassigncpy1260
-	load 	MulDiv_IntDivPow210_stringassignstr1259 	_r8_2 	_r8_1
+.label MulDiv_IntDivPow210_stringassigncpy1259
+	load 	MulDiv_IntDivPow210_stringassignstr1258 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	MulDiv_IntDivPow210_stringassigncpy1260
+	jneq 	_r8_1 	uint8:0x00 	MulDiv_IntDivPow210_stringassigncpy1259
 	; LineNumber: 97
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_i1 	uint16:0x3a98 	MulDiv_IntDivPow210_eblock1263
-.label MulDiv_IntDivPow210_ctb1262 ;Main true block ;keep 
+	jneq 	Vars_i1 	uint16:0x3a98 	MulDiv_IntDivPow210_eblock1262
+.label MulDiv_IntDivPow210_ctb1261 ;Main true block ;keep 
 	; LineNumber: 96
 	call Common_PASS
-	jump MulDiv_IntDivPow210_edblock1264
-.label MulDiv_IntDivPow210_eblock1263
+	jump MulDiv_IntDivPow210_edblock1263
+.label MulDiv_IntDivPow210_eblock1262
 	; LineNumber: 96
 	call Common_FAIL
-.label MulDiv_IntDivPow210_edblock1264
+.label MulDiv_IntDivPow210_edblock1263
 	; LineNumber: 99
 	return
 .label end_procedure_MulDiv_IntDivPow210
@@ -5341,22 +5256,22 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label MulDiv_IntDivMix11_stringassigncpy1271
-	load 	MulDiv_IntDivMix11_stringassignstr1270 	_r8_2 	_r8_1
+.label MulDiv_IntDivMix11_stringassigncpy1270
+	load 	MulDiv_IntDivMix11_stringassignstr1269 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	MulDiv_IntDivMix11_stringassigncpy1271
+	jneq 	_r8_1 	uint8:0x00 	MulDiv_IntDivMix11_stringassigncpy1270
 	; LineNumber: 107
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_i1 	uint16:0x258 	MulDiv_IntDivMix11_eblock1274
-.label MulDiv_IntDivMix11_ctb1273 ;Main true block ;keep 
+	jneq 	Vars_i1 	uint16:0x258 	MulDiv_IntDivMix11_eblock1273
+.label MulDiv_IntDivMix11_ctb1272 ;Main true block ;keep 
 	; LineNumber: 106
 	call Common_PASS
-	jump MulDiv_IntDivMix11_edblock1275
-.label MulDiv_IntDivMix11_eblock1274
+	jump MulDiv_IntDivMix11_edblock1274
+.label MulDiv_IntDivMix11_eblock1273
 	; LineNumber: 106
 	call Common_FAIL
-.label MulDiv_IntDivMix11_edblock1275
+.label MulDiv_IntDivMix11_edblock1274
 	; LineNumber: 108
 	return
 .label end_procedure_MulDiv_IntDivMix11
@@ -5378,22 +5293,22 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label MulDiv_IntDivMix12_stringassigncpy1282
-	load 	MulDiv_IntDivMix12_stringassignstr1281 	_r8_2 	_r8_1
+.label MulDiv_IntDivMix12_stringassigncpy1281
+	load 	MulDiv_IntDivMix12_stringassignstr1280 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	MulDiv_IntDivMix12_stringassigncpy1282
+	jneq 	_r8_1 	uint8:0x00 	MulDiv_IntDivMix12_stringassigncpy1281
 	; LineNumber: 116
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_v1 	uint8:0x64 	MulDiv_IntDivMix12_eblock1285
-.label MulDiv_IntDivMix12_ctb1284 ;Main true block ;keep 
+	jneq 	Vars_v1 	uint8:0x64 	MulDiv_IntDivMix12_eblock1284
+.label MulDiv_IntDivMix12_ctb1283 ;Main true block ;keep 
 	; LineNumber: 115
 	call Common_PASS
-	jump MulDiv_IntDivMix12_edblock1286
-.label MulDiv_IntDivMix12_eblock1285
+	jump MulDiv_IntDivMix12_edblock1285
+.label MulDiv_IntDivMix12_eblock1284
 	; LineNumber: 115
 	call Common_FAIL
-.label MulDiv_IntDivMix12_edblock1286
+.label MulDiv_IntDivMix12_edblock1285
 	; LineNumber: 117
 	return
 .label end_procedure_MulDiv_IntDivMix12
@@ -5415,22 +5330,22 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label MulDiv_IntMulMix13_stringassigncpy1293
-	load 	MulDiv_IntMulMix13_stringassignstr1292 	_r8_2 	_r8_1
+.label MulDiv_IntMulMix13_stringassigncpy1292
+	load 	MulDiv_IntMulMix13_stringassignstr1291 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	MulDiv_IntMulMix13_stringassigncpy1293
+	jneq 	_r8_1 	uint8:0x00 	MulDiv_IntMulMix13_stringassigncpy1292
 	; LineNumber: 125
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_i1 	uint16:0x4e20 	MulDiv_IntMulMix13_eblock1296
-.label MulDiv_IntMulMix13_ctb1295 ;Main true block ;keep 
+	jneq 	Vars_i1 	uint16:0x4e20 	MulDiv_IntMulMix13_eblock1295
+.label MulDiv_IntMulMix13_ctb1294 ;Main true block ;keep 
 	; LineNumber: 124
 	call Common_PASS
-	jump MulDiv_IntMulMix13_edblock1297
-.label MulDiv_IntMulMix13_eblock1296
+	jump MulDiv_IntMulMix13_edblock1296
+.label MulDiv_IntMulMix13_eblock1295
 	; LineNumber: 124
 	call Common_FAIL
-.label MulDiv_IntMulMix13_edblock1297
+.label MulDiv_IntMulMix13_edblock1296
 	; LineNumber: 126
 	return
 .label end_procedure_MulDiv_IntMulMix13
@@ -5454,22 +5369,22 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label MulDiv_IntMulInt14_stringassigncpy1304
-	load 	MulDiv_IntMulInt14_stringassignstr1303 	_r8_2 	_r8_1
+.label MulDiv_IntMulInt14_stringassigncpy1303
+	load 	MulDiv_IntMulInt14_stringassignstr1302 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	MulDiv_IntMulInt14_stringassigncpy1304
+	jneq 	_r8_1 	uint8:0x00 	MulDiv_IntMulInt14_stringassigncpy1303
 	; LineNumber: 135
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_i1 	uint8:0x64 	MulDiv_IntMulInt14_eblock1307
-.label MulDiv_IntMulInt14_ctb1306 ;Main true block ;keep 
+	jneq 	Vars_i1 	uint8:0x64 	MulDiv_IntMulInt14_eblock1306
+.label MulDiv_IntMulInt14_ctb1305 ;Main true block ;keep 
 	; LineNumber: 134
 	call Common_PASS
-	jump MulDiv_IntMulInt14_edblock1308
-.label MulDiv_IntMulInt14_eblock1307
+	jump MulDiv_IntMulInt14_edblock1307
+.label MulDiv_IntMulInt14_eblock1306
 	; LineNumber: 134
 	call Common_FAIL
-.label MulDiv_IntMulInt14_edblock1308
+.label MulDiv_IntMulInt14_edblock1307
 	; LineNumber: 136
 	return
 .label end_procedure_MulDiv_IntMulInt14
@@ -5497,22 +5412,22 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label MulDiv_IntMulAdvancedMix15_stringassigncpy1315
-	load 	MulDiv_IntMulAdvancedMix15_stringassignstr1314 	_r8_2 	_r8_1
+.label MulDiv_IntMulAdvancedMix15_stringassigncpy1314
+	load 	MulDiv_IntMulAdvancedMix15_stringassignstr1313 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	MulDiv_IntMulAdvancedMix15_stringassigncpy1315
+	jneq 	_r8_1 	uint8:0x00 	MulDiv_IntMulAdvancedMix15_stringassigncpy1314
 	; LineNumber: 148
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_i1 	uint16:0x3e8 	MulDiv_IntMulAdvancedMix15_eblock1318
-.label MulDiv_IntMulAdvancedMix15_ctb1317 ;Main true block ;keep 
+	jneq 	Vars_i1 	uint16:0x3e8 	MulDiv_IntMulAdvancedMix15_eblock1317
+.label MulDiv_IntMulAdvancedMix15_ctb1316 ;Main true block ;keep 
 	; LineNumber: 147
 	call Common_PASS
-	jump MulDiv_IntMulAdvancedMix15_edblock1319
-.label MulDiv_IntMulAdvancedMix15_eblock1318
+	jump MulDiv_IntMulAdvancedMix15_edblock1318
+.label MulDiv_IntMulAdvancedMix15_eblock1317
 	; LineNumber: 147
 	call Common_FAIL
-.label MulDiv_IntMulAdvancedMix15_edblock1319
+.label MulDiv_IntMulAdvancedMix15_edblock1318
 	; LineNumber: 149
 	return
 .label end_procedure_MulDiv_IntMulAdvancedMix15
@@ -5540,22 +5455,22 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label MulDiv_ByteMulAdvanced16_stringassigncpy1326
-	load 	MulDiv_ByteMulAdvanced16_stringassignstr1325 	_r8_2 	_r8_1
+.label MulDiv_ByteMulAdvanced16_stringassigncpy1325
+	load 	MulDiv_ByteMulAdvanced16_stringassignstr1324 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	MulDiv_ByteMulAdvanced16_stringassigncpy1326
+	jneq 	_r8_1 	uint8:0x00 	MulDiv_ByteMulAdvanced16_stringassigncpy1325
 	; LineNumber: 158
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_v1 	uint8:0x12 	MulDiv_ByteMulAdvanced16_eblock1329
-.label MulDiv_ByteMulAdvanced16_ctb1328 ;Main true block ;keep 
+	jneq 	Vars_v1 	uint8:0x12 	MulDiv_ByteMulAdvanced16_eblock1328
+.label MulDiv_ByteMulAdvanced16_ctb1327 ;Main true block ;keep 
 	; LineNumber: 157
 	call Common_PASS
-	jump MulDiv_ByteMulAdvanced16_edblock1330
-.label MulDiv_ByteMulAdvanced16_eblock1329
+	jump MulDiv_ByteMulAdvanced16_edblock1329
+.label MulDiv_ByteMulAdvanced16_eblock1328
 	; LineNumber: 157
 	call Common_FAIL
-.label MulDiv_ByteMulAdvanced16_edblock1330
+.label MulDiv_ByteMulAdvanced16_edblock1329
 	; LineNumber: 159
 	return
 .label end_procedure_MulDiv_ByteMulAdvanced16
@@ -5575,22 +5490,22 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label MulDiv_IntMulConst17_stringassigncpy1337
-	load 	MulDiv_IntMulConst17_stringassignstr1336 	_r8_2 	_r8_1
+.label MulDiv_IntMulConst17_stringassigncpy1336
+	load 	MulDiv_IntMulConst17_stringassignstr1335 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	MulDiv_IntMulConst17_stringassigncpy1337
+	jneq 	_r8_1 	uint8:0x00 	MulDiv_IntMulConst17_stringassigncpy1336
 	; LineNumber: 167
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_i1 	uint8:0x32 	MulDiv_IntMulConst17_eblock1340
-.label MulDiv_IntMulConst17_ctb1339 ;Main true block ;keep 
+	jneq 	Vars_i1 	uint8:0x32 	MulDiv_IntMulConst17_eblock1339
+.label MulDiv_IntMulConst17_ctb1338 ;Main true block ;keep 
 	; LineNumber: 166
 	call Common_PASS
-	jump MulDiv_IntMulConst17_edblock1341
-.label MulDiv_IntMulConst17_eblock1340
+	jump MulDiv_IntMulConst17_edblock1340
+.label MulDiv_IntMulConst17_eblock1339
 	; LineNumber: 166
 	call Common_FAIL
-.label MulDiv_IntMulConst17_edblock1341
+.label MulDiv_IntMulConst17_edblock1340
 	; LineNumber: 170
 	return
 .label end_procedure_MulDiv_IntMulConst17
@@ -5614,22 +5529,22 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label MulDiv_IntCombConst18_stringassigncpy1348
-	load 	MulDiv_IntCombConst18_stringassignstr1347 	_r8_2 	_r8_1
+.label MulDiv_IntCombConst18_stringassigncpy1347
+	load 	MulDiv_IntCombConst18_stringassignstr1346 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	MulDiv_IntCombConst18_stringassigncpy1348
+	jneq 	_r8_1 	uint8:0x00 	MulDiv_IntCombConst18_stringassigncpy1347
 	; LineNumber: 178
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_i1 	uint16:0x4e2 	MulDiv_IntCombConst18_eblock1351
-.label MulDiv_IntCombConst18_ctb1350 ;Main true block ;keep 
+	jneq 	Vars_i1 	uint16:0x4e2 	MulDiv_IntCombConst18_eblock1350
+.label MulDiv_IntCombConst18_ctb1349 ;Main true block ;keep 
 	; LineNumber: 177
 	call Common_PASS
-	jump MulDiv_IntCombConst18_edblock1352
-.label MulDiv_IntCombConst18_eblock1351
+	jump MulDiv_IntCombConst18_edblock1351
+.label MulDiv_IntCombConst18_eblock1350
 	; LineNumber: 177
 	call Common_FAIL
-.label MulDiv_IntCombConst18_edblock1352
+.label MulDiv_IntCombConst18_edblock1351
 	; LineNumber: 179
 	return
 .label end_procedure_MulDiv_IntCombConst18
@@ -5653,22 +5568,22 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label MulDiv_IntCombConst19_stringassigncpy1359
-	load 	MulDiv_IntCombConst19_stringassignstr1358 	_r8_2 	_r8_1
+.label MulDiv_IntCombConst19_stringassigncpy1358
+	load 	MulDiv_IntCombConst19_stringassignstr1357 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	MulDiv_IntCombConst19_stringassigncpy1359
+	jneq 	_r8_1 	uint8:0x00 	MulDiv_IntCombConst19_stringassigncpy1358
 	; LineNumber: 187
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_i1 	uint16:0x1388 	MulDiv_IntCombConst19_eblock1362
-.label MulDiv_IntCombConst19_ctb1361 ;Main true block ;keep 
+	jneq 	Vars_i1 	uint16:0x1388 	MulDiv_IntCombConst19_eblock1361
+.label MulDiv_IntCombConst19_ctb1360 ;Main true block ;keep 
 	; LineNumber: 186
 	call Common_PASS
-	jump MulDiv_IntCombConst19_edblock1363
-.label MulDiv_IntCombConst19_eblock1362
+	jump MulDiv_IntCombConst19_edblock1362
+.label MulDiv_IntCombConst19_eblock1361
 	; LineNumber: 186
 	call Common_FAIL
-.label MulDiv_IntCombConst19_edblock1363
+.label MulDiv_IntCombConst19_edblock1362
 	; LineNumber: 188
 	return
 .label end_procedure_MulDiv_IntCombConst19
@@ -5688,22 +5603,22 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label MulDiv_IntShift20_stringassigncpy1370
-	load 	MulDiv_IntShift20_stringassignstr1369 	_r8_2 	_r8_1
+.label MulDiv_IntShift20_stringassigncpy1369
+	load 	MulDiv_IntShift20_stringassignstr1368 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	MulDiv_IntShift20_stringassigncpy1370
+	jneq 	_r8_1 	uint8:0x00 	MulDiv_IntShift20_stringassigncpy1369
 	; LineNumber: 195
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_i1 	uint16:0x500 	MulDiv_IntShift20_eblock1373
-.label MulDiv_IntShift20_ctb1372 ;Main true block ;keep 
+	jneq 	Vars_i1 	uint16:0x500 	MulDiv_IntShift20_eblock1372
+.label MulDiv_IntShift20_ctb1371 ;Main true block ;keep 
 	; LineNumber: 194
 	call Common_PASS
-	jump MulDiv_IntShift20_edblock1374
-.label MulDiv_IntShift20_eblock1373
+	jump MulDiv_IntShift20_edblock1373
+.label MulDiv_IntShift20_eblock1372
 	; LineNumber: 194
 	call Common_FAIL
-.label MulDiv_IntShift20_edblock1374
+.label MulDiv_IntShift20_edblock1373
 	; LineNumber: 197
 	return
 .label end_procedure_MulDiv_IntShift20
@@ -5725,22 +5640,22 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label MulDiv_IntShift21_stringassigncpy1381
-	load 	MulDiv_IntShift21_stringassignstr1380 	_r8_2 	_r8_1
+.label MulDiv_IntShift21_stringassigncpy1380
+	load 	MulDiv_IntShift21_stringassignstr1379 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	MulDiv_IntShift21_stringassigncpy1381
+	jneq 	_r8_1 	uint8:0x00 	MulDiv_IntShift21_stringassigncpy1380
 	; LineNumber: 204
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_i1 	uint8:0x0a 	MulDiv_IntShift21_eblock1384
-.label MulDiv_IntShift21_ctb1383 ;Main true block ;keep 
+	jneq 	Vars_i1 	uint8:0x0a 	MulDiv_IntShift21_eblock1383
+.label MulDiv_IntShift21_ctb1382 ;Main true block ;keep 
 	; LineNumber: 203
 	call Common_PASS
-	jump MulDiv_IntShift21_edblock1385
-.label MulDiv_IntShift21_eblock1384
+	jump MulDiv_IntShift21_edblock1384
+.label MulDiv_IntShift21_eblock1383
 	; LineNumber: 203
 	call Common_FAIL
-.label MulDiv_IntShift21_edblock1385
+.label MulDiv_IntShift21_edblock1384
 	; LineNumber: 205
 	return
 .label end_procedure_MulDiv_IntShift21
@@ -5776,22 +5691,22 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label MulDiv_Array1_stringassigncpy1392
-	load 	MulDiv_Array1_stringassignstr1391 	_r8_2 	_r8_1
+.label MulDiv_Array1_stringassigncpy1391
+	load 	MulDiv_Array1_stringassignstr1390 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	MulDiv_Array1_stringassigncpy1392
+	jneq 	_r8_1 	uint8:0x00 	MulDiv_Array1_stringassigncpy1391
 	; LineNumber: 214
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_v1 	uint8:0x11 	MulDiv_Array1_eblock1395
-.label MulDiv_Array1_ctb1394 ;Main true block ;keep 
+	jneq 	Vars_v1 	uint8:0x11 	MulDiv_Array1_eblock1394
+.label MulDiv_Array1_ctb1393 ;Main true block ;keep 
 	; LineNumber: 213
 	call Common_PASS
-	jump MulDiv_Array1_edblock1396
-.label MulDiv_Array1_eblock1395
+	jump MulDiv_Array1_edblock1395
+.label MulDiv_Array1_eblock1394
 	; LineNumber: 213
 	call Common_FAIL
-.label MulDiv_Array1_edblock1396
+.label MulDiv_Array1_edblock1395
 	; LineNumber: 215
 	return
 .label end_procedure_MulDiv_Array1
@@ -5813,22 +5728,22 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label MulDiv_Shift0_stringassigncpy1403
-	load 	MulDiv_Shift0_stringassignstr1402 	_r8_2 	_r8_1
+.label MulDiv_Shift0_stringassigncpy1402
+	load 	MulDiv_Shift0_stringassignstr1401 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	MulDiv_Shift0_stringassigncpy1403
+	jneq 	_r8_1 	uint8:0x00 	MulDiv_Shift0_stringassigncpy1402
 	; LineNumber: 225
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_v1 	uint8:0x14 	MulDiv_Shift0_eblock1406
-.label MulDiv_Shift0_ctb1405 ;Main true block ;keep 
+	jneq 	Vars_v1 	uint8:0x14 	MulDiv_Shift0_eblock1405
+.label MulDiv_Shift0_ctb1404 ;Main true block ;keep 
 	; LineNumber: 224
 	call Common_PASS
-	jump MulDiv_Shift0_edblock1407
-.label MulDiv_Shift0_eblock1406
+	jump MulDiv_Shift0_edblock1406
+.label MulDiv_Shift0_eblock1405
 	; LineNumber: 224
 	call Common_FAIL
-.label MulDiv_Shift0_edblock1407
+.label MulDiv_Shift0_edblock1406
 	; LineNumber: 226
 	return
 .label end_procedure_MulDiv_Shift0
@@ -5850,22 +5765,22 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label MulDiv_Shift1_stringassigncpy1414
-	load 	MulDiv_Shift1_stringassignstr1413 	_r8_2 	_r8_1
+.label MulDiv_Shift1_stringassigncpy1413
+	load 	MulDiv_Shift1_stringassignstr1412 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	MulDiv_Shift1_stringassigncpy1414
+	jneq 	_r8_1 	uint8:0x00 	MulDiv_Shift1_stringassigncpy1413
 	; LineNumber: 236
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_v1 	uint8:0x28 	MulDiv_Shift1_eblock1417
-.label MulDiv_Shift1_ctb1416 ;Main true block ;keep 
+	jneq 	Vars_v1 	uint8:0x28 	MulDiv_Shift1_eblock1416
+.label MulDiv_Shift1_ctb1415 ;Main true block ;keep 
 	; LineNumber: 235
 	call Common_PASS
-	jump MulDiv_Shift1_edblock1418
-.label MulDiv_Shift1_eblock1417
+	jump MulDiv_Shift1_edblock1417
+.label MulDiv_Shift1_eblock1416
 	; LineNumber: 235
 	call Common_FAIL
-.label MulDiv_Shift1_edblock1418
+.label MulDiv_Shift1_edblock1417
 	; LineNumber: 237
 	return
 .label end_procedure_MulDiv_Shift1
@@ -5889,22 +5804,22 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label MulDiv_Shift2_stringassigncpy1425
-	load 	MulDiv_Shift2_stringassignstr1424 	_r8_2 	_r8_1
+.label MulDiv_Shift2_stringassigncpy1424
+	load 	MulDiv_Shift2_stringassignstr1423 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	MulDiv_Shift2_stringassigncpy1425
+	jneq 	_r8_1 	uint8:0x00 	MulDiv_Shift2_stringassigncpy1424
 	; LineNumber: 247
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_v1 	uint8:0x0a 	MulDiv_Shift2_eblock1428
-.label MulDiv_Shift2_ctb1427 ;Main true block ;keep 
+	jneq 	Vars_v1 	uint8:0x0a 	MulDiv_Shift2_eblock1427
+.label MulDiv_Shift2_ctb1426 ;Main true block ;keep 
 	; LineNumber: 246
 	call Common_PASS
-	jump MulDiv_Shift2_edblock1429
-.label MulDiv_Shift2_eblock1428
+	jump MulDiv_Shift2_edblock1428
+.label MulDiv_Shift2_eblock1427
 	; LineNumber: 246
 	call Common_FAIL
-.label MulDiv_Shift2_edblock1429
+.label MulDiv_Shift2_edblock1428
 	; LineNumber: 248
 	return
 .label end_procedure_MulDiv_Shift2
@@ -5928,22 +5843,22 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label MulDiv_Shift4_stringassigncpy1436
-	load 	MulDiv_Shift4_stringassignstr1435 	_r8_2 	_r8_1
+.label MulDiv_Shift4_stringassigncpy1435
+	load 	MulDiv_Shift4_stringassignstr1434 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	MulDiv_Shift4_stringassigncpy1436
+	jneq 	_r8_1 	uint8:0x00 	MulDiv_Shift4_stringassigncpy1435
 	; LineNumber: 258
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_i1 	uint16:0x7d0 	MulDiv_Shift4_eblock1439
-.label MulDiv_Shift4_ctb1438 ;Main true block ;keep 
+	jneq 	Vars_i1 	uint16:0x7d0 	MulDiv_Shift4_eblock1438
+.label MulDiv_Shift4_ctb1437 ;Main true block ;keep 
 	; LineNumber: 257
 	call Common_PASS
-	jump MulDiv_Shift4_edblock1440
-.label MulDiv_Shift4_eblock1439
+	jump MulDiv_Shift4_edblock1439
+.label MulDiv_Shift4_eblock1438
 	; LineNumber: 257
 	call Common_FAIL
-.label MulDiv_Shift4_edblock1440
+.label MulDiv_Shift4_edblock1439
 	; LineNumber: 260
 	return
 .label end_procedure_MulDiv_Shift4
@@ -5967,22 +5882,22 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label MulDiv_Shift5_stringassigncpy1447
-	load 	MulDiv_Shift5_stringassignstr1446 	_r8_2 	_r8_1
+.label MulDiv_Shift5_stringassigncpy1446
+	load 	MulDiv_Shift5_stringassignstr1445 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	MulDiv_Shift5_stringassigncpy1447
+	jneq 	_r8_1 	uint8:0x00 	MulDiv_Shift5_stringassigncpy1446
 	; LineNumber: 270
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_i1 	uint16:0x1f40 	MulDiv_Shift5_eblock1450
-.label MulDiv_Shift5_ctb1449 ;Main true block ;keep 
+	jneq 	Vars_i1 	uint16:0x1f40 	MulDiv_Shift5_eblock1449
+.label MulDiv_Shift5_ctb1448 ;Main true block ;keep 
 	; LineNumber: 269
 	call Common_PASS
-	jump MulDiv_Shift5_edblock1451
-.label MulDiv_Shift5_eblock1450
+	jump MulDiv_Shift5_edblock1450
+.label MulDiv_Shift5_eblock1449
 	; LineNumber: 269
 	call Common_FAIL
-.label MulDiv_Shift5_edblock1451
+.label MulDiv_Shift5_edblock1450
 	; LineNumber: 271
 	mov 	Common_v 	Vars_i1
 	call Common_DebugValue
@@ -6009,22 +5924,22 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label MulDiv_Shift6_stringassigncpy1458
-	load 	MulDiv_Shift6_stringassignstr1457 	_r8_2 	_r8_1
+.label MulDiv_Shift6_stringassigncpy1457
+	load 	MulDiv_Shift6_stringassignstr1456 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	MulDiv_Shift6_stringassigncpy1458
+	jneq 	_r8_1 	uint8:0x00 	MulDiv_Shift6_stringassigncpy1457
 	; LineNumber: 283
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_i1 	uint16:0x3e8 	MulDiv_Shift6_eblock1461
-.label MulDiv_Shift6_ctb1460 ;Main true block ;keep 
+	jneq 	Vars_i1 	uint16:0x3e8 	MulDiv_Shift6_eblock1460
+.label MulDiv_Shift6_ctb1459 ;Main true block ;keep 
 	; LineNumber: 282
 	call Common_PASS
-	jump MulDiv_Shift6_edblock1462
-.label MulDiv_Shift6_eblock1461
+	jump MulDiv_Shift6_edblock1461
+.label MulDiv_Shift6_eblock1460
 	; LineNumber: 282
 	call Common_FAIL
-.label MulDiv_Shift6_edblock1462
+.label MulDiv_Shift6_edblock1461
 	; LineNumber: 284
 	mov 	Common_v 	Vars_i1
 	call Common_DebugValue
@@ -6053,22 +5968,22 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label MulDiv_IntByteMulR1_stringassigncpy1469
-	load 	MulDiv_IntByteMulR1_stringassignstr1468 	_r8_2 	_r8_1
+.label MulDiv_IntByteMulR1_stringassigncpy1468
+	load 	MulDiv_IntByteMulR1_stringassignstr1467 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	MulDiv_IntByteMulR1_stringassigncpy1469
+	jneq 	_r8_1 	uint8:0x00 	MulDiv_IntByteMulR1_stringassigncpy1468
 	; LineNumber: 295
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_ri 	uint16:0xdac 	MulDiv_IntByteMulR1_eblock1472
-.label MulDiv_IntByteMulR1_ctb1471 ;Main true block ;keep 
+	jneq 	Vars_ri 	uint16:0xdac 	MulDiv_IntByteMulR1_eblock1471
+.label MulDiv_IntByteMulR1_ctb1470 ;Main true block ;keep 
 	; LineNumber: 294
 	call Common_PASS
-	jump MulDiv_IntByteMulR1_edblock1473
-.label MulDiv_IntByteMulR1_eblock1472
+	jump MulDiv_IntByteMulR1_edblock1472
+.label MulDiv_IntByteMulR1_eblock1471
 	; LineNumber: 294
 	call Common_FAIL
-.label MulDiv_IntByteMulR1_edblock1473
+.label MulDiv_IntByteMulR1_edblock1472
 	; LineNumber: 296
 	return
 .label end_procedure_MulDiv_IntByteMulR1
@@ -6094,22 +6009,22 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label MulDiv_IntByteMulR2_stringassigncpy1480
-	load 	MulDiv_IntByteMulR2_stringassignstr1479 	_r8_2 	_r8_1
+.label MulDiv_IntByteMulR2_stringassigncpy1479
+	load 	MulDiv_IntByteMulR2_stringassignstr1478 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	MulDiv_IntByteMulR2_stringassigncpy1480
+	jneq 	_r8_1 	uint8:0x00 	MulDiv_IntByteMulR2_stringassigncpy1479
 	; LineNumber: 305
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_ri 	uint16:0x1194 	MulDiv_IntByteMulR2_eblock1483
-.label MulDiv_IntByteMulR2_ctb1482 ;Main true block ;keep 
+	jneq 	Vars_ri 	uint16:0x1194 	MulDiv_IntByteMulR2_eblock1482
+.label MulDiv_IntByteMulR2_ctb1481 ;Main true block ;keep 
 	; LineNumber: 304
 	call Common_PASS
-	jump MulDiv_IntByteMulR2_edblock1484
-.label MulDiv_IntByteMulR2_eblock1483
+	jump MulDiv_IntByteMulR2_edblock1483
+.label MulDiv_IntByteMulR2_eblock1482
 	; LineNumber: 304
 	call Common_FAIL
-.label MulDiv_IntByteMulR2_edblock1484
+.label MulDiv_IntByteMulR2_edblock1483
 	; LineNumber: 306
 	return
 .label end_procedure_MulDiv_IntByteMulR2
@@ -6135,22 +6050,22 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label MulDiv_IntByteMulR3_stringassigncpy1491
-	load 	MulDiv_IntByteMulR3_stringassignstr1490 	_r8_2 	_r8_1
+.label MulDiv_IntByteMulR3_stringassigncpy1490
+	load 	MulDiv_IntByteMulR3_stringassignstr1489 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	MulDiv_IntByteMulR3_stringassigncpy1491
+	jneq 	_r8_1 	uint8:0x00 	MulDiv_IntByteMulR3_stringassigncpy1490
 	; LineNumber: 316
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_ri 	uint16:0x320 	MulDiv_IntByteMulR3_eblock1494
-.label MulDiv_IntByteMulR3_ctb1493 ;Main true block ;keep 
+	jneq 	Vars_ri 	uint16:0x320 	MulDiv_IntByteMulR3_eblock1493
+.label MulDiv_IntByteMulR3_ctb1492 ;Main true block ;keep 
 	; LineNumber: 315
 	call Common_PASS
-	jump MulDiv_IntByteMulR3_edblock1495
-.label MulDiv_IntByteMulR3_eblock1494
+	jump MulDiv_IntByteMulR3_edblock1494
+.label MulDiv_IntByteMulR3_eblock1493
 	; LineNumber: 315
 	call Common_FAIL
-.label MulDiv_IntByteMulR3_edblock1495
+.label MulDiv_IntByteMulR3_edblock1494
 	; LineNumber: 317
 	return
 .label end_procedure_MulDiv_IntByteMulR3
@@ -6176,22 +6091,22 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label MulDiv_IntByteMulR4_stringassigncpy1502
-	load 	MulDiv_IntByteMulR4_stringassignstr1501 	_r8_2 	_r8_1
+.label MulDiv_IntByteMulR4_stringassigncpy1501
+	load 	MulDiv_IntByteMulR4_stringassignstr1500 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	MulDiv_IntByteMulR4_stringassigncpy1502
+	jneq 	_r8_1 	uint8:0x00 	MulDiv_IntByteMulR4_stringassigncpy1501
 	; LineNumber: 326
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_ri 	uint16:0x384 	MulDiv_IntByteMulR4_eblock1505
-.label MulDiv_IntByteMulR4_ctb1504 ;Main true block ;keep 
+	jneq 	Vars_ri 	uint16:0x384 	MulDiv_IntByteMulR4_eblock1504
+.label MulDiv_IntByteMulR4_ctb1503 ;Main true block ;keep 
 	; LineNumber: 325
 	call Common_PASS
-	jump MulDiv_IntByteMulR4_edblock1506
-.label MulDiv_IntByteMulR4_eblock1505
+	jump MulDiv_IntByteMulR4_edblock1505
+.label MulDiv_IntByteMulR4_eblock1504
 	; LineNumber: 325
 	call Common_FAIL
-.label MulDiv_IntByteMulR4_edblock1506
+.label MulDiv_IntByteMulR4_edblock1505
 	; LineNumber: 327
 	return
 .label end_procedure_MulDiv_IntByteMulR4
@@ -6217,22 +6132,22 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label MulDiv_ByteMulBytePlus01_stringassigncpy1513
-	load 	MulDiv_ByteMulBytePlus01_stringassignstr1512 	_r8_2 	_r8_1
+.label MulDiv_ByteMulBytePlus01_stringassigncpy1512
+	load 	MulDiv_ByteMulBytePlus01_stringassignstr1511 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	MulDiv_ByteMulBytePlus01_stringassigncpy1513
+	jneq 	_r8_1 	uint8:0x00 	MulDiv_ByteMulBytePlus01_stringassigncpy1512
 	; LineNumber: 336
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_rb 	uint8:0x91 	MulDiv_ByteMulBytePlus01_eblock1516
-.label MulDiv_ByteMulBytePlus01_ctb1515 ;Main true block ;keep 
+	jneq 	Vars_rb 	uint8:0x91 	MulDiv_ByteMulBytePlus01_eblock1515
+.label MulDiv_ByteMulBytePlus01_ctb1514 ;Main true block ;keep 
 	; LineNumber: 335
 	call Common_PASS
-	jump MulDiv_ByteMulBytePlus01_edblock1517
-.label MulDiv_ByteMulBytePlus01_eblock1516
+	jump MulDiv_ByteMulBytePlus01_edblock1516
+.label MulDiv_ByteMulBytePlus01_eblock1515
 	; LineNumber: 335
 	call Common_FAIL
-.label MulDiv_ByteMulBytePlus01_edblock1517
+.label MulDiv_ByteMulBytePlus01_edblock1516
 	; LineNumber: 337
 	return
 .label end_procedure_MulDiv_ByteMulBytePlus01
@@ -6258,22 +6173,22 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label MulDiv_ByteMulBytePlus02_stringassigncpy1524
-	load 	MulDiv_ByteMulBytePlus02_stringassignstr1523 	_r8_2 	_r8_1
+.label MulDiv_ByteMulBytePlus02_stringassigncpy1523
+	load 	MulDiv_ByteMulBytePlus02_stringassignstr1522 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	MulDiv_ByteMulBytePlus02_stringassigncpy1524
+	jneq 	_r8_1 	uint8:0x00 	MulDiv_ByteMulBytePlus02_stringassigncpy1523
 	; LineNumber: 346
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_rb 	uint8:0x0f 	MulDiv_ByteMulBytePlus02_eblock1527
-.label MulDiv_ByteMulBytePlus02_ctb1526 ;Main true block ;keep 
+	jneq 	Vars_rb 	uint8:0x0f 	MulDiv_ByteMulBytePlus02_eblock1526
+.label MulDiv_ByteMulBytePlus02_ctb1525 ;Main true block ;keep 
 	; LineNumber: 345
 	call Common_PASS
-	jump MulDiv_ByteMulBytePlus02_edblock1528
-.label MulDiv_ByteMulBytePlus02_eblock1527
+	jump MulDiv_ByteMulBytePlus02_edblock1527
+.label MulDiv_ByteMulBytePlus02_eblock1526
 	; LineNumber: 345
 	call Common_FAIL
-.label MulDiv_ByteMulBytePlus02_edblock1528
+.label MulDiv_ByteMulBytePlus02_edblock1527
 	; LineNumber: 347
 	return
 .label end_procedure_MulDiv_ByteMulBytePlus02
@@ -6286,7 +6201,7 @@ text_print_finished
 	
 ; // initialise everything
 	; Assigning a string : Common_zp
-	mov 	Common_zp 	#MulDiv_Exec_stringassignstr1534
+	mov 	Common_zp 	#MulDiv_Exec_stringassignstr1533
 	call Common_Initialise
 	; LineNumber: 359
 	
@@ -6389,34 +6304,34 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label ForLoop_Test1_stringassigncpy1537
-	load 	ForLoop_Test1_stringassignstr1536 	_r8_2 	_r8_1
+.label ForLoop_Test1_stringassigncpy1536
+	load 	ForLoop_Test1_stringassignstr1535 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	ForLoop_Test1_stringassigncpy1537
+	jneq 	_r8_1 	uint8:0x00 	ForLoop_Test1_stringassigncpy1536
 	; LineNumber: 12
 	mov 	Vars_v1 	uint8:0x00
-.label ForLoop_Test1_forloop1538
+.label ForLoop_Test1_forloop1537
 	; LineNumber: 9
 	; LineNumber: 11
-.label ForLoop_Test1_loopstart1539
+.label ForLoop_Test1_loopstart1538
 	; push
 	add  	_r8_1 	Vars_v1 	uint8:0x01
 	mov 	Vars_v1 	_r8_1
-	jneq 	Vars_v1 	uint8:0xf0 	ForLoop_Test1_forloop1538
-.label ForLoop_Test1_loopdone1543 ;keep
-.label ForLoop_Test1_loopend1540
+	jneq 	Vars_v1 	uint8:0xf0 	ForLoop_Test1_forloop1537
+.label ForLoop_Test1_loopdone1542 ;keep
+.label ForLoop_Test1_loopend1539
 	; LineNumber: 12
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_v1 	uint8:0xf0 	ForLoop_Test1_eblock1546
-.label ForLoop_Test1_ctb1545 ;Main true block ;keep 
+	jneq 	Vars_v1 	uint8:0xf0 	ForLoop_Test1_eblock1545
+.label ForLoop_Test1_ctb1544 ;Main true block ;keep 
 	; LineNumber: 11
 	call Common_PASS
-	jump ForLoop_Test1_edblock1547
-.label ForLoop_Test1_eblock1546
+	jump ForLoop_Test1_edblock1546
+.label ForLoop_Test1_eblock1545
 	; LineNumber: 11
 	call Common_FAIL
-.label ForLoop_Test1_edblock1547
+.label ForLoop_Test1_edblock1546
 	; LineNumber: 13
 	return
 .label end_procedure_ForLoop_Test1
@@ -6432,34 +6347,34 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label ForLoop_Test2_stringassigncpy1554
-	load 	ForLoop_Test2_stringassignstr1553 	_r8_2 	_r8_1
+.label ForLoop_Test2_stringassigncpy1553
+	load 	ForLoop_Test2_stringassignstr1552 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	ForLoop_Test2_stringassigncpy1554
+	jneq 	_r8_1 	uint8:0x00 	ForLoop_Test2_stringassigncpy1553
 	; LineNumber: 24
 	mov 	Vars_v1 	uint8:0x00
-.label ForLoop_Test2_forloop1555
+.label ForLoop_Test2_forloop1554
 	; LineNumber: 21
 	; LineNumber: 23
-.label ForLoop_Test2_loopstart1556
+.label ForLoop_Test2_loopstart1555
 	; push
 	add  	_r8_1 	Vars_v1 	uint8:0x01
 	mov 	Vars_v1 	_r8_1
-	jneq 	Vars_v1 	uint8:0xf1 	ForLoop_Test2_forloop1555
-.label ForLoop_Test2_loopdone1560 ;keep
-.label ForLoop_Test2_loopend1557
+	jneq 	Vars_v1 	uint8:0xf1 	ForLoop_Test2_forloop1554
+.label ForLoop_Test2_loopdone1559 ;keep
+.label ForLoop_Test2_loopend1556
 	; LineNumber: 24
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_v1 	uint8:0xf1 	ForLoop_Test2_eblock1563
-.label ForLoop_Test2_ctb1562 ;Main true block ;keep 
+	jneq 	Vars_v1 	uint8:0xf1 	ForLoop_Test2_eblock1562
+.label ForLoop_Test2_ctb1561 ;Main true block ;keep 
 	; LineNumber: 23
 	call Common_PASS
-	jump ForLoop_Test2_edblock1564
-.label ForLoop_Test2_eblock1563
+	jump ForLoop_Test2_edblock1563
+.label ForLoop_Test2_eblock1562
 	; LineNumber: 23
 	call Common_FAIL
-.label ForLoop_Test2_edblock1564
+.label ForLoop_Test2_edblock1563
 	; LineNumber: 25
 	return
 .label end_procedure_ForLoop_Test2
@@ -6475,34 +6390,34 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label ForLoop_Test3_stringassigncpy1571
-	load 	ForLoop_Test3_stringassignstr1570 	_r8_2 	_r8_1
+.label ForLoop_Test3_stringassigncpy1570
+	load 	ForLoop_Test3_stringassignstr1569 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	ForLoop_Test3_stringassigncpy1571
+	jneq 	_r8_1 	uint8:0x00 	ForLoop_Test3_stringassigncpy1570
 	; LineNumber: 36
 	mov 	Vars_i1 	uint8:0x00
-.label ForLoop_Test3_forloop1572
+.label ForLoop_Test3_forloop1571
 	; LineNumber: 33
 	; LineNumber: 35
-.label ForLoop_Test3_loopstart1573
+.label ForLoop_Test3_loopstart1572
 	; push
 	add  	_r16_1 	Vars_i1 	uint16:0x01
 	mov 	Vars_i1 	_r16_1
-	jneq 	Vars_i1 	uint16:0x3e8 	ForLoop_Test3_forloop1572
-.label ForLoop_Test3_loopdone1577 ;keep
-.label ForLoop_Test3_loopend1574
+	jneq 	Vars_i1 	uint16:0x3e8 	ForLoop_Test3_forloop1571
+.label ForLoop_Test3_loopdone1576 ;keep
+.label ForLoop_Test3_loopend1573
 	; LineNumber: 36
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_i1 	uint16:0x3e8 	ForLoop_Test3_eblock1580
-.label ForLoop_Test3_ctb1579 ;Main true block ;keep 
+	jneq 	Vars_i1 	uint16:0x3e8 	ForLoop_Test3_eblock1579
+.label ForLoop_Test3_ctb1578 ;Main true block ;keep 
 	; LineNumber: 35
 	call Common_PASS
-	jump ForLoop_Test3_edblock1581
-.label ForLoop_Test3_eblock1580
+	jump ForLoop_Test3_edblock1580
+.label ForLoop_Test3_eblock1579
 	; LineNumber: 35
 	call Common_FAIL
-.label ForLoop_Test3_edblock1581
+.label ForLoop_Test3_edblock1580
 	; LineNumber: 37
 	return
 .label end_procedure_ForLoop_Test3
@@ -6518,34 +6433,34 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label ForLoop_Test4_stringassigncpy1588
-	load 	ForLoop_Test4_stringassignstr1587 	_r8_2 	_r8_1
+.label ForLoop_Test4_stringassigncpy1587
+	load 	ForLoop_Test4_stringassignstr1586 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	ForLoop_Test4_stringassigncpy1588
+	jneq 	_r8_1 	uint8:0x00 	ForLoop_Test4_stringassigncpy1587
 	; LineNumber: 48
 	mov 	Vars_i1 	uint8:0x00
-.label ForLoop_Test4_forloop1589
+.label ForLoop_Test4_forloop1588
 	; LineNumber: 45
 	; LineNumber: 47
-.label ForLoop_Test4_loopstart1590
+.label ForLoop_Test4_loopstart1589
 	; push
 	add  	_r16_1 	Vars_i1 	uint16:0x01
 	mov 	Vars_i1 	_r16_1
-	jneq 	Vars_i1 	uint16:0x3e9 	ForLoop_Test4_forloop1589
-.label ForLoop_Test4_loopdone1594 ;keep
-.label ForLoop_Test4_loopend1591
+	jneq 	Vars_i1 	uint16:0x3e9 	ForLoop_Test4_forloop1588
+.label ForLoop_Test4_loopdone1593 ;keep
+.label ForLoop_Test4_loopend1590
 	; LineNumber: 48
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_i1 	uint16:0x3e9 	ForLoop_Test4_eblock1597
-.label ForLoop_Test4_ctb1596 ;Main true block ;keep 
+	jneq 	Vars_i1 	uint16:0x3e9 	ForLoop_Test4_eblock1596
+.label ForLoop_Test4_ctb1595 ;Main true block ;keep 
 	; LineNumber: 47
 	call Common_PASS
-	jump ForLoop_Test4_edblock1598
-.label ForLoop_Test4_eblock1597
+	jump ForLoop_Test4_edblock1597
+.label ForLoop_Test4_eblock1596
 	; LineNumber: 47
 	call Common_FAIL
-.label ForLoop_Test4_edblock1598
+.label ForLoop_Test4_edblock1597
 	; LineNumber: 49
 	return
 .label end_procedure_ForLoop_Test4
@@ -6561,40 +6476,40 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label ForLoop_Test5_stringassigncpy1605
-	load 	ForLoop_Test5_stringassignstr1604 	_r8_2 	_r8_1
+.label ForLoop_Test5_stringassigncpy1604
+	load 	ForLoop_Test5_stringassignstr1603 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	ForLoop_Test5_stringassigncpy1605
+	jneq 	_r8_1 	uint8:0x00 	ForLoop_Test5_stringassigncpy1604
 	; LineNumber: 56
 	mov 	Vars_v2 	uint8:0x00
 	; LineNumber: 61
 	mov 	Vars_v1 	uint8:0x00
-.label ForLoop_Test5_forloop1606
+.label ForLoop_Test5_forloop1605
 	; LineNumber: 58
 	; LineNumber: 59
 	; push
 	add  	_r8_1 	Vars_v2 	uint8:0x01
 	mov 	Vars_v2 	_r8_1
 	; LineNumber: 60
-.label ForLoop_Test5_loopstart1607
+.label ForLoop_Test5_loopstart1606
 	; push
 	add  	_r8_1 	Vars_v1 	uint8:0x04
 	mov 	Vars_v1 	_r8_1
-	jneq 	Vars_v1 	uint8:0xf0 	ForLoop_Test5_forloop1606
-.label ForLoop_Test5_loopdone1611 ;keep
-.label ForLoop_Test5_loopend1608
+	jneq 	Vars_v1 	uint8:0xf0 	ForLoop_Test5_forloop1605
+.label ForLoop_Test5_loopdone1610 ;keep
+.label ForLoop_Test5_loopend1607
 	; LineNumber: 61
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_v2 	uint8:0x3c 	ForLoop_Test5_eblock1614
-.label ForLoop_Test5_ctb1613 ;Main true block ;keep 
+	jneq 	Vars_v2 	uint8:0x3c 	ForLoop_Test5_eblock1613
+.label ForLoop_Test5_ctb1612 ;Main true block ;keep 
 	; LineNumber: 60
 	call Common_PASS
-	jump ForLoop_Test5_edblock1615
-.label ForLoop_Test5_eblock1614
+	jump ForLoop_Test5_edblock1614
+.label ForLoop_Test5_eblock1613
 	; LineNumber: 60
 	call Common_FAIL
-.label ForLoop_Test5_edblock1615
+.label ForLoop_Test5_edblock1614
 	; LineNumber: 62
 	return
 .label end_procedure_ForLoop_Test5
@@ -6610,40 +6525,40 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label ForLoop_Test6_stringassigncpy1622
-	load 	ForLoop_Test6_stringassignstr1621 	_r8_2 	_r8_1
+.label ForLoop_Test6_stringassigncpy1621
+	load 	ForLoop_Test6_stringassignstr1620 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	ForLoop_Test6_stringassigncpy1622
+	jneq 	_r8_1 	uint8:0x00 	ForLoop_Test6_stringassigncpy1621
 	; LineNumber: 68
 	mov 	Vars_v2 	uint8:0x00
 	; LineNumber: 73
 	mov 	Vars_i1 	uint8:0x00
-.label ForLoop_Test6_forloop1623
+.label ForLoop_Test6_forloop1622
 	; LineNumber: 70
 	; LineNumber: 71
 	; push
 	add  	_r8_1 	Vars_v2 	uint8:0x01
 	mov 	Vars_v2 	_r8_1
 	; LineNumber: 72
-.label ForLoop_Test6_loopstart1624
+.label ForLoop_Test6_loopstart1623
 	; push
 	add  	_r16_1 	Vars_i1 	uint16:0x04
 	mov 	Vars_i1 	_r16_1
-	jneq 	Vars_i1 	uint16:0x3e8 	ForLoop_Test6_forloop1623
-.label ForLoop_Test6_loopdone1628 ;keep
-.label ForLoop_Test6_loopend1625
+	jneq 	Vars_i1 	uint16:0x3e8 	ForLoop_Test6_forloop1622
+.label ForLoop_Test6_loopdone1627 ;keep
+.label ForLoop_Test6_loopend1624
 	; LineNumber: 73
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_v2 	uint8:0xfa 	ForLoop_Test6_eblock1631
-.label ForLoop_Test6_ctb1630 ;Main true block ;keep 
+	jneq 	Vars_v2 	uint8:0xfa 	ForLoop_Test6_eblock1630
+.label ForLoop_Test6_ctb1629 ;Main true block ;keep 
 	; LineNumber: 72
 	call Common_PASS
-	jump ForLoop_Test6_edblock1632
-.label ForLoop_Test6_eblock1631
+	jump ForLoop_Test6_edblock1631
+.label ForLoop_Test6_eblock1630
 	; LineNumber: 72
 	call Common_FAIL
-.label ForLoop_Test6_edblock1632
+.label ForLoop_Test6_edblock1631
 	; LineNumber: 74
 	return
 .label end_procedure_ForLoop_Test6
@@ -6659,40 +6574,40 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label ForLoop_Test7_stringassigncpy1639
-	load 	ForLoop_Test7_stringassignstr1638 	_r8_2 	_r8_1
+.label ForLoop_Test7_stringassigncpy1638
+	load 	ForLoop_Test7_stringassignstr1637 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	ForLoop_Test7_stringassigncpy1639
+	jneq 	_r8_1 	uint8:0x00 	ForLoop_Test7_stringassigncpy1638
 	; LineNumber: 80
 	mov 	Vars_v2 	uint8:0x01
 	; LineNumber: 85
 	mov 	Vars_v1 	uint8:0x00
-.label ForLoop_Test7_forloop1640
+.label ForLoop_Test7_forloop1639
 	; LineNumber: 82
 	; LineNumber: 83
 	; push
 	add  	_r8_1 	Vars_v2 	uint8:0x01
 	mov 	Vars_v2 	_r8_1
 	; LineNumber: 84
-.label ForLoop_Test7_loopstart1641
+.label ForLoop_Test7_loopstart1640
 	; push
 	add  	_r8_1 	Vars_v1 	Vars_v2
 	mov 	Vars_v1 	_r8_1
-	jneq 	Vars_v1 	uint8:0x14 	ForLoop_Test7_forloop1640
-.label ForLoop_Test7_loopdone1645 ;keep
-.label ForLoop_Test7_loopend1642
+	jneq 	Vars_v1 	uint8:0x14 	ForLoop_Test7_forloop1639
+.label ForLoop_Test7_loopdone1644 ;keep
+.label ForLoop_Test7_loopend1641
 	; LineNumber: 85
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_v2 	uint8:0x06 	ForLoop_Test7_eblock1648
-.label ForLoop_Test7_ctb1647 ;Main true block ;keep 
+	jneq 	Vars_v2 	uint8:0x06 	ForLoop_Test7_eblock1647
+.label ForLoop_Test7_ctb1646 ;Main true block ;keep 
 	; LineNumber: 84
 	call Common_PASS
-	jump ForLoop_Test7_edblock1649
-.label ForLoop_Test7_eblock1648
+	jump ForLoop_Test7_edblock1648
+.label ForLoop_Test7_eblock1647
 	; LineNumber: 84
 	call Common_FAIL
-.label ForLoop_Test7_edblock1649
+.label ForLoop_Test7_edblock1648
 	; LineNumber: 86
 	return
 .label end_procedure_ForLoop_Test7
@@ -6708,11 +6623,11 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label ForLoop_Test8_stringassigncpy1656
-	load 	ForLoop_Test8_stringassignstr1655 	_r8_2 	_r8_1
+.label ForLoop_Test8_stringassigncpy1655
+	load 	ForLoop_Test8_stringassignstr1654 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	ForLoop_Test8_stringassigncpy1656
+	jneq 	_r8_1 	uint8:0x00 	ForLoop_Test8_stringassigncpy1655
 	; LineNumber: 95
 	mov 	Vars_v2 	uint8:0x00
 	; LineNumber: 96
@@ -6723,14 +6638,14 @@ text_print_finished
 	store Vars_p1 Vars_v3 uint8:0x14
 	; LineNumber: 108
 	mov 	Vars_v1 	uint8:0x00
-.label ForLoop_Test8_forloop1657
+.label ForLoop_Test8_forloop1656
 	; LineNumber: 105
 	; LineNumber: 106
 	; push
 	add  	_r8_1 	Vars_v2 	uint8:0x01
 	mov 	Vars_v2 	_r8_1
 	; LineNumber: 107
-.label ForLoop_Test8_loopstart1658
+.label ForLoop_Test8_loopstart1657
 	; push
 	add  	_r8_1 	Vars_v1 	uint8:0x02
 	mov 	Vars_v1 	_r8_1
@@ -6738,20 +6653,20 @@ text_print_finished
 	; LoadPointer
 	; push
 	load 	Vars_p1 	Vars_v3 	_r8_1
-	jneq 	Vars_v1 	_r8_1 	ForLoop_Test8_forloop1657
-.label ForLoop_Test8_loopdone1662 ;keep
-.label ForLoop_Test8_loopend1659
+	jneq 	Vars_v1 	_r8_1 	ForLoop_Test8_forloop1656
+.label ForLoop_Test8_loopdone1661 ;keep
+.label ForLoop_Test8_loopend1658
 	; LineNumber: 108
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_v2 	uint8:0x0a 	ForLoop_Test8_eblock1665
-.label ForLoop_Test8_ctb1664 ;Main true block ;keep 
+	jneq 	Vars_v2 	uint8:0x0a 	ForLoop_Test8_eblock1664
+.label ForLoop_Test8_ctb1663 ;Main true block ;keep 
 	; LineNumber: 107
 	call Common_PASS
-	jump ForLoop_Test8_edblock1666
-.label ForLoop_Test8_eblock1665
+	jump ForLoop_Test8_edblock1665
+.label ForLoop_Test8_eblock1664
 	; LineNumber: 107
 	call Common_FAIL
-.label ForLoop_Test8_edblock1666
+.label ForLoop_Test8_edblock1665
 	; LineNumber: 109
 	return
 .label end_procedure_ForLoop_Test8
@@ -6767,47 +6682,47 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label ForLoop_TestBreak_stringassigncpy1673
-	load 	ForLoop_TestBreak_stringassignstr1672 	_r8_2 	_r8_1
+.label ForLoop_TestBreak_stringassigncpy1672
+	load 	ForLoop_TestBreak_stringassignstr1671 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	ForLoop_TestBreak_stringassigncpy1673
+	jneq 	_r8_1 	uint8:0x00 	ForLoop_TestBreak_stringassigncpy1672
 	; LineNumber: 117
 	mov 	Vars_v2 	uint8:0x00
 	; LineNumber: 123
 	mov 	Vars_v1 	uint8:0x00
-.label ForLoop_TestBreak_forloop1674
+.label ForLoop_TestBreak_forloop1673
 	; LineNumber: 119
 	; LineNumber: 120
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_v1 	uint8:0x05 	ForLoop_TestBreak_edblock1688
-.label ForLoop_TestBreak_ctb1686 ;Main true block ;keep 
+	jneq 	Vars_v1 	uint8:0x05 	ForLoop_TestBreak_edblock1687
+.label ForLoop_TestBreak_ctb1685 ;Main true block ;keep 
 	; LineNumber: 119
-	jump ForLoop_TestBreak_loopend1676
-.label ForLoop_TestBreak_edblock1688
+	jump ForLoop_TestBreak_loopend1675
+.label ForLoop_TestBreak_edblock1687
 	; LineNumber: 121
 	; push
 	add  	_r8_1 	Vars_v2 	uint8:0x01
 	mov 	Vars_v2 	_r8_1
 	; LineNumber: 122
-.label ForLoop_TestBreak_loopstart1675
+.label ForLoop_TestBreak_loopstart1674
 	; push
 	add  	_r8_1 	Vars_v1 	uint8:0x01
 	mov 	Vars_v1 	_r8_1
-	jneq 	Vars_v1 	uint8:0x14 	ForLoop_TestBreak_forloop1674
-.label ForLoop_TestBreak_loopdone1690 ;keep
-.label ForLoop_TestBreak_loopend1676
+	jneq 	Vars_v1 	uint8:0x14 	ForLoop_TestBreak_forloop1673
+.label ForLoop_TestBreak_loopdone1689 ;keep
+.label ForLoop_TestBreak_loopend1675
 	; LineNumber: 123
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_v2 	uint8:0x05 	ForLoop_TestBreak_eblock1693
-.label ForLoop_TestBreak_ctb1692 ;Main true block ;keep 
+	jneq 	Vars_v2 	uint8:0x05 	ForLoop_TestBreak_eblock1692
+.label ForLoop_TestBreak_ctb1691 ;Main true block ;keep 
 	; LineNumber: 122
 	call Common_PASS
-	jump ForLoop_TestBreak_edblock1694
-.label ForLoop_TestBreak_eblock1693
+	jump ForLoop_TestBreak_edblock1693
+.label ForLoop_TestBreak_eblock1692
 	; LineNumber: 122
 	call Common_FAIL
-.label ForLoop_TestBreak_edblock1694
+.label ForLoop_TestBreak_edblock1693
 	; LineNumber: 124
 	return
 .label end_procedure_ForLoop_TestBreak
@@ -6823,47 +6738,47 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label ForLoop_TestContinue_stringassigncpy1701
-	load 	ForLoop_TestContinue_stringassignstr1700 	_r8_2 	_r8_1
+.label ForLoop_TestContinue_stringassigncpy1700
+	load 	ForLoop_TestContinue_stringassignstr1699 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	ForLoop_TestContinue_stringassigncpy1701
+	jneq 	_r8_1 	uint8:0x00 	ForLoop_TestContinue_stringassigncpy1700
 	; LineNumber: 130
 	mov 	Vars_v2 	uint8:0x00
 	; LineNumber: 138
 	mov 	Vars_v1 	uint8:0x00
-.label ForLoop_TestContinue_forloop1702
+.label ForLoop_TestContinue_forloop1701
 	; LineNumber: 132
 	; LineNumber: 133
 	; Binary clause Simplified: GREATEREQUAL
-	jlt 	Vars_v1 	uint8:0x05 	ForLoop_TestContinue_edblock1716
-.label ForLoop_TestContinue_ctb1714 ;Main true block ;keep 
+	jlt 	Vars_v1 	uint8:0x05 	ForLoop_TestContinue_edblock1715
+.label ForLoop_TestContinue_ctb1713 ;Main true block ;keep 
 	; LineNumber: 133
-	jump ForLoop_TestContinue_loopstart1703
-.label ForLoop_TestContinue_edblock1716
+	jump ForLoop_TestContinue_loopstart1702
+.label ForLoop_TestContinue_edblock1715
 	; LineNumber: 136
 	; push
 	add  	_r8_1 	Vars_v2 	uint8:0x01
 	mov 	Vars_v2 	_r8_1
 	; LineNumber: 137
-.label ForLoop_TestContinue_loopstart1703
+.label ForLoop_TestContinue_loopstart1702
 	; push
 	add  	_r8_1 	Vars_v1 	uint8:0x01
 	mov 	Vars_v1 	_r8_1
-	jneq 	Vars_v1 	uint8:0x14 	ForLoop_TestContinue_forloop1702
-.label ForLoop_TestContinue_loopdone1718 ;keep
-.label ForLoop_TestContinue_loopend1704
+	jneq 	Vars_v1 	uint8:0x14 	ForLoop_TestContinue_forloop1701
+.label ForLoop_TestContinue_loopdone1717 ;keep
+.label ForLoop_TestContinue_loopend1703
 	; LineNumber: 138
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_v2 	uint8:0x05 	ForLoop_TestContinue_eblock1721
-.label ForLoop_TestContinue_ctb1720 ;Main true block ;keep 
+	jneq 	Vars_v2 	uint8:0x05 	ForLoop_TestContinue_eblock1720
+.label ForLoop_TestContinue_ctb1719 ;Main true block ;keep 
 	; LineNumber: 137
 	call Common_PASS
-	jump ForLoop_TestContinue_edblock1722
-.label ForLoop_TestContinue_eblock1721
+	jump ForLoop_TestContinue_edblock1721
+.label ForLoop_TestContinue_eblock1720
 	; LineNumber: 137
 	call Common_FAIL
-.label ForLoop_TestContinue_edblock1722
+.label ForLoop_TestContinue_edblock1721
 	; LineNumber: 139
 	return
 .label end_procedure_ForLoop_TestContinue
@@ -6877,34 +6792,34 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label ForLoop_NegativeStep1_stringassigncpy1729
-	load 	ForLoop_NegativeStep1_stringassignstr1728 	_r8_2 	_r8_1
+.label ForLoop_NegativeStep1_stringassigncpy1728
+	load 	ForLoop_NegativeStep1_stringassignstr1727 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	ForLoop_NegativeStep1_stringassigncpy1729
+	jneq 	_r8_1 	uint8:0x00 	ForLoop_NegativeStep1_stringassigncpy1728
 	; LineNumber: 147
 	mov 	Vars_v1 	uint8:0x14
-.label ForLoop_NegativeStep1_forloop1730
+.label ForLoop_NegativeStep1_forloop1729
 	; LineNumber: 145
 	; LineNumber: 146
-.label ForLoop_NegativeStep1_loopstart1731
+.label ForLoop_NegativeStep1_loopstart1730
 	; push
 	add  	_r8_1 	Vars_v1 	uint8:0xfe
 	mov 	Vars_v1 	_r8_1
-	jneq 	Vars_v1 	uint8:0x00 	ForLoop_NegativeStep1_forloop1730
-.label ForLoop_NegativeStep1_loopdone1735 ;keep
-.label ForLoop_NegativeStep1_loopend1732
+	jneq 	Vars_v1 	uint8:0x00 	ForLoop_NegativeStep1_forloop1729
+.label ForLoop_NegativeStep1_loopdone1734 ;keep
+.label ForLoop_NegativeStep1_loopend1731
 	; LineNumber: 147
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_v1 	uint8:0x00 	ForLoop_NegativeStep1_eblock1738
-.label ForLoop_NegativeStep1_ctb1737 ;Main true block ;keep 
+	jneq 	Vars_v1 	uint8:0x00 	ForLoop_NegativeStep1_eblock1737
+.label ForLoop_NegativeStep1_ctb1736 ;Main true block ;keep 
 	; LineNumber: 146
 	call Common_PASS
-	jump ForLoop_NegativeStep1_edblock1739
-.label ForLoop_NegativeStep1_eblock1738
+	jump ForLoop_NegativeStep1_edblock1738
+.label ForLoop_NegativeStep1_eblock1737
 	; LineNumber: 146
 	call Common_FAIL
-.label ForLoop_NegativeStep1_edblock1739
+.label ForLoop_NegativeStep1_edblock1738
 	; LineNumber: 148
 	return
 .label end_procedure_ForLoop_NegativeStep1
@@ -6918,34 +6833,34 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label ForLoop_NegativeStep2_stringassigncpy1746
-	load 	ForLoop_NegativeStep2_stringassignstr1745 	_r8_2 	_r8_1
+.label ForLoop_NegativeStep2_stringassigncpy1745
+	load 	ForLoop_NegativeStep2_stringassignstr1744 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	ForLoop_NegativeStep2_stringassigncpy1746
+	jneq 	_r8_1 	uint8:0x00 	ForLoop_NegativeStep2_stringassigncpy1745
 	; LineNumber: 157
 	mov 	Vars_v1 	uint8:0x14
-.label ForLoop_NegativeStep2_forloop1747
+.label ForLoop_NegativeStep2_forloop1746
 	; LineNumber: 155
 	; LineNumber: 156
-.label ForLoop_NegativeStep2_loopstart1748
+.label ForLoop_NegativeStep2_loopstart1747
 	; push
 	add  	_r8_1 	Vars_v1 	uint8:0xfe
 	mov 	Vars_v1 	_r8_1
-	jneq 	Vars_v1 	uint16:0x100 	ForLoop_NegativeStep2_forloop1747
-.label ForLoop_NegativeStep2_loopdone1752 ;keep
-.label ForLoop_NegativeStep2_loopend1749
+	jneq 	Vars_v1 	uint16:0x100 	ForLoop_NegativeStep2_forloop1746
+.label ForLoop_NegativeStep2_loopdone1751 ;keep
+.label ForLoop_NegativeStep2_loopend1748
 	; LineNumber: 157
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_v1 	uint8:0x00 	ForLoop_NegativeStep2_eblock1755
-.label ForLoop_NegativeStep2_ctb1754 ;Main true block ;keep 
+	jneq 	Vars_v1 	uint8:0x00 	ForLoop_NegativeStep2_eblock1754
+.label ForLoop_NegativeStep2_ctb1753 ;Main true block ;keep 
 	; LineNumber: 156
 	call Common_PASS
-	jump ForLoop_NegativeStep2_edblock1756
-.label ForLoop_NegativeStep2_eblock1755
+	jump ForLoop_NegativeStep2_edblock1755
+.label ForLoop_NegativeStep2_eblock1754
 	; LineNumber: 156
 	call Common_FAIL
-.label ForLoop_NegativeStep2_edblock1756
+.label ForLoop_NegativeStep2_edblock1755
 	; LineNumber: 158
 	return
 .label end_procedure_ForLoop_NegativeStep2
@@ -6961,34 +6876,34 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label ForLoop_NegativeStep3_stringassigncpy1763
-	load 	ForLoop_NegativeStep3_stringassignstr1762 	_r8_2 	_r8_1
+.label ForLoop_NegativeStep3_stringassigncpy1762
+	load 	ForLoop_NegativeStep3_stringassignstr1761 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	ForLoop_NegativeStep3_stringassigncpy1763
+	jneq 	_r8_1 	uint8:0x00 	ForLoop_NegativeStep3_stringassigncpy1762
 	; LineNumber: 167
 	mov 	Vars_v1 	uint8:0x14
-.label ForLoop_NegativeStep3_forloop1764
+.label ForLoop_NegativeStep3_forloop1763
 	; LineNumber: 165
 	; LineNumber: 166
-.label ForLoop_NegativeStep3_loopstart1765
+.label ForLoop_NegativeStep3_loopstart1764
 	; push
 	add  	_r8_1 	Vars_v1 	uint8:0xfe
 	mov 	Vars_v1 	_r8_1
-	jneq 	Vars_v1 	uint8:0xfe 	ForLoop_NegativeStep3_forloop1764
-.label ForLoop_NegativeStep3_loopdone1769 ;keep
-.label ForLoop_NegativeStep3_loopend1766
+	jneq 	Vars_v1 	uint8:0xfe 	ForLoop_NegativeStep3_forloop1763
+.label ForLoop_NegativeStep3_loopdone1768 ;keep
+.label ForLoop_NegativeStep3_loopend1765
 	; LineNumber: 167
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_v1 	uint8:0xfe 	ForLoop_NegativeStep3_eblock1772
-.label ForLoop_NegativeStep3_ctb1771 ;Main true block ;keep 
+	jneq 	Vars_v1 	uint8:0xfe 	ForLoop_NegativeStep3_eblock1771
+.label ForLoop_NegativeStep3_ctb1770 ;Main true block ;keep 
 	; LineNumber: 166
 	call Common_PASS
-	jump ForLoop_NegativeStep3_edblock1773
-.label ForLoop_NegativeStep3_eblock1772
+	jump ForLoop_NegativeStep3_edblock1772
+.label ForLoop_NegativeStep3_eblock1771
 	; LineNumber: 166
 	call Common_FAIL
-.label ForLoop_NegativeStep3_edblock1773
+.label ForLoop_NegativeStep3_edblock1772
 	; LineNumber: 168
 	return
 .label end_procedure_ForLoop_NegativeStep3
@@ -7001,7 +6916,7 @@ text_print_finished
 .label ForLoop_Exec
 	; LineNumber: 175
 	; Assigning a string : Common_zp
-	mov 	Common_zp 	#ForLoop_Exec_stringassignstr1779
+	mov 	Common_zp 	#ForLoop_Exec_stringassignstr1778
 	call Common_Initialise
 	; LineNumber: 177
 	call ForLoop_NegativeStep1
@@ -7044,22 +6959,22 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label Strings_Test1_stringassigncpy1782
-	load 	Strings_Test1_stringassignstr1781 	_r8_2 	_r8_1
+.label Strings_Test1_stringassigncpy1781
+	load 	Strings_Test1_stringassignstr1780 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	Strings_Test1_stringassigncpy1782
+	jneq 	_r8_1 	uint8:0x00 	Strings_Test1_stringassigncpy1781
 	; LineNumber: 12
 	; Binary clause Simplified: EQUALS
-	jneq 	uint8:0x07 	uint8:0x07 	Strings_Test1_eblock1785
-.label Strings_Test1_ctb1784 ;Main true block ;keep 
+	jneq 	uint8:0x07 	uint8:0x07 	Strings_Test1_eblock1784
+.label Strings_Test1_ctb1783 ;Main true block ;keep 
 	; LineNumber: 11
 	call Common_PASS
-	jump Strings_Test1_edblock1786
-.label Strings_Test1_eblock1785
+	jump Strings_Test1_edblock1785
+.label Strings_Test1_eblock1784
 	; LineNumber: 11
 	call Common_FAIL
-.label Strings_Test1_edblock1786
+.label Strings_Test1_edblock1785
 	; LineNumber: 13
 	return
 .label end_procedure_Strings_Test1
@@ -7073,11 +6988,11 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label Strings_TestLst1_stringassigncpy1793
-	load 	Strings_TestLst1_stringassignstr1792 	_r8_2 	_r8_1
+.label Strings_TestLst1_stringassigncpy1792
+	load 	Strings_TestLst1_stringassignstr1791 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	Strings_TestLst1_stringassigncpy1793
+	jneq 	_r8_1 	uint8:0x00 	Strings_TestLst1_stringassigncpy1792
 	; LineNumber: 34
 	mov 	Vars_v1 	uint8:0x01
 	; LineNumber: 35
@@ -7093,15 +7008,15 @@ text_print_finished
 	; LoadPointer
 	; push
 	load 	Vars_p1 	uint8:0x01 	_r8_1
-	jneq 	_r8_1 	uint8:0x32 	Strings_TestLst1_eblock1796
-.label Strings_TestLst1_ctb1795 ;Main true block ;keep 
+	jneq 	_r8_1 	uint8:0x32 	Strings_TestLst1_eblock1795
+.label Strings_TestLst1_ctb1794 ;Main true block ;keep 
 	; LineNumber: 35
 	call Common_PASS
-	jump Strings_TestLst1_edblock1797
-.label Strings_TestLst1_eblock1796
+	jump Strings_TestLst1_edblock1796
+.label Strings_TestLst1_eblock1795
 	; LineNumber: 35
 	call Common_FAIL
-.label Strings_TestLst1_edblock1797
+.label Strings_TestLst1_edblock1796
 	; LineNumber: 37
 	return
 .label end_procedure_Strings_TestLst1
@@ -7115,11 +7030,11 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label Strings_TestLst2_stringassigncpy1804
-	load 	Strings_TestLst2_stringassignstr1803 	_r8_2 	_r8_1
+.label Strings_TestLst2_stringassigncpy1803
+	load 	Strings_TestLst2_stringassignstr1802 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	Strings_TestLst2_stringassigncpy1804
+	jneq 	_r8_1 	uint8:0x00 	Strings_TestLst2_stringassigncpy1803
 	; LineNumber: 43
 	; ::LoadVariable
 	; push
@@ -7133,15 +7048,15 @@ text_print_finished
 	; LoadPointer
 	; push
 	load 	Vars_p1 	uint8:0x01 	_r8_1
-	jneq 	_r8_1 	uint8:0x4b 	Strings_TestLst2_eblock1807
-.label Strings_TestLst2_ctb1806 ;Main true block ;keep 
+	jneq 	_r8_1 	uint8:0x4b 	Strings_TestLst2_eblock1806
+.label Strings_TestLst2_ctb1805 ;Main true block ;keep 
 	; LineNumber: 43
 	call Common_PASS
-	jump Strings_TestLst2_edblock1808
-.label Strings_TestLst2_eblock1807
+	jump Strings_TestLst2_edblock1807
+.label Strings_TestLst2_eblock1806
 	; LineNumber: 43
 	call Common_FAIL
-.label Strings_TestLst2_edblock1808
+.label Strings_TestLst2_edblock1807
 	; LineNumber: 45
 	return
 .label end_procedure_Strings_TestLst2
@@ -7157,11 +7072,11 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label Strings_TestLst3_stringassigncpy1815
-	load 	Strings_TestLst3_stringassignstr1814 	_r8_2 	_r8_1
+.label Strings_TestLst3_stringassigncpy1814
+	load 	Strings_TestLst3_stringassignstr1813 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	Strings_TestLst3_stringassigncpy1815
+	jneq 	_r8_1 	uint8:0x00 	Strings_TestLst3_stringassigncpy1814
 	; LineNumber: 51
 	; Assigning a string : Vars_strLst
 	; push
@@ -7169,11 +7084,11 @@ text_print_finished
 	; push
 	load 	Vars_strLst 	uint8:0x02 	_rp8_1
 	mov 	_r8_2 	uint8:0x00
-.label Strings_TestLst3_stringassigncpy1817
-	load 	Strings_TestLst3_stringassignstr1816 	_r8_2 	_r8_1
+.label Strings_TestLst3_stringassigncpy1816
+	load 	Strings_TestLst3_stringassignstr1815 	_r8_2 	_r8_1
 	store 	_rp8_1 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	Strings_TestLst3_stringassigncpy1817
+	jneq 	_r8_1 	uint8:0x00 	Strings_TestLst3_stringassigncpy1816
 	; LineNumber: 52
 	; ::LoadVariable
 	; push
@@ -7187,15 +7102,15 @@ text_print_finished
 	; LoadPointer
 	; push
 	load 	Vars_p1 	uint8:0x01 	_r8_1
-	jneq 	_r8_1 	uint8:0x45 	Strings_TestLst3_eblock1820
-.label Strings_TestLst3_ctb1819 ;Main true block ;keep 
+	jneq 	_r8_1 	uint8:0x45 	Strings_TestLst3_eblock1819
+.label Strings_TestLst3_ctb1818 ;Main true block ;keep 
 	; LineNumber: 53
 	call Common_PASS
-	jump Strings_TestLst3_edblock1821
-.label Strings_TestLst3_eblock1820
+	jump Strings_TestLst3_edblock1820
+.label Strings_TestLst3_eblock1819
 	; LineNumber: 53
 	call Common_FAIL
-.label Strings_TestLst3_edblock1821
+.label Strings_TestLst3_edblock1820
 	; LineNumber: 55
 	return
 .label end_procedure_Strings_TestLst3
@@ -7211,29 +7126,29 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label Strings_TestLst4_stringassigncpy1828
-	load 	Strings_TestLst4_stringassignstr1827 	_r8_2 	_r8_1
+.label Strings_TestLst4_stringassigncpy1827
+	load 	Strings_TestLst4_stringassignstr1826 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	Strings_TestLst4_stringassigncpy1828
+	jneq 	_r8_1 	uint8:0x00 	Strings_TestLst4_stringassigncpy1827
 	; LineNumber: 61
 	; Assigning a string : Vars_p1
-	mov 	Vars_p1 	#Strings_TestLst4_stringassignstr1829
+	mov 	Vars_p1 	#Strings_TestLst4_stringassignstr1828
 	; LineNumber: 62
 	; Binary clause Simplified: EQUALS
 	; ::LoadVariable
 	; LoadPointer
 	; push
 	load 	Vars_p1 	uint8:0x01 	_r8_1
-	jneq 	_r8_1 	uint8:0x59 	Strings_TestLst4_eblock1832
-.label Strings_TestLst4_ctb1831 ;Main true block ;keep 
+	jneq 	_r8_1 	uint8:0x59 	Strings_TestLst4_eblock1831
+.label Strings_TestLst4_ctb1830 ;Main true block ;keep 
 	; LineNumber: 61
 	call Common_PASS
-	jump Strings_TestLst4_edblock1833
-.label Strings_TestLst4_eblock1832
+	jump Strings_TestLst4_edblock1832
+.label Strings_TestLst4_eblock1831
 	; LineNumber: 61
 	call Common_FAIL
-.label Strings_TestLst4_edblock1833
+.label Strings_TestLst4_edblock1832
 	; LineNumber: 63
 	return
 .label end_procedure_Strings_TestLst4
@@ -7246,7 +7161,7 @@ text_print_finished
 .label Strings_Exec
 	; LineNumber: 70
 	; Assigning a string : Common_zp
-	mov 	Common_zp 	#Strings_Exec_stringassignstr1839
+	mov 	Common_zp 	#Strings_Exec_stringassignstr1838
 	call Common_Initialise
 	; LineNumber: 73
 	call Strings_Test1
@@ -7275,11 +7190,11 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label BitOp_Test1_stringassigncpy1842
-	load 	BitOp_Test1_stringassignstr1841 	_r8_2 	_r8_1
+.label BitOp_Test1_stringassigncpy1841
+	load 	BitOp_Test1_stringassignstr1840 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	BitOp_Test1_stringassigncpy1842
+	jneq 	_r8_1 	uint8:0x00 	BitOp_Test1_stringassigncpy1841
 	; LineNumber: 8
 	mov 	Vars_v1 	uint8:0x02
 	; LineNumber: 9
@@ -7300,15 +7215,15 @@ text_print_finished
 	; *** End of inline procedure :Common_CR
 	; LineNumber: 11
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_v1 	uint8:0x04 	BitOp_Test1_eblock1846
-.label BitOp_Test1_ctb1845 ;Main true block ;keep 
+	jneq 	Vars_v1 	uint8:0x04 	BitOp_Test1_eblock1845
+.label BitOp_Test1_ctb1844 ;Main true block ;keep 
 	; LineNumber: 10
 	call Common_PASS
-	jump BitOp_Test1_edblock1847
-.label BitOp_Test1_eblock1846
+	jump BitOp_Test1_edblock1846
+.label BitOp_Test1_eblock1845
 	; LineNumber: 10
 	call Common_FAIL
-.label BitOp_Test1_edblock1847
+.label BitOp_Test1_edblock1846
 	; LineNumber: 12
 	return
 .label end_procedure_BitOp_Test1
@@ -7324,11 +7239,11 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label BitOp_Test2_stringassigncpy1854
-	load 	BitOp_Test2_stringassignstr1853 	_r8_2 	_r8_1
+.label BitOp_Test2_stringassigncpy1853
+	load 	BitOp_Test2_stringassignstr1852 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	BitOp_Test2_stringassigncpy1854
+	jneq 	_r8_1 	uint8:0x00 	BitOp_Test2_stringassigncpy1853
 	; LineNumber: 18
 	mov 	Vars_v1 	uint8:0x04
 	; LineNumber: 19
@@ -7349,15 +7264,15 @@ text_print_finished
 	; *** End of inline procedure :Common_CR
 	; LineNumber: 21
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_v1 	uint8:0x02 	BitOp_Test2_eblock1858
-.label BitOp_Test2_ctb1857 ;Main true block ;keep 
+	jneq 	Vars_v1 	uint8:0x02 	BitOp_Test2_eblock1857
+.label BitOp_Test2_ctb1856 ;Main true block ;keep 
 	; LineNumber: 20
 	call Common_PASS
-	jump BitOp_Test2_edblock1859
-.label BitOp_Test2_eblock1858
+	jump BitOp_Test2_edblock1858
+.label BitOp_Test2_eblock1857
 	; LineNumber: 20
 	call Common_FAIL
-.label BitOp_Test2_edblock1859
+.label BitOp_Test2_edblock1858
 	; LineNumber: 22
 	return
 .label end_procedure_BitOp_Test2
@@ -7373,11 +7288,11 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label BitOp_Test3_stringassigncpy1866
-	load 	BitOp_Test3_stringassignstr1865 	_r8_2 	_r8_1
+.label BitOp_Test3_stringassigncpy1865
+	load 	BitOp_Test3_stringassignstr1864 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	BitOp_Test3_stringassigncpy1866
+	jneq 	_r8_1 	uint8:0x00 	BitOp_Test3_stringassigncpy1865
 	; LineNumber: 28
 	mov 	Vars_v1 	uint8:0x02
 	; LineNumber: 29
@@ -7400,15 +7315,15 @@ text_print_finished
 	; *** End of inline procedure :Common_CR
 	; LineNumber: 33
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_v1 	uint8:0x04 	BitOp_Test3_eblock1870
-.label BitOp_Test3_ctb1869 ;Main true block ;keep 
+	jneq 	Vars_v1 	uint8:0x04 	BitOp_Test3_eblock1869
+.label BitOp_Test3_ctb1868 ;Main true block ;keep 
 	; LineNumber: 32
 	call Common_PASS
-	jump BitOp_Test3_edblock1871
-.label BitOp_Test3_eblock1870
+	jump BitOp_Test3_edblock1870
+.label BitOp_Test3_eblock1869
 	; LineNumber: 32
 	call Common_FAIL
-.label BitOp_Test3_edblock1871
+.label BitOp_Test3_edblock1870
 	; LineNumber: 34
 	return
 .label end_procedure_BitOp_Test3
@@ -7424,11 +7339,11 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label BitOp_Test4_stringassigncpy1878
-	load 	BitOp_Test4_stringassignstr1877 	_r8_2 	_r8_1
+.label BitOp_Test4_stringassigncpy1877
+	load 	BitOp_Test4_stringassignstr1876 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	BitOp_Test4_stringassigncpy1878
+	jneq 	_r8_1 	uint8:0x00 	BitOp_Test4_stringassigncpy1877
 	; LineNumber: 40
 	mov 	Vars_v1 	uint8:0x04
 	; LineNumber: 41
@@ -7451,15 +7366,15 @@ text_print_finished
 	; *** End of inline procedure :Common_CR
 	; LineNumber: 44
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_v1 	uint8:0x02 	BitOp_Test4_eblock1882
-.label BitOp_Test4_ctb1881 ;Main true block ;keep 
+	jneq 	Vars_v1 	uint8:0x02 	BitOp_Test4_eblock1881
+.label BitOp_Test4_ctb1880 ;Main true block ;keep 
 	; LineNumber: 43
 	call Common_PASS
-	jump BitOp_Test4_edblock1883
-.label BitOp_Test4_eblock1882
+	jump BitOp_Test4_edblock1882
+.label BitOp_Test4_eblock1881
 	; LineNumber: 43
 	call Common_FAIL
-.label BitOp_Test4_edblock1883
+.label BitOp_Test4_edblock1882
 	; LineNumber: 45
 	return
 .label end_procedure_BitOp_Test4
@@ -7475,11 +7390,11 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label BitOp_Test5_stringassigncpy1890
-	load 	BitOp_Test5_stringassignstr1889 	_r8_2 	_r8_1
+.label BitOp_Test5_stringassigncpy1889
+	load 	BitOp_Test5_stringassignstr1888 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	BitOp_Test5_stringassigncpy1890
+	jneq 	_r8_1 	uint8:0x00 	BitOp_Test5_stringassigncpy1889
 	; LineNumber: 51
 	mov 	Vars_i1 	uint8:0x02
 	; LineNumber: 52
@@ -7500,15 +7415,15 @@ text_print_finished
 	; *** End of inline procedure :Common_CR
 	; LineNumber: 54
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_i1 	uint8:0x04 	BitOp_Test5_eblock1894
-.label BitOp_Test5_ctb1893 ;Main true block ;keep 
+	jneq 	Vars_i1 	uint8:0x04 	BitOp_Test5_eblock1893
+.label BitOp_Test5_ctb1892 ;Main true block ;keep 
 	; LineNumber: 53
 	call Common_PASS
-	jump BitOp_Test5_edblock1895
-.label BitOp_Test5_eblock1894
+	jump BitOp_Test5_edblock1894
+.label BitOp_Test5_eblock1893
 	; LineNumber: 53
 	call Common_FAIL
-.label BitOp_Test5_edblock1895
+.label BitOp_Test5_edblock1894
 	; LineNumber: 55
 	return
 .label end_procedure_BitOp_Test5
@@ -7524,11 +7439,11 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label BitOp_Test6_stringassigncpy1902
-	load 	BitOp_Test6_stringassignstr1901 	_r8_2 	_r8_1
+.label BitOp_Test6_stringassigncpy1901
+	load 	BitOp_Test6_stringassignstr1900 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	BitOp_Test6_stringassigncpy1902
+	jneq 	_r8_1 	uint8:0x00 	BitOp_Test6_stringassigncpy1901
 	; LineNumber: 61
 	mov 	Vars_i1 	uint8:0x04
 	; LineNumber: 62
@@ -7549,15 +7464,15 @@ text_print_finished
 	; *** End of inline procedure :Common_CR
 	; LineNumber: 64
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_i1 	uint8:0x02 	BitOp_Test6_eblock1906
-.label BitOp_Test6_ctb1905 ;Main true block ;keep 
+	jneq 	Vars_i1 	uint8:0x02 	BitOp_Test6_eblock1905
+.label BitOp_Test6_ctb1904 ;Main true block ;keep 
 	; LineNumber: 63
 	call Common_PASS
-	jump BitOp_Test6_edblock1907
-.label BitOp_Test6_eblock1906
+	jump BitOp_Test6_edblock1906
+.label BitOp_Test6_eblock1905
 	; LineNumber: 63
 	call Common_FAIL
-.label BitOp_Test6_edblock1907
+.label BitOp_Test6_edblock1906
 	; LineNumber: 65
 	return
 .label end_procedure_BitOp_Test6
@@ -7573,11 +7488,11 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label BitOp_Test7_stringassigncpy1914
-	load 	BitOp_Test7_stringassignstr1913 	_r8_2 	_r8_1
+.label BitOp_Test7_stringassigncpy1913
+	load 	BitOp_Test7_stringassignstr1912 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	BitOp_Test7_stringassigncpy1914
+	jneq 	_r8_1 	uint8:0x00 	BitOp_Test7_stringassigncpy1913
 	; LineNumber: 71
 	mov 	Vars_i1 	uint16:0x1000
 	; LineNumber: 72
@@ -7600,15 +7515,15 @@ text_print_finished
 	; *** End of inline procedure :Common_CR
 	; LineNumber: 75
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_i1 	uint16:0x2000 	BitOp_Test7_eblock1918
-.label BitOp_Test7_ctb1917 ;Main true block ;keep 
+	jneq 	Vars_i1 	uint16:0x2000 	BitOp_Test7_eblock1917
+.label BitOp_Test7_ctb1916 ;Main true block ;keep 
 	; LineNumber: 74
 	call Common_PASS
-	jump BitOp_Test7_edblock1919
-.label BitOp_Test7_eblock1918
+	jump BitOp_Test7_edblock1918
+.label BitOp_Test7_eblock1917
 	; LineNumber: 74
 	call Common_FAIL
-.label BitOp_Test7_edblock1919
+.label BitOp_Test7_edblock1918
 	; LineNumber: 76
 	return
 .label end_procedure_BitOp_Test7
@@ -7624,11 +7539,11 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label BitOp_Test8_stringassigncpy1926
-	load 	BitOp_Test8_stringassignstr1925 	_r8_2 	_r8_1
+.label BitOp_Test8_stringassigncpy1925
+	load 	BitOp_Test8_stringassignstr1924 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	BitOp_Test8_stringassigncpy1926
+	jneq 	_r8_1 	uint8:0x00 	BitOp_Test8_stringassigncpy1925
 	; LineNumber: 83
 	mov 	Vars_i1 	uint16:0x1000
 	; LineNumber: 84
@@ -7651,15 +7566,15 @@ text_print_finished
 	; *** End of inline procedure :Common_CR
 	; LineNumber: 87
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_i1 	uint16:0x800 	BitOp_Test8_eblock1930
-.label BitOp_Test8_ctb1929 ;Main true block ;keep 
+	jneq 	Vars_i1 	uint16:0x800 	BitOp_Test8_eblock1929
+.label BitOp_Test8_ctb1928 ;Main true block ;keep 
 	; LineNumber: 86
 	call Common_PASS
-	jump BitOp_Test8_edblock1931
-.label BitOp_Test8_eblock1930
+	jump BitOp_Test8_edblock1930
+.label BitOp_Test8_eblock1929
 	; LineNumber: 86
 	call Common_FAIL
-.label BitOp_Test8_edblock1931
+.label BitOp_Test8_edblock1930
 	; LineNumber: 88
 	return
 .label end_procedure_BitOp_Test8
@@ -7675,11 +7590,11 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label BitOp_Test9_stringassigncpy1938
-	load 	BitOp_Test9_stringassignstr1937 	_r8_2 	_r8_1
+.label BitOp_Test9_stringassigncpy1937
+	load 	BitOp_Test9_stringassignstr1936 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	BitOp_Test9_stringassigncpy1938
+	jneq 	_r8_1 	uint8:0x00 	BitOp_Test9_stringassigncpy1937
 	; LineNumber: 94
 	mov 	Vars_i1 	uint16:0x1000
 	; LineNumber: 95
@@ -7704,15 +7619,15 @@ text_print_finished
 	; *** End of inline procedure :Common_CR
 	; LineNumber: 98
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_i1 	uint16:0x4000 	BitOp_Test9_eblock1942
-.label BitOp_Test9_ctb1941 ;Main true block ;keep 
+	jneq 	Vars_i1 	uint16:0x4000 	BitOp_Test9_eblock1941
+.label BitOp_Test9_ctb1940 ;Main true block ;keep 
 	; LineNumber: 97
 	call Common_PASS
-	jump BitOp_Test9_edblock1943
-.label BitOp_Test9_eblock1942
+	jump BitOp_Test9_edblock1942
+.label BitOp_Test9_eblock1941
 	; LineNumber: 97
 	call Common_FAIL
-.label BitOp_Test9_edblock1943
+.label BitOp_Test9_edblock1942
 	; LineNumber: 99
 	return
 .label end_procedure_BitOp_Test9
@@ -7728,11 +7643,11 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label BitOp_Test10_stringassigncpy1950
-	load 	BitOp_Test10_stringassignstr1949 	_r8_2 	_r8_1
+.label BitOp_Test10_stringassigncpy1949
+	load 	BitOp_Test10_stringassignstr1948 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	BitOp_Test10_stringassigncpy1950
+	jneq 	_r8_1 	uint8:0x00 	BitOp_Test10_stringassigncpy1949
 	; LineNumber: 105
 	mov 	Vars_i1 	uint16:0x100
 	; LineNumber: 106
@@ -7762,15 +7677,15 @@ text_print_finished
 	; *** End of inline procedure :Common_CR
 	; LineNumber: 109
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_i1 	uint16:0x1000 	BitOp_Test10_eblock1954
-.label BitOp_Test10_ctb1953 ;Main true block ;keep 
+	jneq 	Vars_i1 	uint16:0x1000 	BitOp_Test10_eblock1953
+.label BitOp_Test10_ctb1952 ;Main true block ;keep 
 	; LineNumber: 108
 	call Common_PASS
-	jump BitOp_Test10_edblock1955
-.label BitOp_Test10_eblock1954
+	jump BitOp_Test10_edblock1954
+.label BitOp_Test10_eblock1953
 	; LineNumber: 108
 	call Common_FAIL
-.label BitOp_Test10_edblock1955
+.label BitOp_Test10_edblock1954
 	; LineNumber: 110
 	return
 .label end_procedure_BitOp_Test10
@@ -7786,11 +7701,11 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label BitOp_Test11_stringassigncpy1962
-	load 	BitOp_Test11_stringassignstr1961 	_r8_2 	_r8_1
+.label BitOp_Test11_stringassigncpy1961
+	load 	BitOp_Test11_stringassignstr1960 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	BitOp_Test11_stringassigncpy1962
+	jneq 	_r8_1 	uint8:0x00 	BitOp_Test11_stringassigncpy1961
 	; LineNumber: 117
 	; push
 	mov 	Vars_ir_p1 	uint8:0x10
@@ -7811,15 +7726,15 @@ text_print_finished
 	; *** End of inline procedure :Common_CR
 	; LineNumber: 119
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_i1 	uint8:0x80 	BitOp_Test11_eblock1966
-.label BitOp_Test11_ctb1965 ;Main true block ;keep 
+	jneq 	Vars_i1 	uint8:0x80 	BitOp_Test11_eblock1965
+.label BitOp_Test11_ctb1964 ;Main true block ;keep 
 	; LineNumber: 118
 	call Common_PASS
-	jump BitOp_Test11_edblock1967
-.label BitOp_Test11_eblock1966
+	jump BitOp_Test11_edblock1966
+.label BitOp_Test11_eblock1965
 	; LineNumber: 118
 	call Common_FAIL
-.label BitOp_Test11_edblock1967
+.label BitOp_Test11_edblock1966
 	; LineNumber: 120
 	return
 .label end_procedure_BitOp_Test11
@@ -7831,7 +7746,7 @@ text_print_finished
 .label BitOp_Exec
 	; LineNumber: 135
 	; Assigning a string : Common_zp
-	mov 	Common_zp 	#BitOp_Exec_stringassignstr1973
+	mov 	Common_zp 	#BitOp_Exec_stringassignstr1972
 	call Common_Initialise
 	; LineNumber: 137
 	call BitOp_Test1
@@ -7866,7 +7781,7 @@ text_print_finished
 	; ***********  Defining procedure : Functions_FnByte
 	;    Procedure type : User-defined procedure
 	; LineNumber: 6
-.label Functions_FnByte_block1974
+.label Functions_FnByte_block1973
 .label Functions_FnByte
 	; LineNumber: 7
 	; push
@@ -7882,7 +7797,7 @@ text_print_finished
 	; ***********  Defining procedure : Functions_FnByteAdv
 	;    Procedure type : User-defined procedure
 	; LineNumber: 12
-.label Functions_FnByteAdv_block1975
+.label Functions_FnByteAdv_block1974
 .label Functions_FnByteAdv
 	; LineNumber: 14
 	; LineNumber: 14
@@ -7900,7 +7815,7 @@ text_print_finished
 	; ***********  Defining procedure : Functions_FnByteInt
 	;    Procedure type : User-defined procedure
 	; LineNumber: 17
-.label Functions_FnByteInt_block1976
+.label Functions_FnByteInt_block1975
 .label Functions_FnByteInt
 	; LineNumber: 18
 	; push
@@ -7916,7 +7831,7 @@ text_print_finished
 	; ***********  Defining procedure : Functions_FnInt1
 	;    Procedure type : User-defined procedure
 	; LineNumber: 24
-.label Functions_FnInt1_block1977
+.label Functions_FnInt1_block1976
 .label Functions_FnInt1
 	; LineNumber: 26
 	; LineNumber: 26
@@ -7930,7 +7845,7 @@ text_print_finished
 	; ***********  Defining procedure : Functions_FnInt2
 	;    Procedure type : User-defined procedure
 	; LineNumber: 29
-.label Functions_FnInt2_block1978
+.label Functions_FnInt2_block1977
 .label Functions_FnInt2
 	; LineNumber: 31
 	; LineNumber: 31
@@ -7946,7 +7861,7 @@ text_print_finished
 	; ***********  Defining procedure : Functions_FnInt3
 	;    Procedure type : User-defined procedure
 	; LineNumber: 34
-.label Functions_FnInt3_block1979
+.label Functions_FnInt3_block1978
 .label Functions_FnInt3
 	; LineNumber: 35
 	mov 	Vars_v1 	uint8:0x02
@@ -7974,24 +7889,24 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label Functions_Test1_stringassigncpy1982
-	load 	Functions_Test1_stringassignstr1981 	_r8_2 	_r8_1
+.label Functions_Test1_stringassigncpy1981
+	load 	Functions_Test1_stringassignstr1980 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	Functions_Test1_stringassigncpy1982
+	jneq 	_r8_1 	uint8:0x00 	Functions_Test1_stringassigncpy1981
 	; LineNumber: 44
 	; Binary clause Simplified: EQUALS
 	mov 	Functions_fn1 	uint8:0x02
 	call Functions_FnByte
-	jneq 	Functions_FnByte_fret 	uint8:0x04 	Functions_Test1_eblock1985
-.label Functions_Test1_ctb1984 ;Main true block ;keep 
+	jneq 	Functions_FnByte_fret 	uint8:0x04 	Functions_Test1_eblock1984
+.label Functions_Test1_ctb1983 ;Main true block ;keep 
 	; LineNumber: 43
 	call Common_PASS
-	jump Functions_Test1_edblock1986
-.label Functions_Test1_eblock1985
+	jump Functions_Test1_edblock1985
+.label Functions_Test1_eblock1984
 	; LineNumber: 43
 	call Common_FAIL
-.label Functions_Test1_edblock1986
+.label Functions_Test1_edblock1985
 	; LineNumber: 45
 	return
 .label end_procedure_Functions_Test1
@@ -8007,24 +7922,24 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label Functions_Test2_stringassigncpy1993
-	load 	Functions_Test2_stringassignstr1992 	_r8_2 	_r8_1
+.label Functions_Test2_stringassigncpy1992
+	load 	Functions_Test2_stringassignstr1991 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	Functions_Test2_stringassigncpy1993
+	jneq 	_r8_1 	uint8:0x00 	Functions_Test2_stringassigncpy1992
 	; LineNumber: 51
 	; Binary clause Simplified: EQUALS
 	mov 	Functions_fn1 	uint8:0x02
 	call Functions_FnByteAdv
-	jneq 	Functions_FnByteAdv_fret 	uint8:0x32 	Functions_Test2_eblock1996
-.label Functions_Test2_ctb1995 ;Main true block ;keep 
+	jneq 	Functions_FnByteAdv_fret 	uint8:0x32 	Functions_Test2_eblock1995
+.label Functions_Test2_ctb1994 ;Main true block ;keep 
 	; LineNumber: 50
 	call Common_PASS
-	jump Functions_Test2_edblock1997
-.label Functions_Test2_eblock1996
+	jump Functions_Test2_edblock1996
+.label Functions_Test2_eblock1995
 	; LineNumber: 50
 	call Common_FAIL
-.label Functions_Test2_edblock1997
+.label Functions_Test2_edblock1996
 	; LineNumber: 52
 	return
 .label end_procedure_Functions_Test2
@@ -8040,24 +7955,24 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label Functions_Test3_stringassigncpy2004
-	load 	Functions_Test3_stringassignstr2003 	_r8_2 	_r8_1
+.label Functions_Test3_stringassigncpy2003
+	load 	Functions_Test3_stringassignstr2002 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	Functions_Test3_stringassigncpy2004
+	jneq 	_r8_1 	uint8:0x00 	Functions_Test3_stringassigncpy2003
 	; LineNumber: 58
 	; Binary clause Simplified: EQUALS
 	mov 	Functions_fn1 	uint8:0x02
 	call Functions_FnByteInt
-	jneq 	Functions_FnByteInt_fret 	uint8:0x90 	Functions_Test3_eblock2007
-.label Functions_Test3_ctb2006 ;Main true block ;keep 
+	jneq 	Functions_FnByteInt_fret 	uint8:0x90 	Functions_Test3_eblock2006
+.label Functions_Test3_ctb2005 ;Main true block ;keep 
 	; LineNumber: 57
 	call Common_PASS
-	jump Functions_Test3_edblock2008
-.label Functions_Test3_eblock2007
+	jump Functions_Test3_edblock2007
+.label Functions_Test3_eblock2006
 	; LineNumber: 57
 	call Common_FAIL
-.label Functions_Test3_edblock2008
+.label Functions_Test3_edblock2007
 	; LineNumber: 59
 	return
 .label end_procedure_Functions_Test3
@@ -8071,24 +7986,24 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label Functions_Test4_stringassigncpy2015
-	load 	Functions_Test4_stringassignstr2014 	_r8_2 	_r8_1
+.label Functions_Test4_stringassigncpy2014
+	load 	Functions_Test4_stringassignstr2013 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	Functions_Test4_stringassigncpy2015
+	jneq 	_r8_1 	uint8:0x00 	Functions_Test4_stringassigncpy2014
 	; LineNumber: 64
 	; Binary clause Simplified: EQUALS
 	mov 	Functions_fn1 	uint8:0xc8
 	call Functions_FnInt1
-	jneq 	Functions_FnInt1_fret 	uint16:0x190 	Functions_Test4_eblock2018
-.label Functions_Test4_ctb2017 ;Main true block ;keep 
+	jneq 	Functions_FnInt1_fret 	uint16:0x190 	Functions_Test4_eblock2017
+.label Functions_Test4_ctb2016 ;Main true block ;keep 
 	; LineNumber: 63
 	call Common_PASS
-	jump Functions_Test4_edblock2019
-.label Functions_Test4_eblock2018
+	jump Functions_Test4_edblock2018
+.label Functions_Test4_eblock2017
 	; LineNumber: 63
 	call Common_FAIL
-.label Functions_Test4_edblock2019
+.label Functions_Test4_edblock2018
 	; LineNumber: 65
 	return
 .label end_procedure_Functions_Test4
@@ -8102,24 +8017,24 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label Functions_Test5_stringassigncpy2026
-	load 	Functions_Test5_stringassignstr2025 	_r8_2 	_r8_1
+.label Functions_Test5_stringassigncpy2025
+	load 	Functions_Test5_stringassignstr2024 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	Functions_Test5_stringassigncpy2026
+	jneq 	_r8_1 	uint8:0x00 	Functions_Test5_stringassigncpy2025
 	; LineNumber: 70
 	; Binary clause Simplified: EQUALS
 	mov 	Functions_fn1 	uint8:0x0a
 	call Functions_FnInt2
-	jneq 	Functions_FnInt2_fret 	uint16:0x7da 	Functions_Test5_eblock2029
-.label Functions_Test5_ctb2028 ;Main true block ;keep 
+	jneq 	Functions_FnInt2_fret 	uint16:0x7da 	Functions_Test5_eblock2028
+.label Functions_Test5_ctb2027 ;Main true block ;keep 
 	; LineNumber: 69
 	call Common_PASS
-	jump Functions_Test5_edblock2030
-.label Functions_Test5_eblock2029
+	jump Functions_Test5_edblock2029
+.label Functions_Test5_eblock2028
 	; LineNumber: 69
 	call Common_FAIL
-.label Functions_Test5_edblock2030
+.label Functions_Test5_edblock2029
 	; LineNumber: 71
 	return
 .label end_procedure_Functions_Test5
@@ -8133,24 +8048,24 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label Functions_Test6_stringassigncpy2037
-	load 	Functions_Test6_stringassignstr2036 	_r8_2 	_r8_1
+.label Functions_Test6_stringassigncpy2036
+	load 	Functions_Test6_stringassignstr2035 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	Functions_Test6_stringassigncpy2037
+	jneq 	_r8_1 	uint8:0x00 	Functions_Test6_stringassigncpy2036
 	; LineNumber: 76
 	; Binary clause Simplified: EQUALS
 	mov 	Functions_fn1 	uint8:0x0a
 	call Functions_FnInt3
-	jneq 	Functions_FnInt3_fret 	uint16:0xfb4 	Functions_Test6_eblock2040
-.label Functions_Test6_ctb2039 ;Main true block ;keep 
+	jneq 	Functions_FnInt3_fret 	uint16:0xfb4 	Functions_Test6_eblock2039
+.label Functions_Test6_ctb2038 ;Main true block ;keep 
 	; LineNumber: 75
 	call Common_PASS
-	jump Functions_Test6_edblock2041
-.label Functions_Test6_eblock2040
+	jump Functions_Test6_edblock2040
+.label Functions_Test6_eblock2039
 	; LineNumber: 75
 	call Common_FAIL
-.label Functions_Test6_edblock2041
+.label Functions_Test6_edblock2040
 	; LineNumber: 77
 	return
 .label end_procedure_Functions_Test6
@@ -8162,7 +8077,7 @@ text_print_finished
 .label Functions_Exec
 	; LineNumber: 83
 	; Assigning a string : Common_zp
-	mov 	Common_zp 	#Functions_Exec_stringassignstr2047
+	mov 	Common_zp 	#Functions_Exec_stringassignstr2046
 	call Common_Initialise
 	; LineNumber: 85
 	call Functions_Test1
@@ -8195,11 +8110,11 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label Various_LoHi1_stringassigncpy2050
-	load 	Various_LoHi1_stringassignstr2049 	_r8_2 	_r8_1
+.label Various_LoHi1_stringassigncpy2049
+	load 	Various_LoHi1_stringassignstr2048 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	Various_LoHi1_stringassigncpy2050
+	jneq 	_r8_1 	uint8:0x00 	Various_LoHi1_stringassigncpy2049
 	; LineNumber: 29
 	; *** Inline procedure :Common_CR
 	; LineNumber: 20
@@ -8214,15 +8129,15 @@ text_print_finished
 	; *** End of inline procedure :Common_CR
 	; LineNumber: 30
 	; Binary clause Simplified: EQUALS
-	jneq 	<Vars_i1 	uint8:0x34 	Various_LoHi1_eblock2054
-.label Various_LoHi1_ctb2053 ;Main true block ;keep 
+	jneq 	<Vars_i1 	uint8:0x34 	Various_LoHi1_eblock2053
+.label Various_LoHi1_ctb2052 ;Main true block ;keep 
 	; LineNumber: 29
 	call Common_PASS
-	jump Various_LoHi1_edblock2055
-.label Various_LoHi1_eblock2054
+	jump Various_LoHi1_edblock2054
+.label Various_LoHi1_eblock2053
 	; LineNumber: 29
 	call Common_FAIL
-.label Various_LoHi1_edblock2055
+.label Various_LoHi1_edblock2054
 	; LineNumber: 31
 	return
 .label end_procedure_Various_LoHi1
@@ -8238,11 +8153,11 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label Various_LoHi2_stringassigncpy2062
-	load 	Various_LoHi2_stringassignstr2061 	_r8_2 	_r8_1
+.label Various_LoHi2_stringassigncpy2061
+	load 	Various_LoHi2_stringassignstr2060 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	Various_LoHi2_stringassigncpy2062
+	jneq 	_r8_1 	uint8:0x00 	Various_LoHi2_stringassigncpy2061
 	; LineNumber: 37
 	; *** Inline procedure :Common_CR
 	; LineNumber: 20
@@ -8257,15 +8172,15 @@ text_print_finished
 	; *** End of inline procedure :Common_CR
 	; LineNumber: 38
 	; Binary clause Simplified: EQUALS
-	jneq 	>Vars_i1 	uint8:0x12 	Various_LoHi2_eblock2066
-.label Various_LoHi2_ctb2065 ;Main true block ;keep 
+	jneq 	>Vars_i1 	uint8:0x12 	Various_LoHi2_eblock2065
+.label Various_LoHi2_ctb2064 ;Main true block ;keep 
 	; LineNumber: 37
 	call Common_PASS
-	jump Various_LoHi2_edblock2067
-.label Various_LoHi2_eblock2066
+	jump Various_LoHi2_edblock2066
+.label Various_LoHi2_eblock2065
 	; LineNumber: 37
 	call Common_FAIL
-.label Various_LoHi2_edblock2067
+.label Various_LoHi2_edblock2066
 	; LineNumber: 39
 	return
 .label end_procedure_Various_LoHi2
@@ -8282,19 +8197,19 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label Various_TestAutomaticOffpage_stringassigncpy2074
-	load 	Various_TestAutomaticOffpage_stringassignstr2073 	_r8_2 	_r8_1
+.label Various_TestAutomaticOffpage_stringassigncpy2073
+	load 	Various_TestAutomaticOffpage_stringassignstr2072 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	Various_TestAutomaticOffpage_stringassigncpy2074
+	jneq 	_r8_1 	uint8:0x00 	Various_TestAutomaticOffpage_stringassigncpy2073
 	; LineNumber: 48
 	mov 	Vars_v1 	uint8:0x00
 	; LineNumber: 49
 	
 ; // automatically make offpage
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_v1 	uint8:0x00 	Various_TestAutomaticOffpage_edblock2078
-.label Various_TestAutomaticOffpage_ctb2076 ;Main true block ;keep 
+	jneq 	Vars_v1 	uint8:0x00 	Various_TestAutomaticOffpage_edblock2077
+.label Various_TestAutomaticOffpage_ctb2075 ;Main true block ;keep 
 	; LineNumber: 50
 	; LineNumber: 50
 	.asm
@@ -8556,7 +8471,7 @@ text_print_finished
 	nop
 	.endasm
 	; LineNumber: 52
-.label Various_TestAutomaticOffpage_edblock2078
+.label Various_TestAutomaticOffpage_edblock2077
 	; LineNumber: 53
 	call Common_PASS
 	; LineNumber: 55
@@ -8572,25 +8487,25 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label Various_TestAddress1_stringassigncpy2083
-	load 	Various_TestAddress1_stringassignstr2082 	_r8_2 	_r8_1
+.label Various_TestAddress1_stringassigncpy2082
+	load 	Various_TestAddress1_stringassignstr2081 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	Various_TestAddress1_stringassigncpy2083
+	jneq 	_r8_1 	uint8:0x00 	Various_TestAddress1_stringassigncpy2082
 	; LineNumber: 61
 	; Assigning memory location
 	mov 	$8800 	uint8:0x80
 	; LineNumber: 62
 	; Binary clause Simplified: EQUALS
-	jneq 	$8800 	uint8:0x80 	Various_TestAddress1_eblock2086
-.label Various_TestAddress1_ctb2085 ;Main true block ;keep 
+	jneq 	$8800 	uint8:0x80 	Various_TestAddress1_eblock2085
+.label Various_TestAddress1_ctb2084 ;Main true block ;keep 
 	; LineNumber: 61
 	call Common_PASS
-	jump Various_TestAddress1_edblock2087
-.label Various_TestAddress1_eblock2086
+	jump Various_TestAddress1_edblock2086
+.label Various_TestAddress1_eblock2085
 	; LineNumber: 61
 	call Common_FAIL
-.label Various_TestAddress1_edblock2087
+.label Various_TestAddress1_edblock2086
 	; LineNumber: 64
 	return
 .label end_procedure_Various_TestAddress1
@@ -8604,11 +8519,11 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label Various_TestAddress2_stringassigncpy2094
-	load 	Various_TestAddress2_stringassignstr2093 	_r8_2 	_r8_1
+.label Various_TestAddress2_stringassigncpy2093
+	load 	Various_TestAddress2_stringassignstr2092 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	Various_TestAddress2_stringassigncpy2094
+	jneq 	_r8_1 	uint8:0x00 	Various_TestAddress2_stringassigncpy2093
 	; LineNumber: 68
 	; push
 	mov 	_r8_1 	uint8:0x90
@@ -8620,15 +8535,15 @@ text_print_finished
 	; ::LoadVariable
 	; push
 	load 	$8800 	uint8:0x01 	_r8_1
-	jneq 	_r8_1 	uint8:0x90 	Various_TestAddress2_eblock2097
-.label Various_TestAddress2_ctb2096 ;Main true block ;keep 
+	jneq 	_r8_1 	uint8:0x90 	Various_TestAddress2_eblock2096
+.label Various_TestAddress2_ctb2095 ;Main true block ;keep 
 	; LineNumber: 68
 	call Common_PASS
-	jump Various_TestAddress2_edblock2098
-.label Various_TestAddress2_eblock2097
+	jump Various_TestAddress2_edblock2097
+.label Various_TestAddress2_eblock2096
 	; LineNumber: 68
 	call Common_FAIL
-.label Various_TestAddress2_edblock2098
+.label Various_TestAddress2_edblock2097
 	; LineNumber: 70
 	return
 .label end_procedure_Various_TestAddress2
@@ -8642,11 +8557,11 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label Various_TestAddress3_stringassigncpy2105
-	load 	Various_TestAddress3_stringassignstr2104 	_r8_2 	_r8_1
+.label Various_TestAddress3_stringassigncpy2104
+	load 	Various_TestAddress3_stringassignstr2103 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	Various_TestAddress3_stringassigncpy2105
+	jneq 	_r8_1 	uint8:0x00 	Various_TestAddress3_stringassigncpy2104
 	; LineNumber: 74
 	mov 	Vars_v1 	uint8:0x01
 	; LineNumber: 75
@@ -8664,15 +8579,15 @@ text_print_finished
 	; ::LoadVariable
 	; push
 	load 	$8800 	Vars_v1 	_r8_1
-	jneq 	_r8_1 	uint8:0xa0 	Various_TestAddress3_eblock2108
-.label Various_TestAddress3_ctb2107 ;Main true block ;keep 
+	jneq 	_r8_1 	uint8:0xa0 	Various_TestAddress3_eblock2107
+.label Various_TestAddress3_ctb2106 ;Main true block ;keep 
 	; LineNumber: 76
 	call Common_PASS
-	jump Various_TestAddress3_edblock2109
-.label Various_TestAddress3_eblock2108
+	jump Various_TestAddress3_edblock2108
+.label Various_TestAddress3_eblock2107
 	; LineNumber: 76
 	call Common_FAIL
-.label Various_TestAddress3_edblock2109
+.label Various_TestAddress3_edblock2108
 	; LineNumber: 78
 	return
 .label end_procedure_Various_TestAddress3
@@ -8696,22 +8611,22 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label Various_UnaryByte_stringassigncpy2116
-	load 	Various_UnaryByte_stringassignstr2115 	_r8_2 	_r8_1
+.label Various_UnaryByte_stringassigncpy2115
+	load 	Various_UnaryByte_stringassignstr2114 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	Various_UnaryByte_stringassigncpy2116
+	jneq 	_r8_1 	uint8:0x00 	Various_UnaryByte_stringassigncpy2115
 	; LineNumber: 86
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_v2 	uint8:0xfe 	Various_UnaryByte_eblock2119
-.label Various_UnaryByte_ctb2118 ;Main true block ;keep 
+	jneq 	Vars_v2 	uint8:0xfe 	Various_UnaryByte_eblock2118
+.label Various_UnaryByte_ctb2117 ;Main true block ;keep 
 	; LineNumber: 85
 	call Common_PASS
-	jump Various_UnaryByte_edblock2120
-.label Various_UnaryByte_eblock2119
+	jump Various_UnaryByte_edblock2119
+.label Various_UnaryByte_eblock2118
 	; LineNumber: 85
 	call Common_FAIL
-.label Various_UnaryByte_edblock2120
+.label Various_UnaryByte_edblock2119
 	; LineNumber: 87
 	return
 .label end_procedure_Various_UnaryByte
@@ -8735,22 +8650,22 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label Various_UnaryInteger1_stringassigncpy2127
-	load 	Various_UnaryInteger1_stringassignstr2126 	_r8_2 	_r8_1
+.label Various_UnaryInteger1_stringassigncpy2126
+	load 	Various_UnaryInteger1_stringassignstr2125 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	Various_UnaryInteger1_stringassigncpy2127
+	jneq 	_r8_1 	uint8:0x00 	Various_UnaryInteger1_stringassigncpy2126
 	; LineNumber: 94
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_i2 	uint16:0xfffe 	Various_UnaryInteger1_eblock2130
-.label Various_UnaryInteger1_ctb2129 ;Main true block ;keep 
+	jneq 	Vars_i2 	uint16:0xfffe 	Various_UnaryInteger1_eblock2129
+.label Various_UnaryInteger1_ctb2128 ;Main true block ;keep 
 	; LineNumber: 93
 	call Common_PASS
-	jump Various_UnaryInteger1_edblock2131
-.label Various_UnaryInteger1_eblock2130
+	jump Various_UnaryInteger1_edblock2130
+.label Various_UnaryInteger1_eblock2129
 	; LineNumber: 93
 	call Common_FAIL
-.label Various_UnaryInteger1_edblock2131
+.label Various_UnaryInteger1_edblock2130
 	; LineNumber: 95
 	return
 .label end_procedure_Various_UnaryInteger1
@@ -8774,22 +8689,22 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label Various_UnaryInteger2_stringassigncpy2138
-	load 	Various_UnaryInteger2_stringassignstr2137 	_r8_2 	_r8_1
+.label Various_UnaryInteger2_stringassigncpy2137
+	load 	Various_UnaryInteger2_stringassignstr2136 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	Various_UnaryInteger2_stringassigncpy2138
+	jneq 	_r8_1 	uint8:0x00 	Various_UnaryInteger2_stringassigncpy2137
 	; LineNumber: 102
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_i2 	uint16:0xff00 	Various_UnaryInteger2_eblock2141
-.label Various_UnaryInteger2_ctb2140 ;Main true block ;keep 
+	jneq 	Vars_i2 	uint16:0xff00 	Various_UnaryInteger2_eblock2140
+.label Various_UnaryInteger2_ctb2139 ;Main true block ;keep 
 	; LineNumber: 101
 	call Common_PASS
-	jump Various_UnaryInteger2_edblock2142
-.label Various_UnaryInteger2_eblock2141
+	jump Various_UnaryInteger2_edblock2141
+.label Various_UnaryInteger2_eblock2140
 	; LineNumber: 101
 	call Common_FAIL
-.label Various_UnaryInteger2_edblock2142
+.label Various_UnaryInteger2_edblock2141
 	; LineNumber: 103
 	return
 .label end_procedure_Various_UnaryInteger2
@@ -8813,22 +8728,22 @@ text_print_finished
 	; push
 	; push
 	mov 	_r8_2 	uint8:0x00
-.label Various_UnaryInteger3_stringassigncpy2149
-	load 	Various_UnaryInteger3_stringassignstr2148 	_r8_2 	_r8_1
+.label Various_UnaryInteger3_stringassigncpy2148
+	load 	Various_UnaryInteger3_stringassignstr2147 	_r8_2 	_r8_1
 	store 	Vars_text 	_r8_2 	_r8_1
 	add 	_r8_2 	_r8_2 	uint8:0x01
-	jneq 	_r8_1 	uint8:0x00 	Various_UnaryInteger3_stringassigncpy2149
+	jneq 	_r8_1 	uint8:0x00 	Various_UnaryInteger3_stringassigncpy2148
 	; LineNumber: 111
 	; Binary clause Simplified: EQUALS
-	jneq 	Vars_i2 	uint16:0xfe01 	Various_UnaryInteger3_eblock2152
-.label Various_UnaryInteger3_ctb2151 ;Main true block ;keep 
+	jneq 	Vars_i2 	uint16:0xfe01 	Various_UnaryInteger3_eblock2151
+.label Various_UnaryInteger3_ctb2150 ;Main true block ;keep 
 	; LineNumber: 110
 	call Common_PASS
-	jump Various_UnaryInteger3_edblock2153
-.label Various_UnaryInteger3_eblock2152
+	jump Various_UnaryInteger3_edblock2152
+.label Various_UnaryInteger3_eblock2151
 	; LineNumber: 110
 	call Common_FAIL
-.label Various_UnaryInteger3_edblock2153
+.label Various_UnaryInteger3_edblock2152
 	; LineNumber: 112
 	return
 .label end_procedure_Various_UnaryInteger3
@@ -8839,7 +8754,7 @@ text_print_finished
 .label Various_Exec
 	; LineNumber: 116
 	; Assigning a string : Common_zp
-	mov 	Common_zp 	#Various_Exec_stringassignstr2159
+	mov 	Common_zp 	#Various_Exec_stringassignstr2158
 	call Common_Initialise
 	; LineNumber: 118
 	call Various_TestAutomaticOffpage
@@ -8900,125 +8815,125 @@ text_print_finished
 	; LineNumber: 37
 	call Common_TestInit
 	; LineNumber: 39
-.label Unittests_Exec_while2162
-.label Unittests_Exec_loopstart2166
+.label Unittests_Exec_while2161
+.label Unittests_Exec_loopstart2165
 	; Binary clause Simplified: EQUALS
 	call Common_Status
-	jneq 	Common_Status_fret 	uint8:0x00 	Unittests_Exec_edblock2165
-.label Unittests_Exec_localsuccess2247 ;keep
+	jneq 	Common_Status_fret 	uint8:0x00 	Unittests_Exec_edblock2164
+.label Unittests_Exec_localsuccess2246 ;keep
 	; ; logical AND, second requirement
 	; Binary clause Simplified: EQUALS
-	jneq 	Unittests_isDone 	uint8:0x00 	Unittests_Exec_edblock2165
-.label Unittests_Exec_ctb2163 ;Main true block ;keep 
+	jneq 	Unittests_isDone 	uint8:0x00 	Unittests_Exec_edblock2164
+.label Unittests_Exec_ctb2162 ;Main true block ;keep 
 	; LineNumber: 45
 	; LineNumber: 46
 	call Common_TestSuiteInit
 	; LineNumber: 50
 	; Binary clause Simplified: EQUALS
-	jneq 	Unittests_currentTest 	uint8:0x0d 	Unittests_Exec_edblock2252
-.label Unittests_Exec_ctb2250 ;Main true block ;keep 
+	jneq 	Unittests_currentTest 	uint8:0x0d 	Unittests_Exec_edblock2251
+.label Unittests_Exec_ctb2249 ;Main true block ;keep 
 	; LineNumber: 49
 	
 ; // Pointer tests - the x86 needs a different set of pointer tests.
 	call AdvancedMath_Exec
-.label Unittests_Exec_edblock2252
+.label Unittests_Exec_edblock2251
 	; LineNumber: 53
 	; Binary clause Simplified: EQUALS
-	jneq 	Unittests_currentTest 	uint8:0x06 	Unittests_Exec_edblock2257
-.label Unittests_Exec_ctb2255 ;Main true block ;keep 
+	jneq 	Unittests_currentTest 	uint8:0x06 	Unittests_Exec_edblock2256
+.label Unittests_Exec_ctb2254 ;Main true block ;keep 
 	; LineNumber: 52
 	call MulDiv_Exec
-.label Unittests_Exec_edblock2257
+.label Unittests_Exec_edblock2256
 	; LineNumber: 54
 	; Binary clause Simplified: EQUALS
-	jneq 	Unittests_currentTest 	uint8:0x02 	Unittests_Exec_edblock2262
-.label Unittests_Exec_ctb2260 ;Main true block ;keep 
+	jneq 	Unittests_currentTest 	uint8:0x02 	Unittests_Exec_edblock2261
+.label Unittests_Exec_ctb2259 ;Main true block ;keep 
 	; LineNumber: 53
 	call Strings_Exec
-.label Unittests_Exec_edblock2262
+.label Unittests_Exec_edblock2261
 	; LineNumber: 55
 	; Binary clause Simplified: EQUALS
-	jneq 	Unittests_currentTest 	uint8:0x03 	Unittests_Exec_edblock2267
-.label Unittests_Exec_ctb2265 ;Main true block ;keep 
+	jneq 	Unittests_currentTest 	uint8:0x03 	Unittests_Exec_edblock2266
+.label Unittests_Exec_ctb2264 ;Main true block ;keep 
 	; LineNumber: 54
 	call Functions_Exec
-.label Unittests_Exec_edblock2267
+.label Unittests_Exec_edblock2266
 	; LineNumber: 56
 	; Binary clause Simplified: EQUALS
-	jneq 	Unittests_currentTest 	uint8:0x04 	Unittests_Exec_edblock2272
-.label Unittests_Exec_ctb2270 ;Main true block ;keep 
+	jneq 	Unittests_currentTest 	uint8:0x04 	Unittests_Exec_edblock2271
+.label Unittests_Exec_ctb2269 ;Main true block ;keep 
 	; LineNumber: 55
 	call CaseTest_Exec
-.label Unittests_Exec_edblock2272
+.label Unittests_Exec_edblock2271
 	; LineNumber: 57
 	; Binary clause Simplified: EQUALS
-	jneq 	Unittests_currentTest 	uint8:0x05 	Unittests_Exec_edblock2277
-.label Unittests_Exec_ctb2275 ;Main true block ;keep 
+	jneq 	Unittests_currentTest 	uint8:0x05 	Unittests_Exec_edblock2276
+.label Unittests_Exec_ctb2274 ;Main true block ;keep 
 	; LineNumber: 56
 	call Casts_Exec
-.label Unittests_Exec_edblock2277
+.label Unittests_Exec_edblock2276
 	; LineNumber: 58
 	; Binary clause Simplified: EQUALS
-	jneq 	Unittests_currentTest 	uint8:0x01 	Unittests_Exec_edblock2282
-.label Unittests_Exec_ctb2280 ;Main true block ;keep 
+	jneq 	Unittests_currentTest 	uint8:0x01 	Unittests_Exec_edblock2281
+.label Unittests_Exec_ctb2279 ;Main true block ;keep 
 	; LineNumber: 57
 	call ForLoop_Exec
-.label Unittests_Exec_edblock2282
+.label Unittests_Exec_edblock2281
 	; LineNumber: 64
 	; Binary clause Simplified: EQUALS
-	jneq 	Unittests_currentTest 	uint8:0x08 	Unittests_Exec_edblock2287
-.label Unittests_Exec_ctb2285 ;Main true block ;keep 
+	jneq 	Unittests_currentTest 	uint8:0x08 	Unittests_Exec_edblock2286
+.label Unittests_Exec_ctb2284 ;Main true block ;keep 
 	; LineNumber: 63
 	
 ; // Tripe doesn't have regs
 	call BitOp_Exec
-.label Unittests_Exec_edblock2287
+.label Unittests_Exec_edblock2286
 	; LineNumber: 65
 	; Binary clause Simplified: EQUALS
-	jneq 	Unittests_currentTest 	uint8:0x09 	Unittests_Exec_edblock2292
-.label Unittests_Exec_ctb2290 ;Main true block ;keep 
+	jneq 	Unittests_currentTest 	uint8:0x09 	Unittests_Exec_edblock2291
+.label Unittests_Exec_ctb2289 ;Main true block ;keep 
 	; LineNumber: 64
 	call IfThenElse_Exec
-.label Unittests_Exec_edblock2292
-	; LineNumber: 66
-	; Binary clause Simplified: EQUALS
-	jneq 	Unittests_currentTest 	uint8:0x0a 	Unittests_Exec_edblock2297
-.label Unittests_Exec_ctb2295 ;Main true block ;keep 
-	; LineNumber: 65
-	call IntegerTest_Exec
-.label Unittests_Exec_edblock2297
-	; LineNumber: 68
-	; Binary clause Simplified: EQUALS
-	jneq 	Unittests_currentTest 	uint8:0x0b 	Unittests_Exec_edblock2302
-.label Unittests_Exec_ctb2300 ;Main true block ;keep 
+.label Unittests_Exec_edblock2291
 	; LineNumber: 67
-	call Various_Exec
-.label Unittests_Exec_edblock2302
-	; LineNumber: 75
 	; Binary clause Simplified: EQUALS
-	jneq 	Unittests_currentTest 	uint8:0x00 	Unittests_Exec_edblock2307
-.label Unittests_Exec_ctb2305 ;Main true block ;keep 
-	; LineNumber: 74
+	jneq 	Unittests_currentTest 	uint8:0x0a 	Unittests_Exec_edblock2296
+.label Unittests_Exec_ctb2294 ;Main true block ;keep 
+	; LineNumber: 66
+	call IntegerTest_Exec
+.label Unittests_Exec_edblock2296
+	; LineNumber: 69
+	; Binary clause Simplified: EQUALS
+	jneq 	Unittests_currentTest 	uint8:0x0b 	Unittests_Exec_edblock2301
+.label Unittests_Exec_ctb2299 ;Main true block ;keep 
+	; LineNumber: 68
+	call Various_Exec
+.label Unittests_Exec_edblock2301
+	; LineNumber: 76
+	; Binary clause Simplified: EQUALS
+	jneq 	Unittests_currentTest 	uint8:0x00 	Unittests_Exec_edblock2306
+.label Unittests_Exec_ctb2304 ;Main true block ;keep 
+	; LineNumber: 75
 	call LongTest_Exec
-.label Unittests_Exec_edblock2307
-	; LineNumber: 80
+.label Unittests_Exec_edblock2306
+	; LineNumber: 81
 	
 ; //		if (currentTest=14) then Classes::Exec();
 	; push
 	add  	_r8_1 	Unittests_currentTest 	uint8:0x01
 	mov 	Unittests_currentTest 	_r8_1
-	; LineNumber: 82
+	; LineNumber: 83
 	; Binary clause Simplified: GREATEREQUAL
-	jlt 	Unittests_currentTest 	uint8:0x0f 	Unittests_Exec_edblock2312
-.label Unittests_Exec_ctb2310 ;Main true block ;keep 
-	; LineNumber: 82
+	jlt 	Unittests_currentTest 	uint8:0x0f 	Unittests_Exec_edblock2311
+.label Unittests_Exec_ctb2309 ;Main true block ;keep 
+	; LineNumber: 83
 	mov 	Unittests_isDone 	uint8:0x01
-.label Unittests_Exec_edblock2312
-	; LineNumber: 85
-	jump Unittests_Exec_while2162
-.label Unittests_Exec_edblock2165
-.label Unittests_Exec_loopend2167
+.label Unittests_Exec_edblock2311
 	; LineNumber: 86
+	jump Unittests_Exec_while2161
+.label Unittests_Exec_edblock2164
+.label Unittests_Exec_loopend2166
+	; LineNumber: 87
 	return
 .label end_procedure_Unittests_Exec
 	; NodeProcedureDecl -1
@@ -9027,7 +8942,7 @@ text_print_finished
 	; LineNumber: 7
 	; LineNumber: 6
 	decl 	s 	ptr8:0
-.label TestResult_block2314
+.label TestResult_block2313
 .label TestResult
 	; LineNumber: 8
 	mov 	Text_p 	s
@@ -9059,39 +8974,103 @@ unit_tests_print_finished
 	call Unittests_Exec
 	; LineNumber: 29
 	; Binary clause Simplified: EQUALS
-	jneq 	Common_cpc_unittests_status 	uint8:0x00 	MainProgram_eblock2317
-.label MainProgram_ctb2316 ;Main true block ;keep 
+	jneq 	Common_cpc_unittests_status 	uint8:0x00 	MainProgram_eblock2316
+.label MainProgram_ctb2315 ;Main true block ;keep 
 	; LineNumber: 29
 	; Assigning a string : s
-	mov 	s 	#MainProgram_stringassignstr2324
+	mov 	s 	#MainProgram_stringassignstr2323
 	call TestResult
-	jump MainProgram_edblock2318
-.label MainProgram_eblock2317
+	jump MainProgram_edblock2317
+.label MainProgram_eblock2316
 	; LineNumber: 31
 	; Assigning a string : s
-	mov 	s 	#MainProgram_stringassignstr2326
+	mov 	s 	#MainProgram_stringassignstr2325
 	call TestResult
-.label MainProgram_edblock2318
-	; LineNumber: 35
+.label MainProgram_edblock2317
+	; LineNumber: 34
+	store 	$c000 	uint8:0x00 	uint8:0x01
+	; LineNumber: 36
 	.asm
  
 	cp l
 	
 	.endasm
-	; LineNumber: 43
+	; LineNumber: 44
 	
 ; //call(^0); 
 ; // Will unblock CAP32_WAITBREAK in Caprice
 	.asm
-end2327
+end2326
 	;nop
-	jr end2327
+	jr end2326
 	.endasm
-	; LineNumber: 45
+	; LineNumber: 46
 .label main_block_end_
 	; End of program
 	; Ending memory block at $4000
-decl 	Format_Itos_fret 	uint8:0
+.asm
+_Mod_16
+    ld hl,0
+    ld a,b
+    ld b,8
+_Mod_Loop1
+    rla
+    adc hl,hl
+    sbc hl,de
+    jr nc,_Mod_NoAdd1
+    add hl,de
+_Mod_NoAdd1
+    djnz _Mod_Loop1
+    rla
+    cpl
+    ld b,a
+    ld a,c
+    ld c,b
+    ld b,8
+_Mod_Loop2
+    rla
+    adc hl,hl
+    sbc hl,de
+    jr nc,_Mod_NoAdd2
+    add hl,de
+_Mod_NoAdd2
+    djnz _Mod_Loop2
+    rla
+    cpl
+    ld b,c
+    ld c,a
+    ret
+; Copy BC bytes from HL to DE.
+z80_copy_mem
+    ld      a,b
+    or      c
+    ret     z
+    ld      a,16
+    sub     c
+    and     15
+    add     a,a
+    ld      (z80_copy_lp-1),a
+    jr      z80_copy_lp ; will be overwritten
+z80_copy_lp
+    ldi
+    ldi
+    ldi
+    ldi
+    ldi
+    ldi
+    ldi
+    ldi
+    ldi
+    ldi
+    ldi
+    ldi
+    ldi
+    ldi
+    ldi
+    ldi
+    jp      pe,z80_copy_lp
+    ret
+.endasm
 decl 	_r16_1 	uint16:0
 decl 	Vars_IntegerReturn_fret 	uint16:0
 decl 	_r8_1 	uint8:0
@@ -9110,472 +9089,472 @@ decl 	Functions_FnByteInt_fret 	uint8:0
 decl 	Functions_FnInt1_fret 	uint16:0
 decl 	Functions_FnInt2_fret 	uint16:0
 decl 	Functions_FnInt3_fret 	uint16:0
+  decl  Common_Initialise_stringassignstr8  uint8:$D
+  .uint8 $A 0
   decl  Common_Initialise_stringassignstr9  uint8:$D
   .uint8 $A 0
   decl  Common_Initialise_stringassignstr10  uint8:$D
   .uint8 $A 0
-  decl  Common_Initialise_stringassignstr11  uint8:$D
-  .uint8 $A 0
-  decl  Common_PASS_stringassignstr14  uint8:$3a
+  decl  Common_PASS_stringassignstr13  uint8:$3a
   .uint8 $20 $50 $41 $53 $53 $D $A
   .uint8 0
-  decl  Common_FAIL_stringassignstr16  uint8:$3a
+  decl  Common_FAIL_stringassignstr15  uint8:$3a
   .uint8 $20 $46 $41 $49 $4c $D $A
   .uint8 0
-  decl  CaseTest_Test1_stringassignstr27  uint8:$54
+  decl  CaseTest_Test1_stringassignstr26  uint8:$54
   .uint8 $31 $3a 0
-  decl  _temp_var_casefb72  uint8:0
-  decl  CaseTest_Test3_stringassignstr45  uint8:$54
+  decl  _temp_var_case5a12  uint8:0
+  decl  CaseTest_Test3_stringassignstr44  uint8:$54
   .uint8 $33 $3a 0
-  decl  CaseTest_Exec_stringassignstr56  uint8:$43
+  decl  CaseTest_Exec_stringassignstr55  uint8:$43
   .uint8 $41 $53 $45 0
-  decl  AdvancedMath_Advanced01_stringassignstr58  uint8:$30
+  decl  AdvancedMath_Advanced01_stringassignstr57  uint8:$30
   .uint8 $31 $3a 0
-  decl  AdvancedMath_Advanced02_stringassignstr69  uint8:$30
+  decl  AdvancedMath_Advanced02_stringassignstr68  uint8:$30
   .uint8 $32 $3a 0
-  decl  AdvancedMath_Advanced03_stringassignstr80  uint8:$30
+  decl  AdvancedMath_Advanced03_stringassignstr79  uint8:$30
   .uint8 $33 $3a 0
-  decl  AdvancedMath_Advanced04_stringassignstr91  uint8:$30
+  decl  AdvancedMath_Advanced04_stringassignstr90  uint8:$30
   .uint8 $34 $3a 0
-  decl  AdvancedMath_Advanced05_stringassignstr102  uint8:$30
+  decl  AdvancedMath_Advanced05_stringassignstr101  uint8:$30
   .uint8 $35 $3a 0
-  decl  AdvancedMath_Advanced06_stringassignstr113  uint8:$30
+  decl  AdvancedMath_Advanced06_stringassignstr112  uint8:$30
   .uint8 $36 $3a 0
-  decl  AdvancedMath_Advanced07_stringassignstr124  uint8:$30
+  decl  AdvancedMath_Advanced07_stringassignstr123  uint8:$30
   .uint8 $37 $3a 0
-  decl  AdvancedMath_Advanced08_stringassignstr135  uint8:$30
+  decl  AdvancedMath_Advanced08_stringassignstr134  uint8:$30
   .uint8 $38 $3a 0
-  decl  AdvancedMath_MulDivCombo1_stringassignstr146  uint8:$4d
+  decl  AdvancedMath_MulDivCombo1_stringassignstr145  uint8:$4d
   .uint8 $31 $3a 0
-  decl  AdvancedMath_MulDivCombo2_stringassignstr157  uint8:$4d
+  decl  AdvancedMath_MulDivCombo2_stringassignstr156  uint8:$4d
   .uint8 $32 $3a 0
-  decl  AdvancedMath_MulDivCombo3_stringassignstr168  uint8:$4d
+  decl  AdvancedMath_MulDivCombo3_stringassignstr167  uint8:$4d
   .uint8 $33 $3a 0
-  decl  AdvancedMath_Exec_stringassignstr179  uint8:$41
+  decl  AdvancedMath_Exec_stringassignstr178  uint8:$41
   .uint8 $44 $56 $41 $4e $43 $45 $44
   .uint8 $20 $54 $45 $53 $54 $53 0
-  decl  Casts_Test1_stringassignstr181  uint8:$54
+  decl  Casts_Test1_stringassignstr180  uint8:$54
   .uint8 $31 $3a 0
-  decl  Casts_Test2_stringassignstr193  uint8:$54
+  decl  Casts_Test2_stringassignstr192  uint8:$54
   .uint8 $32 $3a 0
-  decl  Casts_Test3_stringassignstr205  uint8:$54
+  decl  Casts_Test3_stringassignstr204  uint8:$54
   .uint8 $33 $3a 0
-  decl  Casts_Test4_stringassignstr217  uint8:$54
+  decl  Casts_Test4_stringassignstr216  uint8:$54
   .uint8 $34 $3a 0
-  decl  Casts_Test5_stringassignstr229  uint8:$54
+  decl  Casts_Test5_stringassignstr228  uint8:$54
   .uint8 $35 $3a 0
-  decl  Casts_Test6_stringassignstr241  uint8:$54
+  decl  Casts_Test6_stringassignstr240  uint8:$54
   .uint8 $36 $3a 0
-  decl  Casts_Test7_stringassignstr253  uint8:$54
+  decl  Casts_Test7_stringassignstr252  uint8:$54
   .uint8 $37 $3a 0
-  decl  Casts_Test8_stringassignstr265  uint8:$54
+  decl  Casts_Test8_stringassignstr264  uint8:$54
   .uint8 $38 $3a 0
-  decl  Casts_Test9_stringassignstr277  uint8:$54
+  decl  Casts_Test9_stringassignstr276  uint8:$54
   .uint8 $39 $3a 0
-  decl  Casts_Test10_stringassignstr289  uint8:$54
+  decl  Casts_Test10_stringassignstr288  uint8:$54
   .uint8 $31 $30 $3a 0
-  decl  Casts_Test11_stringassignstr301  uint8:$54
+  decl  Casts_Test11_stringassignstr300  uint8:$54
   .uint8 $31 $31 $3a 0
-  decl  Casts_Test12_stringassignstr313  uint8:$54
+  decl  Casts_Test12_stringassignstr312  uint8:$54
   .uint8 $31 $32 $3a 0
-  decl  Casts_Test13_stringassignstr325  uint8:$54
+  decl  Casts_Test13_stringassignstr324  uint8:$54
   .uint8 $31 $33 $3a 0
-  decl  Casts_Test14_stringassignstr337  uint8:$54
+  decl  Casts_Test14_stringassignstr336  uint8:$54
   .uint8 $31 $34 $3a 0
-  decl  Casts_Test15_stringassignstr349  uint8:$54
+  decl  Casts_Test15_stringassignstr348  uint8:$54
   .uint8 $31 $35 $3a 0
-  decl  Casts_Test16_stringassignstr361  uint8:$54
+  decl  Casts_Test16_stringassignstr360  uint8:$54
   .uint8 $31 $36 $3a 0
-  decl  Casts_Test17_stringassignstr373  uint8:$54
+  decl  Casts_Test17_stringassignstr372  uint8:$54
   .uint8 $31 $37 $3a 0
-  decl  Casts_Test18_stringassignstr385  uint8:$54
+  decl  Casts_Test18_stringassignstr384  uint8:$54
   .uint8 $31 $38 $3a 0
-  decl  Casts_Exec_stringassignstr397  uint8:$43
+  decl  Casts_Exec_stringassignstr396  uint8:$43
   .uint8 $41 $53 $54 $53 0
-  decl  IntegerTest_T01_stringassignstr399  uint8:$30
+  decl  IntegerTest_T01_stringassignstr398  uint8:$30
   .uint8 $31 $3a 0
-  decl  IntegerTest_T02_stringassignstr410  uint8:$30
+  decl  IntegerTest_T02_stringassignstr409  uint8:$30
   .uint8 $32 $3a 0
-  decl  IntegerTest_T03_stringassignstr421  uint8:$30
+  decl  IntegerTest_T03_stringassignstr420  uint8:$30
   .uint8 $33 $3a 0
-  decl  IntegerTest_T04_stringassignstr432  uint8:$30
+  decl  IntegerTest_T04_stringassignstr431  uint8:$30
   .uint8 $34 $3a 0
-  decl  IntegerTest_T05_stringassignstr443  uint8:$30
+  decl  IntegerTest_T05_stringassignstr442  uint8:$30
   .uint8 $35 $3a 0
-  decl  IntegerTest_T06_stringassignstr454  uint8:$30
+  decl  IntegerTest_T06_stringassignstr453  uint8:$30
   .uint8 $36 $3a 0
-  decl  IntegerTest_T066_stringassignstr465  uint8:$30
+  decl  IntegerTest_T066_stringassignstr464  uint8:$30
   .uint8 $37 $3a 0
-  decl  IntegerTest_T07_stringassignstr476  uint8:$30
+  decl  IntegerTest_T07_stringassignstr475  uint8:$30
   .uint8 $38 $3a 0
-  decl  IntegerTest_T08_stringassignstr487  uint8:$30
+  decl  IntegerTest_T08_stringassignstr486  uint8:$30
   .uint8 $39 $3a 0
-  decl  IntegerTest_T09_stringassignstr498  uint8:$31
+  decl  IntegerTest_T09_stringassignstr497  uint8:$31
   .uint8 $30 $3a 0
-  decl  IntegerTest_T10_stringassignstr509  uint8:$31
+  decl  IntegerTest_T10_stringassignstr508  uint8:$31
   .uint8 $31 $3a 0
-  decl  IntegerTest_T11_stringassignstr520  uint8:$31
+  decl  IntegerTest_T11_stringassignstr519  uint8:$31
   .uint8 $32 $3a 0
-  decl  IntegerTest_T12_stringassignstr531  uint8:$31
+  decl  IntegerTest_T12_stringassignstr530  uint8:$31
   .uint8 $33 $3a 0
-  decl  IntegerTest_TMIX1_stringassignstr542  uint8:$31
+  decl  IntegerTest_TMIX1_stringassignstr541  uint8:$31
   .uint8 $34 $3a 0
-  decl  IntegerTest_T15_stringassignstr553  uint8:$31
+  decl  IntegerTest_T15_stringassignstr552  uint8:$31
   .uint8 $35 $3a 0
-  decl  IntegerTest_T16_stringassignstr564  uint8:$31
+  decl  IntegerTest_T16_stringassignstr563  uint8:$31
   .uint8 $35 $3a 0
-  decl  IntegerTest_Exec_stringassignstr575  uint8:$49
+  decl  IntegerTest_Exec_stringassignstr574  uint8:$49
   .uint8 $4e $54 $45 $47 $45 $52 $20
   .uint8 $54 $45 $53 $54 $53 0
-  decl  IfThenElse_GT1_GreaterThan_True_stringassignstr577  uint8:$20
+  decl  IfThenElse_GT1_GreaterThan_True_stringassignstr576  uint8:$20
   .uint8 $20 $20 $47 $54 $20 $31 $3a
   .uint8 0
-  decl  IfThenElse_GT2_GreaterThan_False_stringassignstr588  uint8:$20
+  decl  IfThenElse_GT2_GreaterThan_False_stringassignstr587  uint8:$20
   .uint8 $20 $20 $47 $54 $20 $32 $3a
   .uint8 0
-  decl  IfThenElse_GT3_GreaterThan_False_stringassignstr599  uint8:$20
+  decl  IfThenElse_GT3_GreaterThan_False_stringassignstr598  uint8:$20
   .uint8 $20 $20 $47 $54 $20 $33 $3a
   .uint8 0
-  decl  IfThenElse_GT4_GreaterThan_False_stringassignstr610  uint8:$20
+  decl  IfThenElse_GT4_GreaterThan_False_stringassignstr609  uint8:$20
   .uint8 $20 $20 $47 $54 $20 $34 $3a
   .uint8 0
-  decl  IfThenElse_GT5_GreaterThan_True_stringassignstr621  uint8:$20
+  decl  IfThenElse_GT5_GreaterThan_True_stringassignstr620  uint8:$20
   .uint8 $20 $20 $47 $54 $20 $35 $3a
   .uint8 0
-  decl  IfThenElse_GTE1_GreaterEqual_True_stringassignstr632  uint8:$20
+  decl  IfThenElse_GTE1_GreaterEqual_True_stringassignstr631  uint8:$20
   .uint8 $20 $47 $54 $45 $20 $31 $3a
   .uint8 0
-  decl  IfThenElse_GTE2_GreaterThan_False_stringassignstr643  uint8:$20
+  decl  IfThenElse_GTE2_GreaterThan_False_stringassignstr642  uint8:$20
   .uint8 $20 $47 $54 $45 $20 $32 $3a
   .uint8 0
-  decl  IfThenElse_GTE3_GreaterThan_True_stringassignstr654  uint8:$20
+  decl  IfThenElse_GTE3_GreaterThan_True_stringassignstr653  uint8:$20
   .uint8 $20 $47 $54 $45 $20 $33 $3a
   .uint8 0
-  decl  IfThenElse_GTE4_GreaterThan_False_stringassignstr665  uint8:$20
+  decl  IfThenElse_GTE4_GreaterThan_False_stringassignstr664  uint8:$20
   .uint8 $20 $47 $54 $45 $20 $34 $3a
   .uint8 0
-  decl  IfThenElse_GTE5_GreaterThan_True_stringassignstr676  uint8:$20
+  decl  IfThenElse_GTE5_GreaterThan_True_stringassignstr675  uint8:$20
   .uint8 $20 $47 $54 $45 $20 $35 $3a
   .uint8 0
-  decl  IfThenElse_LT1_LessThan_True_stringassignstr687  uint8:$20
+  decl  IfThenElse_LT1_LessThan_True_stringassignstr686  uint8:$20
   .uint8 $20 $20 $4c $54 $20 $31 $3a
   .uint8 0
-  decl  IfThenElse_LT2_LessThan_False_stringassignstr698  uint8:$20
+  decl  IfThenElse_LT2_LessThan_False_stringassignstr697  uint8:$20
   .uint8 $20 $20 $4c $54 $20 $32 $3a
   .uint8 0
-  decl  IfThenElse_LT3_LessThan_False_stringassignstr709  uint8:$20
+  decl  IfThenElse_LT3_LessThan_False_stringassignstr708  uint8:$20
   .uint8 $20 $20 $4c $54 $20 $33 $3a
   .uint8 0
-  decl  IfThenElse_LT4_LessThan_True_stringassignstr720  uint8:$20
+  decl  IfThenElse_LT4_LessThan_True_stringassignstr719  uint8:$20
   .uint8 $20 $20 $4c $54 $20 $34 $3a
   .uint8 0
-  decl  IfThenElse_LT5_LessThan_False_stringassignstr731  uint8:$20
+  decl  IfThenElse_LT5_LessThan_False_stringassignstr730  uint8:$20
   .uint8 $20 $20 $4c $54 $20 $35 $3a
   .uint8 0
-  decl  IfThenElse_LTE1_LessEqual_True_stringassignstr742  uint8:$20
+  decl  IfThenElse_LTE1_LessEqual_True_stringassignstr741  uint8:$20
   .uint8 $20 $4c $54 $45 $20 $31 $3a
   .uint8 0
-  decl  IfThenElse_LTE1_LessEqual_True2_stringassignstr753  uint8:$20
+  decl  IfThenElse_LTE1_LessEqual_True2_stringassignstr752  uint8:$20
   .uint8 $20 $4c $54 $45 $20 $31 $3a
   .uint8 0
-  decl  IfThenElse_LTE2_LessThan_False_stringassignstr764  uint8:$20
+  decl  IfThenElse_LTE2_LessThan_False_stringassignstr763  uint8:$20
   .uint8 $20 $4c $54 $45 $20 $32 $3a
   .uint8 0
-  decl  IfThenElse_LTE3_LessThan_True_stringassignstr775  uint8:$20
+  decl  IfThenElse_LTE3_LessThan_True_stringassignstr774  uint8:$20
   .uint8 $20 $4c $54 $45 $20 $33 $3a
   .uint8 0
-  decl  IfThenElse_LTE4_LessThan_True_stringassignstr786  uint8:$20
+  decl  IfThenElse_LTE4_LessThan_True_stringassignstr785  uint8:$20
   .uint8 $20 $4c $54 $45 $20 $34 $3a
   .uint8 0
-  decl  IfThenElse_LTE5_LessThan_False_stringassignstr797  uint8:$20
+  decl  IfThenElse_LTE5_LessThan_False_stringassignstr796  uint8:$20
   .uint8 $20 $4c $54 $45 $20 $35 $3a
   .uint8 0
-  decl  IfThenElse_EQ1_EqualTo_True_stringassignstr808  uint8:$20
+  decl  IfThenElse_EQ1_EqualTo_True_stringassignstr807  uint8:$20
   .uint8 $20 $20 $45 $51 $20 $31 $3a
   .uint8 0
-  decl  IfThenElse_EQ2_EqualTo_False_stringassignstr819  uint8:$20
+  decl  IfThenElse_EQ2_EqualTo_False_stringassignstr818  uint8:$20
   .uint8 $20 $20 $45 $51 $20 $32 $3a
   .uint8 0
-  decl  IfThenElse_NEQ1_NotEqualTo_True_stringassignstr830  uint8:$20
+  decl  IfThenElse_NEQ1_NotEqualTo_True_stringassignstr829  uint8:$20
   .uint8 $20 $4e $45 $51 $20 $31 $3a
   .uint8 0
-  decl  IfThenElse_NEQ2_NotEqualTo_False_stringassignstr841  uint8:$20
+  decl  IfThenElse_NEQ2_NotEqualTo_False_stringassignstr840  uint8:$20
   .uint8 $20 $4e $45 $51 $20 $32 $3a
   .uint8 0
-  decl  IfThenElse_Advanced1_stringassignstr852  uint8:$20
+  decl  IfThenElse_Advanced1_stringassignstr851  uint8:$20
   .uint8 $20 $41 $44 $56 $20 $31 $3a
   .uint8 0
-  decl  IfThenElse_Advanced2_stringassignstr864  uint8:$20
+  decl  IfThenElse_Advanced2_stringassignstr863  uint8:$20
   .uint8 $20 $41 $44 $56 $20 $32 $3a
   .uint8 0
-  decl  IfThenElse_IGT1_GreaterThan_True_stringassignstr877  uint8:$20
+  decl  IfThenElse_IGT1_GreaterThan_True_stringassignstr876  uint8:$20
   .uint8 $20 $20 $47 $49 $20 $31 $3a
   .uint8 0
-  decl  IfThenElse_IGT2_GreaterThan_False_stringassignstr888  uint8:$20
+  decl  IfThenElse_IGT2_GreaterThan_False_stringassignstr887  uint8:$20
   .uint8 $20 $20 $47 $49 $20 $32 $3a
   .uint8 0
-  decl  IfThenElse_IGT3_GreaterThan_False_stringassignstr899  uint8:$20
+  decl  IfThenElse_IGT3_GreaterThan_False_stringassignstr898  uint8:$20
   .uint8 $20 $20 $47 $49 $20 $33 $3a
   .uint8 0
-  decl  IfThenElse_IGT4_GreaterThan_False_stringassignstr910  uint8:$20
+  decl  IfThenElse_IGT4_GreaterThan_False_stringassignstr909  uint8:$20
   .uint8 $20 $20 $47 $49 $20 $34 $3a
   .uint8 0
-  decl  IfThenElse_IGT5_GreaterThan_True_stringassignstr921  uint8:$20
+  decl  IfThenElse_IGT5_GreaterThan_True_stringassignstr920  uint8:$20
   .uint8 $20 $20 $47 $49 $20 $35 $3a
   .uint8 0
-  decl  IfThenElse_IGTE1_GreaterEqual_True_stringassignstr932  uint8:$20
+  decl  IfThenElse_IGTE1_GreaterEqual_True_stringassignstr931  uint8:$20
   .uint8 $20 $47 $49 $45 $20 $31 $3a
   .uint8 0
-  decl  IfThenElse_IGTE2_GreaterThan_False_stringassignstr943  uint8:$20
+  decl  IfThenElse_IGTE2_GreaterThan_False_stringassignstr942  uint8:$20
   .uint8 $20 $47 $49 $45 $20 $32 $3a
   .uint8 0
-  decl  IfThenElse_IGTE3_GreaterThan_True_stringassignstr954  uint8:$20
+  decl  IfThenElse_IGTE3_GreaterThan_True_stringassignstr953  uint8:$20
   .uint8 $20 $47 $49 $45 $20 $33 $3a
   .uint8 0
-  decl  IfThenElse_IGTE4_GreaterThan_False_stringassignstr965  uint8:$20
+  decl  IfThenElse_IGTE4_GreaterThan_False_stringassignstr964  uint8:$20
   .uint8 $20 $47 $49 $45 $20 $34 $3a
   .uint8 0
-  decl  IfThenElse_IGTE5_GreaterThan_True_stringassignstr976  uint8:$20
+  decl  IfThenElse_IGTE5_GreaterThan_True_stringassignstr975  uint8:$20
   .uint8 $20 $47 $49 $45 $20 $35 $3a
   .uint8 0
-  decl  IfThenElse_ILT1_GreaterThan_True_stringassignstr987  uint8:$20
+  decl  IfThenElse_ILT1_GreaterThan_True_stringassignstr986  uint8:$20
   .uint8 $20 $20 $4c $49 $20 $31 $3a
   .uint8 0
-  decl  IfThenElse_ILT2_GreaterThan_False_stringassignstr998  uint8:$20
+  decl  IfThenElse_ILT2_GreaterThan_False_stringassignstr997  uint8:$20
   .uint8 $20 $20 $4c $49 $20 $32 $3a
   .uint8 0
-  decl  IfThenElse_ILT3_GreaterThan_False_stringassignstr1009  uint8:$20
+  decl  IfThenElse_ILT3_GreaterThan_False_stringassignstr1008  uint8:$20
   .uint8 $20 $20 $4c $49 $20 $33 $3a
   .uint8 0
-  decl  IfThenElse_ILT4_GreaterThan_False_stringassignstr1020  uint8:$20
+  decl  IfThenElse_ILT4_GreaterThan_False_stringassignstr1019  uint8:$20
   .uint8 $20 $20 $4c $49 $20 $34 $3a
   .uint8 0
-  decl  IfThenElse_ILT5_GreaterThan_True_stringassignstr1031  uint8:$20
+  decl  IfThenElse_ILT5_GreaterThan_True_stringassignstr1030  uint8:$20
   .uint8 $20 $20 $4c $49 $20 $35 $3a
   .uint8 0
-  decl  IfThenElse_ILTE1_GreaterEqual_True_stringassignstr1042  uint8:$20
+  decl  IfThenElse_ILTE1_GreaterEqual_True_stringassignstr1041  uint8:$20
   .uint8 $20 $4c $49 $45 $20 $31 $3a
   .uint8 0
-  decl  IfThenElse_ILTE2_GreaterThan_False_stringassignstr1053  uint8:$20
+  decl  IfThenElse_ILTE2_GreaterThan_False_stringassignstr1052  uint8:$20
   .uint8 $20 $4c $49 $45 $20 $32 $3a
   .uint8 0
-  decl  IfThenElse_ILTE3_GreaterThan_True_stringassignstr1064  uint8:$20
+  decl  IfThenElse_ILTE3_GreaterThan_True_stringassignstr1063  uint8:$20
   .uint8 $20 $4c $49 $45 $20 $33 $3a
   .uint8 0
-  decl  IfThenElse_ILTE4_GreaterThan_False_stringassignstr1075  uint8:$20
+  decl  IfThenElse_ILTE4_GreaterThan_False_stringassignstr1074  uint8:$20
   .uint8 $20 $4c $49 $45 $20 $34 $3a
   .uint8 0
-  decl  IfThenElse_ILTE5_GreaterThan_True_stringassignstr1086  uint8:$20
+  decl  IfThenElse_ILTE5_GreaterThan_True_stringassignstr1085  uint8:$20
   .uint8 $20 $4c $49 $45 $20 $35 $3a
   .uint8 0
-  decl  IfThenElse_AdvancedI1_stringassignstr1097  uint8:$20
+  decl  IfThenElse_AdvancedI1_stringassignstr1096  uint8:$20
   .uint8 $20 $20 $41 $49 $20 $31 $3a
   .uint8 0
-  decl  IfThenElse_AdvancedI2_stringassignstr1109  uint8:$20
+  decl  IfThenElse_AdvancedI2_stringassignstr1108  uint8:$20
   .uint8 $20 $20 $41 $49 $20 $32 $3a
   .uint8 0
-  decl  IfThenElse_AdvancedI3_stringassignstr1121  uint8:$20
+  decl  IfThenElse_AdvancedI3_stringassignstr1120  uint8:$20
   .uint8 $20 $20 $41 $49 $20 $33 $3a
   .uint8 0
-  decl  IfThenElse_AdvancedI4_stringassignstr1134  uint8:$20
+  decl  IfThenElse_AdvancedI4_stringassignstr1133  uint8:$20
   .uint8 $20 $20 $41 $49 $34 $3a 0
-  decl  IfThenElse_AdvancedI5_stringassignstr1146  uint8:$20
+  decl  IfThenElse_AdvancedI5_stringassignstr1145  uint8:$20
   .uint8 $20 $20 $41 $49 $35 $3a 0
-  decl  IfThenElse_Exec_stringassignstr1158  uint8:$49
+  decl  IfThenElse_Exec_stringassignstr1157  uint8:$49
   .uint8 $46 $20 $54 $45 $53 $54 $53
   .uint8 0
-  decl  MulDiv_ByteMulByte01_stringassignstr1160  uint8:$30
+  decl  MulDiv_ByteMulByte01_stringassignstr1159  uint8:$30
   .uint8 $31 $3a 0
-  decl  MulDiv_ByteMulBytePow202_stringassignstr1171  uint8:$30
+  decl  MulDiv_ByteMulBytePow202_stringassignstr1170  uint8:$30
   .uint8 $32 $3a 0
-  decl  MulDiv_ByteDivBytePow203_stringassignstr1182  uint8:$30
+  decl  MulDiv_ByteDivBytePow203_stringassignstr1181  uint8:$30
   .uint8 $33 $3a 0
-  decl  MulDiv_ByteDivByte04_stringassignstr1193  uint8:$30
+  decl  MulDiv_ByteDivByte04_stringassignstr1192  uint8:$30
   .uint8 $34 $3a 0
-  decl  MulDiv_ByteMulMul05_stringassignstr1204  uint8:$30
+  decl  MulDiv_ByteMulMul05_stringassignstr1203  uint8:$30
   .uint8 $35 $3a 0
-  decl  MulDiv_IntByteMul06_stringassignstr1215  uint8:$30
+  decl  MulDiv_IntByteMul06_stringassignstr1214  uint8:$30
   .uint8 $36 $3a 0
-  decl  MulDiv_IntMulPow07_stringassignstr1226  uint8:$30
+  decl  MulDiv_IntMulPow07_stringassignstr1225  uint8:$30
   .uint8 $37 $3a 0
-  decl  MulDiv_IntDivByte08_stringassignstr1237  uint8:$30
+  decl  MulDiv_IntDivByte08_stringassignstr1236  uint8:$30
   .uint8 $38 $3a 0
-  decl  MulDiv_IntDivInt09_stringassignstr1248  uint8:$30
+  decl  MulDiv_IntDivInt09_stringassignstr1247  uint8:$30
   .uint8 $39 $3a 0
-  decl  MulDiv_IntDivPow210_stringassignstr1259  uint8:$31
+  decl  MulDiv_IntDivPow210_stringassignstr1258  uint8:$31
   .uint8 $30 $3a 0
-  decl  MulDiv_IntDivMix11_stringassignstr1270  uint8:$31
+  decl  MulDiv_IntDivMix11_stringassignstr1269  uint8:$31
   .uint8 $31 $3a 0
-  decl  MulDiv_IntDivMix12_stringassignstr1281  uint8:$31
+  decl  MulDiv_IntDivMix12_stringassignstr1280  uint8:$31
   .uint8 $32 $3a 0
-  decl  MulDiv_IntMulMix13_stringassignstr1292  uint8:$31
+  decl  MulDiv_IntMulMix13_stringassignstr1291  uint8:$31
   .uint8 $33 $3a 0
-  decl  MulDiv_IntMulInt14_stringassignstr1303  uint8:$31
+  decl  MulDiv_IntMulInt14_stringassignstr1302  uint8:$31
   .uint8 $34 $3a 0
-  decl  MulDiv_IntMulAdvancedMix15_stringassignstr1314  uint8:$31
+  decl  MulDiv_IntMulAdvancedMix15_stringassignstr1313  uint8:$31
   .uint8 $35 $3a 0
-  decl  MulDiv_ByteMulAdvanced16_stringassignstr1325  uint8:$31
+  decl  MulDiv_ByteMulAdvanced16_stringassignstr1324  uint8:$31
   .uint8 $36 $3a 0
-  decl  MulDiv_IntMulConst17_stringassignstr1336  uint8:$31
+  decl  MulDiv_IntMulConst17_stringassignstr1335  uint8:$31
   .uint8 $37 $3a 0
-  decl  MulDiv_IntCombConst18_stringassignstr1347  uint8:$31
+  decl  MulDiv_IntCombConst18_stringassignstr1346  uint8:$31
   .uint8 $38 $3a 0
-  decl  MulDiv_IntCombConst19_stringassignstr1358  uint8:$31
+  decl  MulDiv_IntCombConst19_stringassignstr1357  uint8:$31
   .uint8 $39 $3a 0
-  decl  MulDiv_IntShift20_stringassignstr1369  uint8:$32
+  decl  MulDiv_IntShift20_stringassignstr1368  uint8:$32
   .uint8 $30 $3a 0
-  decl  MulDiv_IntShift21_stringassignstr1380  uint8:$32
+  decl  MulDiv_IntShift21_stringassignstr1379  uint8:$32
   .uint8 $31 $3a 0
-  decl  MulDiv_Array1_stringassignstr1391  uint8:$41
+  decl  MulDiv_Array1_stringassignstr1390  uint8:$41
   .uint8 $31 $3a 0
-  decl  MulDiv_Shift0_stringassignstr1402  uint8:$53
+  decl  MulDiv_Shift0_stringassignstr1401  uint8:$53
   .uint8 $31 $3a 0
-  decl  MulDiv_Shift1_stringassignstr1413  uint8:$53
+  decl  MulDiv_Shift1_stringassignstr1412  uint8:$53
   .uint8 $32 $3a 0
-  decl  MulDiv_Shift2_stringassignstr1424  uint8:$53
+  decl  MulDiv_Shift2_stringassignstr1423  uint8:$53
   .uint8 $33 $3a 0
-  decl  MulDiv_Shift4_stringassignstr1435  uint8:$53
+  decl  MulDiv_Shift4_stringassignstr1434  uint8:$53
   .uint8 $34 $3a 0
-  decl  MulDiv_Shift5_stringassignstr1446  uint8:$53
+  decl  MulDiv_Shift5_stringassignstr1445  uint8:$53
   .uint8 $35 $3a 0
-  decl  MulDiv_Shift6_stringassignstr1457  uint8:$53
+  decl  MulDiv_Shift6_stringassignstr1456  uint8:$53
   .uint8 $36 $3a 0
-  decl  MulDiv_IntByteMulR1_stringassignstr1468  uint8:$52
+  decl  MulDiv_IntByteMulR1_stringassignstr1467  uint8:$52
   .uint8 $31 $3a 0
-  decl  MulDiv_IntByteMulR2_stringassignstr1479  uint8:$52
+  decl  MulDiv_IntByteMulR2_stringassignstr1478  uint8:$52
   .uint8 $32 $3a 0
-  decl  MulDiv_IntByteMulR3_stringassignstr1490  uint8:$52
+  decl  MulDiv_IntByteMulR3_stringassignstr1489  uint8:$52
   .uint8 $33 $3a 0
-  decl  MulDiv_IntByteMulR4_stringassignstr1501  uint8:$52
+  decl  MulDiv_IntByteMulR4_stringassignstr1500  uint8:$52
   .uint8 $34 $3a 0
-  decl  MulDiv_ByteMulBytePlus01_stringassignstr1512  uint8:$42
+  decl  MulDiv_ByteMulBytePlus01_stringassignstr1511  uint8:$42
   .uint8 $31 $3a 0
-  decl  MulDiv_ByteMulBytePlus02_stringassignstr1523  uint8:$42
+  decl  MulDiv_ByteMulBytePlus02_stringassignstr1522  uint8:$42
   .uint8 $32 $3a 0
-  decl  MulDiv_Exec_stringassignstr1534  uint8:$4d
+  decl  MulDiv_Exec_stringassignstr1533  uint8:$4d
   .uint8 $55 $4c $44 $49 $56 $20 $54
   .uint8 $45 $53 $54 $53 0
-  decl  ForLoop_Test1_stringassignstr1536  uint8:$54
+  decl  ForLoop_Test1_stringassignstr1535  uint8:$54
   .uint8 $31 $3a 0
-  decl  ForLoop_Test2_stringassignstr1553  uint8:$54
+  decl  ForLoop_Test2_stringassignstr1552  uint8:$54
   .uint8 $32 $3a 0
-  decl  ForLoop_Test3_stringassignstr1570  uint8:$54
+  decl  ForLoop_Test3_stringassignstr1569  uint8:$54
   .uint8 $33 $3a 0
-  decl  ForLoop_Test4_stringassignstr1587  uint8:$54
+  decl  ForLoop_Test4_stringassignstr1586  uint8:$54
   .uint8 $34 $3a 0
-  decl  ForLoop_Test5_stringassignstr1604  uint8:$54
+  decl  ForLoop_Test5_stringassignstr1603  uint8:$54
   .uint8 $35 $3a 0
-  decl  ForLoop_Test6_stringassignstr1621  uint8:$54
+  decl  ForLoop_Test6_stringassignstr1620  uint8:$54
   .uint8 $35 $3a 0
-  decl  ForLoop_Test7_stringassignstr1638  uint8:$54
+  decl  ForLoop_Test7_stringassignstr1637  uint8:$54
   .uint8 $36 $3a 0
-  decl  ForLoop_Test8_stringassignstr1655  uint8:$54
+  decl  ForLoop_Test8_stringassignstr1654  uint8:$54
   .uint8 $37 $3a 0
-  decl  ForLoop_TestBreak_stringassignstr1672  uint8:$54
+  decl  ForLoop_TestBreak_stringassignstr1671  uint8:$54
   .uint8 $42 $3a 0
-  decl  ForLoop_TestContinue_stringassignstr1700  uint8:$54
+  decl  ForLoop_TestContinue_stringassignstr1699  uint8:$54
   .uint8 $43 $3a 0
-  decl  ForLoop_NegativeStep1_stringassignstr1728  uint8:$4e
+  decl  ForLoop_NegativeStep1_stringassignstr1727  uint8:$4e
   .uint8 $31 $3a 0
-  decl  ForLoop_NegativeStep2_stringassignstr1745  uint8:$4e
+  decl  ForLoop_NegativeStep2_stringassignstr1744  uint8:$4e
   .uint8 $32 $3a 0
-  decl  ForLoop_NegativeStep3_stringassignstr1762  uint8:$4e
+  decl  ForLoop_NegativeStep3_stringassignstr1761  uint8:$4e
   .uint8 $33 $3a 0
-  decl  ForLoop_Exec_stringassignstr1779  uint8:$46
+  decl  ForLoop_Exec_stringassignstr1778  uint8:$46
   .uint8 $4f $52 $20 $4c $4f $4f $50
   .uint8 0
-  decl  Strings_Test1_stringassignstr1781  uint8:$54
+  decl  Strings_Test1_stringassignstr1780  uint8:$54
   .uint8 $31 $3a 0
-  decl  Strings_TestLst1_stringassignstr1792  uint8:$54
+  decl  Strings_TestLst1_stringassignstr1791  uint8:$54
   .uint8 $34 $3a 0
-  decl  Strings_TestLst2_stringassignstr1803  uint8:$54
+  decl  Strings_TestLst2_stringassignstr1802  uint8:$54
   .uint8 $35 $3a 0
-  decl  Strings_TestLst3_stringassignstr1814  uint8:$54
+  decl  Strings_TestLst3_stringassignstr1813  uint8:$54
   .uint8 $36 $3a 0
-  decl  Strings_TestLst3_stringassignstr1816  uint8:$44
+  decl  Strings_TestLst3_stringassignstr1815  uint8:$44
   .uint8 $45 0
-  decl  Strings_TestLst4_stringassignstr1827  uint8:$54
+  decl  Strings_TestLst4_stringassignstr1826  uint8:$54
   .uint8 $37 $3a 0
-  decl  Strings_TestLst4_stringassignstr1829  uint8:$4d
+  decl  Strings_TestLst4_stringassignstr1828  uint8:$4d
   .uint8 $59 0
-  decl  Strings_Exec_stringassignstr1839  uint8:$53
+  decl  Strings_Exec_stringassignstr1838  uint8:$53
   .uint8 $54 $52 $49 $4e $47 $53 0
-  decl  BitOp_Test1_stringassignstr1841  uint8:$54
+  decl  BitOp_Test1_stringassignstr1840  uint8:$54
   .uint8 $31 $3a 0
-  decl  BitOp_Test2_stringassignstr1853  uint8:$54
+  decl  BitOp_Test2_stringassignstr1852  uint8:$54
   .uint8 $32 $3a 0
-  decl  BitOp_Test3_stringassignstr1865  uint8:$54
+  decl  BitOp_Test3_stringassignstr1864  uint8:$54
   .uint8 $33 0
-  decl  BitOp_Test4_stringassignstr1877  uint8:$54
+  decl  BitOp_Test4_stringassignstr1876  uint8:$54
   .uint8 $34 0
-  decl  BitOp_Test5_stringassignstr1889  uint8:$54
+  decl  BitOp_Test5_stringassignstr1888  uint8:$54
   .uint8 $35 $3a 0
-  decl  BitOp_Test6_stringassignstr1901  uint8:$54
+  decl  BitOp_Test6_stringassignstr1900  uint8:$54
   .uint8 $36 $3a 0
-  decl  BitOp_Test7_stringassignstr1913  uint8:$54
+  decl  BitOp_Test7_stringassignstr1912  uint8:$54
   .uint8 $37 $3a 0
-  decl  BitOp_Test8_stringassignstr1925  uint8:$54
+  decl  BitOp_Test8_stringassignstr1924  uint8:$54
   .uint8 $38 $3a 0
-  decl  BitOp_Test9_stringassignstr1937  uint8:$54
+  decl  BitOp_Test9_stringassignstr1936  uint8:$54
   .uint8 $39 $3a 0
-  decl  BitOp_Test10_stringassignstr1949  uint8:$54
+  decl  BitOp_Test10_stringassignstr1948  uint8:$54
   .uint8 $31 $30 $3a 0
-  decl  BitOp_Test11_stringassignstr1961  uint8:$54
+  decl  BitOp_Test11_stringassignstr1960  uint8:$54
   .uint8 $31 $31 $3a 0
-  decl  BitOp_Exec_stringassignstr1973  uint8:$42
+  decl  BitOp_Exec_stringassignstr1972  uint8:$42
   .uint8 $49 $54 $4f $50 0
-  decl  Functions_Test1_stringassignstr1981  uint8:$54
+  decl  Functions_Test1_stringassignstr1980  uint8:$54
   .uint8 $31 $3a 0
-  decl  Functions_Test2_stringassignstr1992  uint8:$54
+  decl  Functions_Test2_stringassignstr1991  uint8:$54
   .uint8 $32 $3a 0
-  decl  Functions_Test3_stringassignstr2003  uint8:$54
+  decl  Functions_Test3_stringassignstr2002  uint8:$54
   .uint8 $33 $3a 0
-  decl  Functions_Test4_stringassignstr2014  uint8:$54
+  decl  Functions_Test4_stringassignstr2013  uint8:$54
   .uint8 $34 $3a 0
-  decl  Functions_Test5_stringassignstr2025  uint8:$54
+  decl  Functions_Test5_stringassignstr2024  uint8:$54
   .uint8 $35 $3a 0
-  decl  Functions_Test6_stringassignstr2036  uint8:$54
+  decl  Functions_Test6_stringassignstr2035  uint8:$54
   .uint8 $36 $3a 0
-  decl  Functions_Exec_stringassignstr2047  uint8:$46
+  decl  Functions_Exec_stringassignstr2046  uint8:$46
   .uint8 $55 $4e $43 $54 $49 $4f $4e
   .uint8 $53 0
-  decl  Various_LoHi1_stringassignstr2049  uint8:$54
+  decl  Various_LoHi1_stringassignstr2048  uint8:$54
   .uint8 $32 $3a 0
-  decl  Various_LoHi2_stringassignstr2061  uint8:$54
+  decl  Various_LoHi2_stringassignstr2060  uint8:$54
   .uint8 $33 $3a 0
-  decl  Various_TestAutomaticOffpage_stringassignstr2073  uint8:$54
+  decl  Various_TestAutomaticOffpage_stringassignstr2072  uint8:$54
   .uint8 $50 $41 $47 $45 $3a 0
-  decl  Various_TestAddress1_stringassignstr2082  uint8:$41
+  decl  Various_TestAddress1_stringassignstr2081  uint8:$41
   .uint8 $31 $3a 0
-  decl  Various_TestAddress2_stringassignstr2093  uint8:$41
+  decl  Various_TestAddress2_stringassignstr2092  uint8:$41
   .uint8 $32 $3a 0
-  decl  Various_TestAddress3_stringassignstr2104  uint8:$41
+  decl  Various_TestAddress3_stringassignstr2103  uint8:$41
   .uint8 $33 $3a 0
-  decl  Various_UnaryByte_stringassignstr2115  uint8:$55
+  decl  Various_UnaryByte_stringassignstr2114  uint8:$55
   .uint8 $31 $3a 0
-  decl  Various_UnaryInteger1_stringassignstr2126  uint8:$55
+  decl  Various_UnaryInteger1_stringassignstr2125  uint8:$55
   .uint8 $32 $3a 0
-  decl  Various_UnaryInteger2_stringassignstr2137  uint8:$55
+  decl  Various_UnaryInteger2_stringassignstr2136  uint8:$55
   .uint8 $33 $3a 0
-  decl  Various_UnaryInteger3_stringassignstr2148  uint8:$55
+  decl  Various_UnaryInteger3_stringassignstr2147  uint8:$55
   .uint8 $34 $3a 0
-  decl  Various_Exec_stringassignstr2159  uint8:$56
+  decl  Various_Exec_stringassignstr2158  uint8:$56
   .uint8 $41 $52 $49 $4f $55 $53 0
-  decl  MainProgram_stringassignstr2324  uint8:$53
+  decl  MainProgram_stringassignstr2323  uint8:$53
   .uint8 $55 $43 $43 $45 $53 $53 $D
   .uint8 $A 0
-  decl  MainProgram_stringassignstr2326  uint8:$46
+  decl  MainProgram_stringassignstr2325  uint8:$46
   .uint8 $41 $49 $4c $55 $52 $45 $D
   .uint8 $A 0
 .label EndBlock4000
-const  NIL  uint8:0x00
-const  STOP_MUSIC  uint8:0x00
-const  VARS_ADDR  uint8:0x8800
-const  PLAY_MUSIC  uint8:0x00
-const  SCREEN  uint8:0xc000
-const  NADA  uint8:0x00
+const  NIL  uint16:0x00
+const  PLAY_MUSIC  address8:0x00
+const  VARS_ADDR  address8:0x8800
 const  TRUE  uint8:0x01
 const  UNITTESTS_NOTESTS  uint8:0x0f
 const  VARS_NN  uint8:0x0a
-const  INIT_MUSIC  uint8:0x00
+const  STOP_MUSIC  address8:0x00
+const  NADA  uint16:0x00
+const  INIT_MUSIC  address8:0x00
+const  SCREEN  address8:0xc000
 const  FALSE  uint8:0x00
