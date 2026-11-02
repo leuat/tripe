@@ -900,7 +900,7 @@ i:dec iyl:fd2d:2:0
 i:ld iyl,%i08:fd2e:3:0
 i:inc (iy+%i08):fd34:3:0
 i:dec (iy+%i08):fd35:3:0
-i:ld (iy+%i08),%i08:fd36:3:0
+i:ld (iy+%i08),%i08:fd36:4:0
 i:add iy,sp:fd39:2:0
 i:ld b,iyh:fd44:2:0
 i:ld b,iyl:fd45:2:0
